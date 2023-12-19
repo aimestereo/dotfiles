@@ -37,7 +37,11 @@ brew install \
  minikube kubectl \
  hashicorp/tap/terraform terragrunt \
  pre-commit \
- openjdk
+ openjdk \
+ stow
+
+# Copy all config files
+stow --target ~/.config .
 
 
 # PostgresQL
