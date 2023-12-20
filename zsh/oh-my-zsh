@@ -1,0 +1,25 @@
+# grep.zsh requires this
+export ZSH_CACHE_DIR=${HOME}/.cache/zsh
+mkdir -p ${ZSH_CACHE_DIR}
+
+. ${HOME}/.config/oh-my-zsh/lib/functions.zsh
+. ${HOME}/.config/oh-my-zsh/lib/misc.zsh
+. ${HOME}/.config/oh-my-zsh/lib/history.zsh
+. ${HOME}/.config/oh-my-zsh/lib/grep.zsh
+. ${HOME}/.config/oh-my-zsh/lib/key-bindings.zsh
+
+
+#
+# override some of the oh-my-zsh defaults
+#
+export HISTFILESIZE=1000000
+export HISTSIZE=1000000
+# Add Timestamp to history (format)
+export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S '
+
+# . ${HOME}/.config/oh-my-zsh/lib/directories.zsh
+setopt auto_cd
+alias md='mkdir -p'
+alias rd=rmdir
+
+
