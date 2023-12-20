@@ -38,7 +38,7 @@ HIST_STAMPS="yyyy-mm-dd"
 export PATH="/usr/local/sbin:$PATH"
 fpath+=~/.zfunc
 
-. ${HOME}/.oh-my-zsh.zsh
+. ${HOME}/.config/zsh/oh-my-zsh
 
 # vi motions
 #bindkey -v

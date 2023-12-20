@@ -40,6 +40,8 @@ brew install \
  openjdk \
  stow
 
+git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
+
 # Copy all config files
 stow --target ~/.config .
 
