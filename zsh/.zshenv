@@ -94,8 +94,8 @@ alias git_clean='git remote prune origin && currBranch=$(git rev-parse --abbrev-
 #
 # pyenv
 #
-path+=${HOME}/.pyenv/bin
-eval "$(pyenv init --path)"
+# path+=${HOME}/.pyenv/bin
+# eval "$(pyenv init --path)"
 # eval "$(pyenv virtualenv-init -)"
 
 
@@ -108,9 +108,9 @@ eval "$(pyenv init --path)"
 # Node.js
 #
 # Installed, Configured & lazy loaded through zsh-nvm (see .zshrc)
- export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#  export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
 #

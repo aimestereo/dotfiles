@@ -1,10 +1,7 @@
-clean:
-	stow --delete --target ~/.config .
-
-install: interactive brew configs
+install: interactive brew symlinks configs
 interactive:
 	./interactive.sh
 brew:
 	./brew.sh
-configs:
-	stow --target ~/.config .
+symlinks:
+	./symlinks.sh

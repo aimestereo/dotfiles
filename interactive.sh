@@ -1,2 +1,2 @@
-echo "Download and install JetBrains Mono font"
-open https://www.jetbrains.com/lp/mono/
+echo "Download and install JetBrains Mono Nerd Font"
+open https://www.nerdfonts.com/font-downloads
