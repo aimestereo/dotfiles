@@ -8,41 +8,39 @@ brew install --cask \
   karabiner-elements hammerspoon `# Keyboard customizer & Automation` \
   fluor `# Change the behavior of the fn keys depending on the active application` \
   mos `# Smooths scrolling and set mouse scroll directions independently` \
-  force-paste gitup sourcetree visual-studio-code iterm2 teamviewer telegram slack \
-  hadolint `# Dockerfile linting` \
-  shfmt `# for VSCod shell-format` \
-  android-file-transfer \
   raycast 1password/tap/1password-cli `# Spotlight replacement + plugin fro 1password` \
   arc `# browser` \
+  force-paste gitup slack \
+  raycast 1password/tap/1password-cli \
   postman \
-  vlc \
   amethyst  `# window manager` \
-  diff-so-fancy
+  kitty
 
 # Install shell utils
 
 brew install \
  gcc openssl \
- python psql wget git cookiecutter \
+ psql wget cookiecutter \
+ shfmt \
+ diff-so-fancy \
+ hadolint \
  awscli \
- aws/tap/aws-sam-cli `# PyCharm Extention - AWS Serverless Application Model Command Line Interface (AWS SAM CLI)` \
+ aws/tap/aws-sam-cli \
  neovim \
- ripgrep `# dependency of telescope (nvim plug)` \
+ ripgrep \
  tmux fzf \
  jq \
- ngrok \
  rsync \
- pnpm yarn \
- vercel-cli \
  minikube kubectl \
  hashicorp/tap/terraform terragrunt \
  pre-commit \
  openjdk \
- stow
+ stow antigen
 
 git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
 
 # Copy all config files
+mkdir ~/.config
 stow --target ~/.config .
 
 
@@ -60,6 +58,7 @@ brew tap heroku/brew && brew install heroku
 # Rust
 
 curl https://sh.rustup.rs -sSf | sh
+source "$HOME/.cargo/env"
 cargo install sccache
 RUSTC_WRAPPER=sccache cargo install --locked \
  cargo-cache cargo-update \
