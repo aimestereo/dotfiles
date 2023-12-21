@@ -1,7 +1,9 @@
 clean:
 	stow --delete --target ~/.config .
 
-install: brew configs
+install: interactive brew configs
+interactive:
+	./interactive.sh
 brew:
 	./brew.sh
 configs:
