@@ -1,5 +1,7 @@
 local This = {}
 
+local am = require 'app-management'
+
 -----------------------------------------------------------------------------------
 -- File: hyper.lua
 -- Author: J.H. Kuperus
@@ -25,26 +27,35 @@ local This = {}
 -- events, will result in a very jittery Hyper mode.
 
 This.hyperMode = hs.hotkey.modal.new({}, 'F17')
+This.triggered = false
 
 -- Enter Hyper Mode when F18 (Hyper) is pressed
 function enterHyperMode()
   This.hyperMode:enter()
 end
 
--- Leave Hyper Mode when F18 (Hyper) is pressed
+-- Leave Hyper Mode when F18 (Hyper) is pressed,
+-- trigger Esc if nothing else is triggered (Vim user nicety)
 function exitHyperMode()
+  if not This.triggered then
+    hs.eventtap.keyStroke({}, 'escape', 1)
+  end
+
+  This.triggered = false
   This.hyperMode:exit()
 end
 
 function This.handler(fn, ...)
   local args = { ... }
   return function()
+    This.triggered = true
     fn(table.unpack(args))
   end
 end
 
 function This.appHandler(bundleID)
   return function()
+    This.triggered = true
     am.switchToAndFromApp(bundleID)
   end
 end
