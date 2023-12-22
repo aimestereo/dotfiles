@@ -47,14 +47,6 @@ it's installed previously with brew
 - Smooth and Reverse scroolling should be on
 - iTerm2 should be added to exclusion for smooth scrolling https://github.com/Caldis/Mos/issues/82
 
-# Configure Keyboard automations
-
-- In "Karabiner-Elements" -> "Simple Modification" -> "For all devices" set "caps_lock" -> "f18"
-- Check result in "Karabiner-Viewer"
-- Copy Hammerspoon config to `.hammerspoon/` (.lua scripts including `.init.lua`).
-- Reload Hammerspoon config.
-- Test it by twice clicking `Control` to show Help and `CapsLock + S` to open "Slack".
-
 Disable useless keyboard shortcuts:
 
 - Search/open man Page in terminal

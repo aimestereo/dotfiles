@@ -5,7 +5,7 @@ sudo xcode-select --switch /Applications/Xcode.app
 
 # Install apps
 brew install --cask \
-  karabiner-elements hammerspoon `# Keyboard customizer & Automation` \
+  hammerspoon `# Keyboard customizer & Automation` \
   fluor `# Change the behavior of the fn keys depending on the active application` \
   mos `# Smooths scrolling and set mouse scroll directions independently` \
   raycast 1password/tap/1password-cli `# Spotlight replacement + plugin fro 1password` \

@@ -1,9 +1,51 @@
 -- inspired by https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
 
+-- Load and install the Hyper key extension. Binding to F18
+local hyper = require("hyper")
+local am = require("app-management")
+
+hyper.install("F18")
+
+print("Debug")
+print(hyper)
+print(hyper.bindKey)
+
+-- Quick Reloading of Hammerspoon
+hyper.bindKey("r", hs.reload)
+
+-- Global Application Keyboard Shortcuts
+hyper.bindKey("m", function()
+	am.switchToAndFromApp("com.apple.mail")
+end)
+hyper.bindKey("a", function()
+	am.switchToAndFromApp("company.thebrowser.Browser")
+end)
+hyper.bindCommandKey("a", function()
+	am.switchToAndFromApp("com.google.Chrome")
+end)
+hyper.bindKey("f", function()
+	am.switchToAndFromApp("net.kovidgoyal.kitty")
+end)
+
+hyper.bindShiftKey("m", function()
+	am.switchToAndFromApp("Mail")
+end)
+
+-- Show the bundleID of the currently open window
+hyper.bindKey("b", function()
+	local bundleId = hs.window.focusedWindow():application():bundleID()
+	hs.alert.show(bundleId)
+	hs.pasteboard.setContents(bundleId)
+end)
+
+--
+-- TODO: revisit old crap
+--
+
 hs.console.clearConsole()
 logger = hs.logger.new("main")
 
-local hyper = { "ctrl", "alt", "cmd", "shift" }
+local hyper_old = { "ctrl", "alt", "cmd", "shift" }
 
 ------------
 -- Utilities
@@ -101,8 +143,8 @@ appsBindings = {
 
 for ch, app in pairs(appsBindings) do
 	local key = hs.keycodes.map[ch]
-	hs.console.printStyledtext(hyper, key, nil)
-	hs.hotkey.bind(hyper, key, nil, function()
+	hs.console.printStyledtext(hyper_old, key, nil)
+	hs.hotkey.bind(hyper_old, key, nil, function()
 		hs.application.launchOrFocus(app)
 	end)
 end
@@ -112,7 +154,7 @@ end
 ----------
 
 cursorLocator = require("cursor-locator")
-cursorLocator.init(hyper, "l")
+cursorLocator.init(hyper_old, "l")
 hyperBindings["l"] = "Cursor locator"
 
 -- Show help when ctrl double pressed
@@ -130,7 +172,7 @@ end
 -- end
 
 reloadConfig = require("reload-config")
-reloadConfig.init(hyper, "r")
+reloadConfig.init(hyper_old, "r")
 hyperBindings["r"] = "Reload"
 
 headphones_watcher = require("headphones_watcher")
