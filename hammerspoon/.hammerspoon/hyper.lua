@@ -36,6 +36,19 @@ function exitHyperMode()
   This.hyperMode:exit()
 end
 
+function This.handler(fn, ...)
+  local args = { ... }
+  return function()
+    fn(table.unpack(args))
+  end
+end
+
+function This.appHandler(bundleID)
+  return function()
+    am.switchToAndFromApp(bundleID)
+  end
+end
+
 -- Utility to bind handler to Hyper+key
 function This.bindKey(key, handler)
   This.hyperMode:bind({}, key, handler)
