@@ -22,6 +22,7 @@ brew install \
  gcc openssl \
  psql wget cookiecutter \
  shfmt \
+ nvm \
  diff-so-fancy \
  hadolint \
  awscli \

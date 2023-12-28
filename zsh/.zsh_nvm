@@ -1,0 +1,29 @@
+lazynvm() {
+  unset -f nvm node npm
+  export NVM_DIR=~/.nvm
+
+  # [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+  local nvm_path="$(brew --prefix nvm)"
+
+  [ -s "${nvm_path}/nvm.sh" ] && . "${nvm_path}/nvm.sh"  # This loads nvm
+  [ -s "${nvm_path}/etc/bash_completion.d/nvm" ] && . "${nvm_path}/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+
+}
+
+nvm() {
+  lazynvm 
+  nvm $@
+}
+
+node() {
+  lazynvm
+  node $@
+}
+
+npm() {
+  lazynvm
+  npm $@
+}
+

@@ -123,6 +123,9 @@ alias git_clean='git remote prune origin && currBranch=$(git rev-parse --abbrev-
 # bundle install --path=vendor/bundle. Это заморозит гемы, описанные в Gemfile в путь ./vendor/bundle
 # Делаю тоже самое с проектом A, устанавлявая версию A_VERSION
 
+# NVM
+. "${HOME}/.zsh_nvm"
+
 
 #
 # Aliases
