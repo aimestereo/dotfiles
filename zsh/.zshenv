@@ -146,12 +146,6 @@ alias tf=terraform
 alias tg=terragrunt
 alias k=kubectl
 
-alias zshrc="${EDITOR} ~/.zshrc"
-alias zenv="${EDITOR} ~/.zshenv"
-alias zprofile="${EDITOR} ~/.zprofile"
-alias ohmyzsh="${EDITOR} ~/.config/oh-my-zsh"
-alias hconfig="${EDITOR} ~/.hammerspoon"
-
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 
 #
