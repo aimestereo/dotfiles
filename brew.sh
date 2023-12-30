@@ -58,6 +58,9 @@ brew install redis-cli
 
 brew tap heroku/brew && brew install heroku
 
+# Tmux Plugin Manager (TPM)
+mkdir -p ~/.config/tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
 # Rust
 cargo install taplo-cli --locked --features lsp
