@@ -10,7 +10,6 @@ ulimit -u 2048
 #
 #
 #
-. "$HOME/.cargo/env"
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -134,8 +133,8 @@ alias v="nvim"
 alias vim="nvim"
 alias oldvim="\vim"
 
-alias l="exa -lah"
-alias ll="exa -lh"
+alias l="eza -lah"
+alias ll="eza -lh"
 alias c="bat"
 
 alias -g ...='../..'

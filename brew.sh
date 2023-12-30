@@ -36,7 +36,10 @@ brew install \
  hashicorp/tap/terraform terragrunt \
  pre-commit \
  openjdk \
- stow antigen
+ stow antigen \
+ rust \
+ eza bat mprocs ripgrep procs starship rtx coreutils
+
 
 git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
 
@@ -57,22 +60,7 @@ brew tap heroku/brew && brew install heroku
 
 
 # Rust
-
-curl https://sh.rustup.rs -sSf | sh
-source "$HOME/.cargo/env"
-cargo install sccache
-RUSTC_WRAPPER=sccache cargo install --locked \
- cargo-cache cargo-update \
- exa bat mprocs ripgrep irust procs \
- nu zellij warp starship rtx-cli
-
-RUSTC_WRAPPER=sccache cargo install \
- coreutils --locked --features macos
-
-RUSTC_WRAPPER=sccache cargo install \
- cargo install taplo-cli --locked --features lsp
-
-# RUSTC_WRAPPER=sccache cargo install-update -a
+cargo install taplo-cli --locked --features lsp
 
 
 # Python
