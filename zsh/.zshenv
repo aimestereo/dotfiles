@@ -146,12 +146,6 @@ alias tf=terraform
 alias tg=terragrunt
 alias k=kubectl
 
-alias emacs-original=$(which emacs)
-alias emacs="emacsclient -c -a 'emacs'"
-alias emacst="emacsclient -c -a 'emacs' -t"
-alias emacs-kill="emacsclient -e '(kill-emacs)'"
-alias emacs-daemon="emacs-original --daemon"
-
 alias zshrc="${EDITOR} ~/.zshrc"
 alias zenv="${EDITOR} ~/.zshenv"
 alias zprofile="${EDITOR} ~/.zprofile"
