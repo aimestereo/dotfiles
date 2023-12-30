@@ -154,23 +154,9 @@ alias hconfig="${EDITOR} ~/.hammerspoon"
 
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 
-
 #
-# Projects
+# Helpers
 #
-PROJECTS_DIR="${HOME}/projects"
-
-#
-# StatusMoney
-#
-STATUSMONEY_DIR="${PROJECTS_DIR}/statusmoney"
-alias sm="cd ${STATUSMONEY_DIR}/StatusMoney"
-alias sm-python="cd ${STATUSMONEY_DIR}/docker-python-base-image"
-alias sm-devops="cd ${STATUSMONEY_DIR}/TangleDevOps"
-alias sm-front="cd ${STATUSMONEY_DIR}/frontend/TangleFront"
-alias sm-feed="cd ${STATUSMONEY_DIR}/SocialFeed"
-alias sm-invoicer="cd ${STATUSMONEY_DIR}/invoicer-old"
-alias sm-cms="cd ${STATUSMONEY_DIR}/status-cms"
 
 export DOCKER_USER="$(id -u):$(id -g)"
 
