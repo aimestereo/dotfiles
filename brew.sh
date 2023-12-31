@@ -1,3 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Install Xcode and command line tool
 sudo xcode-select --switch /Applications/Xcode.app
@@ -29,7 +35,7 @@ brew install \
  aws/tap/aws-sam-cli \
  neovim \
  ripgrep \
- tmux fzf \
+ tmux fzf ical-buddy \
  jq \
  rsync \
  minikube kubectl \
