@@ -2,43 +2,19 @@
 
 Scripts and configuration to initialize new MacOS.
 
-## Prerequisites
+```shell
+make install
+```
 
-- Install [Homebrew](https://brew.sh)
+On interactive step:
 
-## Install
-
-### Homebrew apps
-
-Run `./setup.sh`
-
-## Post Install
-
-### Environment
-
-Copy
-
-- .zshenv, .zshrc .zprofile
-- ~/.config/zellij/config.kdl
-- $nu.config-path
+- in open browser download and install PyCharm Nerd Font and install it
+- verify, that it works (will require reboot kitty)
+- open tmux and install plugins via TPM `Alt+a + I`
 
 ### Amethyst
 
 disable MacOS settings Mission Control: "Automatically rearrange Spaces based on most recent use"
-
-# Neovim
-
-```shell
-git clone git@github.com:aimestereo/kickstart.nvim.git ~/.config/nvim
-```
-
-## Alternatives:
-
-Manual
-Package manager packer (maybe lazy): https://github.com/wbthomason/packer.nvim
-https://github.com/ThePrimeagen/init.lua/tree/master
-
-Packed with batteries: NvChad, AstroNvim
 
 # MOS
 
@@ -65,7 +41,7 @@ Use Search Everywhere (Shift+Shift) shortcut instead of Find Action (Cmd+Shift+A
 
 # SSH
 
-- [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- [x] should be done by script: [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 - add new ssh .pub key to Github, DigitalOcean (VPN)
 
