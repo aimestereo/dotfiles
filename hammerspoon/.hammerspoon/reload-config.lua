@@ -5,29 +5,26 @@ module = {}
 
 -- manual
 local reload = function()
-    hs.reload()
+  hs.reload()
 end
 
 module.init = function(hyper, key)
-    hs.hotkey.bind(hyper, key, nil, reload)
+  hs.hotkey.bind(hyper, key, nil, reload)
 end
 
-
 local function reloadConfig(files)
-    doReload = false
-    for _, file in pairs(files) do
-        if file:sub(-4) == ".lua" then
-            doReload = true
-        end
+  doReload = false
+  for _, file in pairs(files) do
+    if file:sub(-4) == ".lua" then
+      doReload = true
     end
-    if doReload then
-        hs.reload()
-    end
+  end
+  if doReload then
+    hs.reload()
+  end
 end
 
 -- watcher
 hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 
-
 return module
-

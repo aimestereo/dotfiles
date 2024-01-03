@@ -25,9 +25,9 @@ hyper.bindShiftKey("m", hyper.appHandler("Mail"))
 
 -- Show the bundleID of the currently open window
 hyper.bindKey("b", function()
-	local bundleId = hs.window.focusedWindow():application():bundleID()
-	hs.alert.show(bundleId)
-	hs.pasteboard.setContents(bundleId)
+  local bundleId = hs.window.focusedWindow():application():bundleID()
+  hs.alert.show(bundleId)
+  hs.pasteboard.setContents(bundleId)
 end)
 
 --
@@ -44,47 +44,47 @@ local hyper_old = { "ctrl", "alt", "cmd", "shift" }
 ------------
 
 function pairsByKeys(t, f)
-	local a = {}
-	for n in pairs(t) do
-		table.insert(a, n)
-	end
-	table.sort(a, f)
-	local i = 0 -- iterator variable
-	local iter = function() -- iterator function
-		i = i + 1
-		if a[i] == nil then
-			return nil
-		else
-			return a[i], t[a[i]]
-		end
-	end
-	return iter
+  local a = {}
+  for n in pairs(t) do
+    table.insert(a, n)
+  end
+  table.sort(a, f)
+  local i = 0 -- iterator variable
+  local iter = function() -- iterator function
+    i = i + 1
+    if a[i] == nil then
+      return nil
+    else
+      return a[i], t[a[i]]
+    end
+  end
+  return iter
 end
 
 -- Help
 to_string = function(t)
-	local content = {}
-	local long_separator = "\n-----------------\n"
-	local separator = ": "
+  local content = {}
+  local long_separator = "\n-----------------\n"
+  local separator = ": "
 
-	for k, v in pairsByKeys(t) do
-		if type(v) == "table" then
-			v = long_separator .. to_string(v) .. "\n"
-		end
-		table.insert(content, k .. separator .. v)
-	end
+  for k, v in pairsByKeys(t) do
+    if type(v) == "table" then
+      v = long_separator .. to_string(v) .. "\n"
+    end
+    table.insert(content, k .. separator .. v)
+  end
 
-	-- if level > 0 then separator = '\n' end
-	-- return table.concat( content, separator )
-	return table.concat(content, "\n")
+  -- if level > 0 then separator = '\n' end
+  -- return table.concat( content, separator )
+  return table.concat(content, "\n")
 end
 
 help = function(duration)
-	if duration == nil then
-		duration = 5
-	end
-	message = to_string({ Launch = appsBindings, ["Outer mapping"] = hyperBindings })
-	hs.alert.show(message, { textFont = "Monaco", textSize = 20 }, duration)
+  if duration == nil then
+    duration = 5
+  end
+  message = to_string({ Launch = appsBindings, ["Outer mapping"] = hyperBindings })
+  hs.alert.show(message, { textFont = "Monaco", textSize = 20 }, duration)
 end
 -- /Help
 
@@ -95,50 +95,50 @@ end
 -- The following keys are configured as hot keys in their respective apps (or in Keyboard Maestro, Alfred)
 -- SPACE → Spotlight (configured in System Preferences → Keyboard → Shortcuts → Spotlight, moved so that ⌘␣ could be used for Alfred)
 hyperBindings = {
-	r = "Reload Config",
-	--f = 'iTerm',
+  r = "Reload Config",
+  --f = 'iTerm',
 
-	space = "Switch language",
+  space = "Switch language",
 
-	-- t='Things: add todo',
-	-- a='Things with Autofill',
+  -- t='Things: add todo',
+  -- a='Things with Autofill',
 }
 
 -- single bind keys to open apps
 appsBindings = {
-	--q = 'Quiver',
-	q = "Obsidian",
+  --q = 'Quiver',
+  q = "Obsidian",
 
-	x = "Preview",
-	e = "Finder",
-	c = "Calendar",
-	m = "Mail",
-	s = "Slack",
-	d = "Discord",
-	z = "zoom.us",
+  x = "Preview",
+  e = "Finder",
+  c = "Calendar",
+  m = "Mail",
+  s = "Slack",
+  d = "Discord",
+  z = "zoom.us",
 
-	w = "iTerm",
-	--f = 'Warp',
-	f = "kitty",
+  w = "iTerm",
+  --f = 'Warp',
+  f = "kitty",
 
-	p = "Postman",
-	i = "Pycharm CE",
-	v = "Visual Studio Code",
+  p = "Postman",
+  i = "Pycharm CE",
+  v = "Visual Studio Code",
 
-	-- g='Google Chrome',
-	-- b='Safari',
-	a = "Arc",
+  -- g='Google Chrome',
+  -- b='Safari',
+  a = "Arc",
 
-	-- a='Alfred Preferences',
-	[","] = "System Preferences",
+  -- a='Alfred Preferences',
+  [","] = "System Preferences",
 }
 
 for ch, app in pairs(appsBindings) do
-	local key = hs.keycodes.map[ch]
-	hs.console.printStyledtext(hyper_old, key, nil)
-	hs.hotkey.bind(hyper_old, key, nil, function()
-		hs.application.launchOrFocus(app)
-	end)
+  local key = hs.keycodes.map[ch]
+  hs.console.printStyledtext(hyper_old, key, nil)
+  hs.hotkey.bind(hyper_old, key, nil, function()
+    hs.application.launchOrFocus(app)
+  end)
 end
 
 ----------
@@ -153,7 +153,7 @@ hyperBindings["l"] = "Cursor locator"
 ctrlDoublePress = require("ctrlDoublePress")
 ctrlDoublePress.timeFrame = 1
 ctrlDoublePress.action = function()
-	help(5)
+  help(5)
 end
 
 -- Alt hold

@@ -4,7 +4,7 @@ local This = {}
 
 -- Quickly move to and from a specific app
 -- (Thanks Teije)
-local previousApp = ''
+local previousApp = ""
 
 function This.switchToAndFromApp(bundleID)
   local focusedWindow = hs.window.focusedWindow()
@@ -26,12 +26,12 @@ end
 -- Open new windows
 
 function This.newTerminalWindow()
-  hs.applescript.applescript [[
+  hs.applescript.applescript([[
     tell application "Terminal"
       do script ""
       activate
     end tell
-  ]]
+  ]])
 end
 
 return This

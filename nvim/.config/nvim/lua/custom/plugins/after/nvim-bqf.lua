@@ -1,11 +1,11 @@
 -- Make Neovim's quickfix window better: preview, fzf, actions.
-require('bqf').setup {
+require("bqf").setup({
   filter = {
     fzf = {
-      extra_opts = { '--bind', 'ctrl-o:toggle-all', '--delimiter', '│' },
+      extra_opts = { "--bind", "ctrl-o:toggle-all", "--delimiter", "│" },
     },
   },
-}
+})
 
 --
 -- Quickfix
@@ -30,19 +30,19 @@ function _G.qftf(info)
     items = fn.getloclist(info.winid, { id = info.id, items = 0 }).items
   end
   local limit = 31
-  local fnameFmt1, fnameFmt2 = '%-' .. limit .. 's', '…%.' .. (limit - 1) .. 's'
-  local validFmt = '%s │%5d:%-3d│%s %s'
+  local fnameFmt1, fnameFmt2 = "%-" .. limit .. "s", "…%." .. (limit - 1) .. "s"
+  local validFmt = "%s │%5d:%-3d│%s %s"
   for i = info.start_idx, info.end_idx do
     local e = items[i]
-    local fname = ''
+    local fname = ""
     local str
     if e.valid == 1 then
       if e.bufnr > 0 then
         fname = fn.bufname(e.bufnr)
-        if fname == '' then
-          fname = '[No Name]'
+        if fname == "" then
+          fname = "[No Name]"
         else
-          fname = fname:gsub('^' .. vim.env.HOME, '~')
+          fname = fname:gsub("^" .. vim.env.HOME, "~")
         end
         -- char in fname may occur more than 1 width, ignore this issue in order to keep performance
         if #fname <= limit then
@@ -53,7 +53,7 @@ function _G.qftf(info)
       end
       local lnum = e.lnum > 99999 and -1 or e.lnum
       local col = e.col > 999 and -1 or e.col
-      local qtype = e.type == '' and '' or ' ' .. e.type:sub(1, 1):upper()
+      local qtype = e.type == "" and "" or " " .. e.type:sub(1, 1):upper()
       str = validFmt:format(fname, lnum, col, qtype, e.text)
     else
       str = e.text
@@ -63,11 +63,21 @@ function _G.qftf(info)
   return ret
 end
 
-vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
+vim.o.qftf = "{info -> v:lua._G.qftf(info)}"
 
 -- Quickfix list: quick navigation
-vim.keymap.set('n', '<leader>j', '<cmd>cnext<CR>zz', { desc = 'Moves the cursor to the next item in the quickfix list' })
-vim.keymap.set('n', '<leader>k', '<cmd>cprev<CR>zz', { desc = 'Moves the cursor to the previous item in the quickfix list' })
+vim.keymap.set(
+  "n",
+  "<leader>j",
+  "<cmd>cnext<CR>zz",
+  { desc = "Moves the cursor to the next item in the quickfix list" }
+)
+vim.keymap.set(
+  "n",
+  "<leader>k",
+  "<cmd>cprev<CR>zz",
+  { desc = "Moves the cursor to the previous item in the quickfix list" }
+)
 --vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz", { desc = "Moves the cursor to the next item in the location list" })
 --vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz",
 --  { desc = "Moves the cursor to the previous item in the location list" })

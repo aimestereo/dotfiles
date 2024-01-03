@@ -1,37 +1,37 @@
 return {
-  'stevearc/conform.nvim',
-  event = { 'BufWritePre' },
-  cmd = { 'ConformInfo' },
+  "stevearc/conform.nvim",
+  event = { "BufWritePre" },
+  cmd = { "ConformInfo" },
   keys = {
     {
-      '<leader>f',
+      "<leader>f",
       function()
-        require('conform').format { async = true, lsp_fallback = true }
+        require("conform").format({ async = true, lsp_fallback = true })
       end,
-      mode = { 'n', 'v' },
-      desc = 'Format buffer',
+      mode = { "n", "v" },
+      desc = "Format buffer",
     },
   },
   opts = {
     formatters_by_ft = {
-      javascript = { 'prettier' },
-      typescript = { 'prettier' },
-      javascriptreact = { 'prettier' },
-      typescriptreact = { 'prettier' },
-      svelte = { 'prettier' },
-      css = { 'prettier' },
-      html = { 'prettier' },
-      json = { 'prettier' },
-      yaml = { 'prettier' },
-      markdown = { 'prettier' },
-      graphql = { 'prettier' },
-      lua = { 'stylua' },
-      python = { 'black' },
+      javascript = { "prettier" },
+      typescript = { "prettier" },
+      javascriptreact = { "prettier" },
+      typescriptreact = { "prettier" },
+      svelte = { "prettier" },
+      css = { "prettier" },
+      html = { "prettier" },
+      json = { "prettier" },
+      yaml = { "prettier" },
+      markdown = { "prettier" },
+      graphql = { "prettier" },
+      lua = { "stylua" },
+      python = { "black" },
     },
     -- Customize formatters
     formatters = {
       ruff = {
-        prepend_args = { 'format' },
+        prepend_args = { "format" },
       },
     },
     format_on_save = function(bufnr)

@@ -3,48 +3,48 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-  'ThePrimeagen/vim-be-good',
+  "ThePrimeagen/vim-be-good",
 
-  'nvim-lua/plenary.nvim', -- lua functions that many plugins use
+  "nvim-lua/plenary.nvim", -- lua functions that many plugins use
 
   -- Navigation
-  'theprimeagen/harpoon',
-  { 'kevinhwang91/nvim-bqf', event = 'VeryLazy' },
-  'christoomey/vim-tmux-navigator', -- tmux & split window navigation
+  "theprimeagen/harpoon",
+  { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
+  "christoomey/vim-tmux-navigator", -- tmux & split window navigation
   {
-    'nvim-tree/nvim-tree.lua',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
   -- Autocompletion
   {
-    'hrsh7th/nvim-cmp',
-    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
+    "hrsh7th/nvim-cmp",
+    dependencies = { "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip" },
   },
 
   -- LLM
-  'David-Kunz/gen.nvim',
+  "David-Kunz/gen.nvim",
 
   -- Git related plugins
-  'tpope/vim-fugitive',
-  'lewis6991/gitsigns.nvim',
-  'ThePrimeagen/git-worktree.nvim',
+  "tpope/vim-fugitive",
+  "lewis6991/gitsigns.nvim",
+  "ThePrimeagen/git-worktree.nvim",
 
   -- 'preservim/nerdcommenter'
-  { 'numToStr/Comment.nvim', opts = {} }, -- "gc" to comment visual regions/lines
-  'mg979/vim-visual-multi',
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  { "numToStr/Comment.nvim", opts = {} }, -- "gc" to comment visual regions/lines
+  "mg979/vim-visual-multi",
+  "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 
-  { import = 'custom.plugins.lsp' },
+  { import = "custom.plugins.lsp" },
 
   -- Python
   {
     -- TODO: investigate how useful it is
-    'ranelpadon/python-copy-reference.vim',
+    "ranelpadon/python-copy-reference.vim",
     config = function()
-      vim.api.nvim_set_keymap('n', '<Space>rd', ':PythonCopyReferenceDotted<CR>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<Space>rp', ':PythonCopyReferencePytest<CR>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<Space>ri', ':PythonCopyReferenceImport<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Space>rd", ":PythonCopyReferenceDotted<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Space>rp", ":PythonCopyReferencePytest<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Space>ri", ":PythonCopyReferenceImport<CR>", { noremap = true, silent = true })
     end,
   },
 }

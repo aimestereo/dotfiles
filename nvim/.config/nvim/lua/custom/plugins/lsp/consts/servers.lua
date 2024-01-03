@@ -13,23 +13,23 @@ return {
   cssls = {},
   tailwindcss = {},
   svelte = {},
-  graphql = { 'graphql', 'gql', 'svelte', 'typescriptreact', 'javascriptreact' },
-  emmet_ls = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'svelte' },
+  graphql = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
+  emmet_ls = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
   prismals = {},
 
   lua_ls = {
     Lua = {
       -- make the language server recognize "vim" global
       diagnostics = {
-        globals = { 'vim' },
+        globals = { "vim" },
       },
       workspace = {
         --checkThirdParty = false,
 
         -- make language server aware of runtime files
         library = {
-          [vim.fn.expand '$VIMRUNTIME/lua'] = true,
-          [vim.fn.stdpath 'config' .. '/lua'] = true,
+          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+          [vim.fn.stdpath("config") .. "/lua"] = true,
         },
       },
       telemetry = { enable = false },

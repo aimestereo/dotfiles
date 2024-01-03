@@ -7,7 +7,7 @@ vim.wo.number = true
 vim.o.relativenumber = true
 
 -- Enable mouse mode
-vim.o.mouse = 'a'
+vim.o.mouse = "a"
 -- Disable mouse mode
 --vim.o.mouse = ''
 
@@ -15,12 +15,12 @@ vim.o.mouse = 'a'
 vim.o.scrolloff = 8
 
 -- Columns
-vim.o.signcolumn = 'yes'
-vim.wo.signcolumn = 'yes'
-vim.opt.colorcolumn = '80'
+vim.o.signcolumn = "yes"
+vim.wo.signcolumn = "yes"
+vim.opt.colorcolumn = "80"
 
 -- allow @ sing in file names
-vim.opt.isfname:append '@-@'
+vim.opt.isfname:append("@-@")
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -32,7 +32,7 @@ vim.o.smartindent = true
 vim.o.swapfile = false
 vim.o.backup = false
 vim.o.undofile = true
-vim.o.undodir = os.getenv 'HOME' .. '/.vim/undodir'
+vim.o.undodir = os.getenv("HOME") .. "/.vim/undodir"
 
 -- Case insensitive searching UNLESS /C or capital in search
 vim.o.ignorecase = true
@@ -45,12 +45,12 @@ vim.o.timeoutlen = 300
 
 -- Set colorscheme
 --vim.cmd [[colorscheme onedark]]
-vim.cmd.colorscheme 'catppuccin'
+vim.cmd.colorscheme("catppuccin")
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect,preview'
+vim.o.completeopt = "menuone,noselect,preview"
 
 -- Concealed text is completely hidden unless it's under the cursor.
 vim.o.conceallevel = 2

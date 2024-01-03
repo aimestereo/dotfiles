@@ -11,13 +11,13 @@ local function run_curr_python_file()
   local percent_of_win = 0.4
   local curr_win_height = vim.api.nvim_win_get_height(0) -- Current window height
   local term_height = math.floor(curr_win_height * percent_of_win) -- Terminal height
-  vim.cmd(':below ' .. term_height .. 'split | term') -- Launch terminal (horizontal split)
+  vim.cmd(":below " .. term_height .. "split | term") -- Launch terminal (horizontal split)
 
   -- Press keys to run python command on current file
-  vim.api.nvim_feedkeys(py_cmd, 't', false)
+  vim.api.nvim_feedkeys(py_cmd, "t", false)
 end
 
-vim.keymap.set({ 'n' }, '<A-r>', '', {
-  desc = 'Run .py file via Neovim built-in terminal',
+vim.keymap.set({ "n" }, "<A-r>", "", {
+  desc = "Run .py file via Neovim built-in terminal",
   callback = run_curr_python_file,
 })
