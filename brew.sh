@@ -20,7 +20,8 @@ brew install --cask \
   raycast 1password/tap/1password-cli \
   postman \
   amethyst  `# window manager` \
-  kitty
+  kitty \
+  obsidian
 
 # Install shell utils
 
