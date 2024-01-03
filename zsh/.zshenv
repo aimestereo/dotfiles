@@ -135,7 +135,9 @@ alias oldvim="\vim"
 
 alias l="eza -lah"
 alias ll="eza -lh"
+alias tree="eza --tree"
 alias c="bat"
+alias cat="bat -p"
 
 alias -g ...='../..'
 alias -g ....='../../..'
