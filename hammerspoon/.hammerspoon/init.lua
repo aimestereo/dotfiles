@@ -20,6 +20,8 @@ hyper.bindCommandKey("a", hyper.appHandler("com.google.Chrome"))
 hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
+hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
+hyper.bindKey("p", hyper.appHandler("com.jetbrains.pycharm"))
 
 hyper.bindShiftKey("m", hyper.appHandler("Mail"))
 
