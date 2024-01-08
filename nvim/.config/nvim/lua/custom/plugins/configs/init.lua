@@ -7,6 +7,14 @@ return {
 
   "nvim-lua/plenary.nvim", -- lua functions that many plugins use
 
+  {
+    "rcarriga/nvim-notify", -- Notification plugin used by noice.
+    event = "VeryLazy",
+    opts = {
+      top_down = false, -- Notifications start at the bottom to stay out of your way.
+    },
+  },
+
   -- Navigation
   "theprimeagen/harpoon",
   { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
