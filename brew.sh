@@ -27,7 +27,7 @@ brew install --cask \
 
 brew install \
  gcc openssl \
- psql wget cookiecutter \
+ wget cookiecutter \
  shfmt \
  nvm \
  diff-so-fancy \
