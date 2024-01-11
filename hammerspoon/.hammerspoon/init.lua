@@ -15,6 +15,8 @@ hyper.bindKey("r", hs.reload)
 
 -- Global Application Keyboard Shortcuts
 hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
+hyper.bindCommandKey("m", hyper.appHandler("com.apple.Music"))
+
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
 hyper.bindCommandKey("a", hyper.appHandler("com.google.Chrome"))
 hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
@@ -22,10 +24,8 @@ hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
 hyper.bindKey("p", hyper.appHandler("com.jetbrains.pycharm"))
-hyper.bindKey("p", hyper.appHandler("com.apple.Music"))
 
 hyper.bindKey("c", hyper.appHandler("com.apple.iCal"))
-hyper.bindShiftKey("m", hyper.appHandler("Mail"))
 
 -- Show the bundleID of the currently open window
 hyper.bindKey("b", function()
