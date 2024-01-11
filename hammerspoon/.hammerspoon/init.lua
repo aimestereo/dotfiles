@@ -22,6 +22,7 @@ hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
 hyper.bindKey("p", hyper.appHandler("com.jetbrains.pycharm"))
+hyper.bindKey("p", hyper.appHandler("com.apple.Music"))
 
 hyper.bindKey("c", hyper.appHandler("com.apple.iCal"))
 hyper.bindShiftKey("m", hyper.appHandler("Mail"))
