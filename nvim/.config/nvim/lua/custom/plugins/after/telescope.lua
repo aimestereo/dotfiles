@@ -1,8 +1,15 @@
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 local telescope = require("telescope")
+local telescopeConfig = require("telescope.config")
 local lga_actions = require("telescope-live-grep-args.actions")
 local telescope_actions = require("telescope.actions")
+
+-- Clone the default Telescope configuration
+local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
+-- I want to search in hidden/dot files.
+table.insert(vimgrep_arguments, "--hidden")
+
 telescope.setup({
   extensions = {
     live_grep_args = {
@@ -20,22 +27,20 @@ telescope.setup({
       -- layout_config = { mirror=true }, -- mirror preview pane
     },
   },
-  defaults = {
-    vimgrep_arguments = {
-      "rg",
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      "--smart-case",
-      "--hidden",
+  pickers = {
+    find_files = {
+      find_command = { "rg", "--files", "--hidden" },
     },
+  },
+  defaults = {
+    -- `hidden = true` is not supported in text grep commands.
+    vimgrep_arguments = vimgrep_arguments,
     file_ignore_patterns = {
-      ".git",
-      "^build/",
-      "^dist/",
-      "^sdist/",
+      ".git/", -- `.git/` is not in `.gitignore`
+      "build/",
+      "custom/",
+      "dist/",
+      "sdist/",
       "%.lock",
     },
     mappings = {
