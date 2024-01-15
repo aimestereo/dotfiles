@@ -14,8 +14,8 @@ print(hyper.bindKey)
 hyper.bindKey("r", hs.reload)
 
 -- Global Application Keyboard Shortcuts
-hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
-hyper.bindCommandKey("m", hyper.appHandler("com.apple.Music"))
+hyper.bindCommandKey("m", hyper.appHandler("com.apple.mail"))
+hyper.bindKey("m", hyper.appHandler("com.apple.Music"))
 
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
 hyper.bindCommandKey("a", hyper.appHandler("com.google.Chrome"))
