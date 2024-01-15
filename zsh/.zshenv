@@ -58,8 +58,6 @@ export CPPFLAGS="-I${OPENSSL_PATH}/include"
 path=(
     ${HOME}/.local/bin
     ${HOMEBREW_PREFIX}/opt/python@3.11/libexec/bin
-    ${HOME}/.emacs.d/bin
-    ${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin
     $path
 )
 

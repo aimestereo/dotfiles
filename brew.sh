@@ -27,26 +27,14 @@ brew install --cask \
 
 brew install \
  gcc openssl \
- wget cookiecutter \
- shfmt \
+ cookiecutter \
  nvm \
- diff-so-fancy \
- hadolint \
- awscli \
  aws/tap/aws-sam-cli \
  neovim \
- ripgrep \
- tmux fzf ical-buddy \
- jq \
- rsync \
- minikube kubectl \
- hashicorp/tap/terraform terragrunt \
- pre-commit \
+ ical-buddy \
+ hashicorp/tap/terraform \
  openjdk \
- stow antigen \
- rust \
- eza bat mprocs ripgrep procs starship rtx coreutils
-
+ rust
 
 git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
 

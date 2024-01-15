@@ -49,7 +49,7 @@ CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
 #
 # Antigen plugins [that are not specified in .zprofile]
 #
-source $(brew --prefix)/share/antigen/antigen.zsh
+source /nix/store/*-antigen.zsh
 
 antigen bundle zsh-users/zsh-autosuggestions
 bindkey '^ ' autosuggest-accept

@@ -1,6 +1,8 @@
-install: interactive brew symlinks configs
+install: interactive nix brew symlinks configs
 interactive:
 	./interactive.sh
+nix:
+	./nix.sh
 brew:
 	./brew.sh
 symlinks:
