@@ -17,9 +17,11 @@ hyper.bindKey("r", hs.reload)
 hyper.bindCommandKey("m", hyper.appHandler("com.apple.mail"))
 hyper.bindKey("m", hyper.appHandler("com.apple.Music"))
 
+hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
+hyper.bindCommandKey("f", hyper.appHandler("com.apple.Terminal"))
+
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
 hyper.bindCommandKey("a", hyper.appHandler("com.google.Chrome"))
-hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
