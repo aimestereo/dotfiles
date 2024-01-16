@@ -4,8 +4,15 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
-cd nix
-
 # WARN: not repeatable command, use `nix profile upgrade 0`
 nix profile install .
 
+#
+# NIX home-manager
+#
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
+
+# drop default config, it will be symlinked by stow
+rm ~/.config/home-manager/home.nix

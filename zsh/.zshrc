@@ -33,6 +33,9 @@
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 HIST_STAMPS="yyyy-mm-dd"
 
+# source NIX home-manager
+. ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+
 # User configuration
 
 export PATH="/usr/local/sbin:$PATH"
@@ -80,7 +83,7 @@ antigen apply
 
 autoload -U +X bashcompinit && bashcompinit
 
-eval "$(rtx activate zsh)"   # Polyglot runtime manager (asdf rust clone)
+eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
 
 eval "$(starship init zsh)"  # The minimal, blazing-fast, and infinitely customizable prompt for any shell!
 

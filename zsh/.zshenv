@@ -40,7 +40,7 @@ fi
 
 
 # Use Homebrew openssl (can be bad for certs)
-export OPENSSL_PATH="${HOMEBREW_PREFIX}/opt/openssl@3" # $(brew --prefix openssl)
+export OPENSSL_PATH="/usr/local/opt/openssl@3" # $(brew --prefix openssl)
 path=(${OPENSSL_PATH}/bin $path)
 export LIBRARY_PATH="$LIBRARY_PATH:${OPENSSL_PATH}/lib/"
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=${OPENSSL_PATH}"

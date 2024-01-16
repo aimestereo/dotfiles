@@ -1,3 +1,8 @@
+# Deprecated
+#
+# This is kept as a fallback if NIX home-manager fails
+# or as an instruction to how debug fonts in case smth don't work
+
 echo "Download and install JetBrains Mono Nerd Font"
 open https://www.nerdfonts.com/font-downloads
 
