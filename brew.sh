@@ -62,7 +62,8 @@ cargo install taplo-cli --locked --features lsp
 
 
 # Python
-rtx use --global python@3.11
+# TODO: revise, maybe completely switch to home-manager
+mise use --global python@3.11
 curl -sSL https://install.python-poetry.org | python3 -
 
 # SSH
