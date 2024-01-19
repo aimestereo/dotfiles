@@ -44,7 +44,7 @@ fpath+=~/.zfunc
 . ${HOME}/.oh-my-zsh
 
 # vi motions
-#bindkey -v
+bindkey -v
 
 CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
 
