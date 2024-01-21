@@ -54,9 +54,10 @@
     pkgs.procs
 
     # dev tools
-    # pkgs.mise
+    pkgs.mise
     pkgs.kubectl
     pkgs.minikube
+    pkgs.poetry
 
     pkgs.terragrunt
     pkgs.awscli
@@ -64,6 +65,10 @@
     pkgs.shfmt
     pkgs.hadolint
     pkgs.pre-commit
+
+    (pkgs.python311.withPackages (ppkgs: [
+      ppkgs.ipdb
+    ]))
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -88,21 +93,6 @@
     # '';
   };
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. If you don't want to manage your shell through Home
-  # Manager then you have to manually source 'hm-session-vars.sh' located at
-  # either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/aimestereo/etc/profile.d/hm-session-vars.sh
-  #
   home.sessionVariables = {
     # EDITOR = "emacs";
     FOO = "bar";
@@ -111,7 +101,37 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  programs.direnv.enable = true;
+
   programs.go = {
     enable = true;
+  };
+
+  programs.zsh = {
+    enable = true;
+    dotDir = ".config/zsh";
+    enableCompletion = true;
+    enableAutosuggestions = true;
+    syntaxHighlighting = {
+      enable = true;
+    };
+    sessionVariables = {
+      EDITOR = "nvim";
+    };
+    # plugins = [ zsh-256color ];
+    initExtra = ''
+      if [ -e $HOME/.profile ]; then
+        . $HOME/.profile
+      fi
+      '';
+
+    zplug = {
+      enable = true;
+      plugins = [
+        { name = "zsh-users/zsh-autosuggestions"; }
+        { name = "joshskidmore/zsh-fzf-history-search"; }
+      ];
+    };
+
   };
 }

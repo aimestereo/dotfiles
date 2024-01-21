@@ -57,20 +57,9 @@ export CPPFLAGS="-I${OPENSSL_PATH}/include"
 
 path=(
     ${HOME}/.local/bin
-    ${HOMEBREW_PREFIX}/opt/python@3.11/libexec/bin
     $path
 )
 
-
-
-# Added by Toolbox App
-export PATH="$PATH:/Users/aimestereo/Library/Application Support/JetBrains/Toolbox/scripts"
-
-
-#
-# Java
-#
-export PATH="${HOMEBREW_PREFIX}/opt/openjdk/bin:$PATH"
 
 
 #
@@ -159,3 +148,43 @@ function pyclean() {
     find . -type d -name "__pycache__" -delete
 }
 
+
+
+
+#
+# Fron .zshrc
+#
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+HIST_STAMPS="yyyy-mm-dd"
+
+# User configuration
+
+export PATH="/usr/local/sbin:$PATH"
+fpath+=~/.zfunc
+
+. ${HOME}/.oh-my-zsh
+
+# vi motions
+bindkey -v
+
+CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
+
+# eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
+
+eval "$(starship init zsh)"  # The minimal, blazing-fast, and infinitely customizable prompt for any shell!
+
+# Use Up&Down keys to search history based on current input
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search # Up
+bindkey "^[[B" down-line-or-beginning-search # Down
+
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
