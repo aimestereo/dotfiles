@@ -24,17 +24,17 @@ brew install --cask \
   obsidian
 
 # Install shell utils
-
+#
+# TODO: move to home-manager
+# ruby-build ruby rust cookiecutter aws-sam-cli poetry rbenv
+#
 brew install \
- gcc openssl \
- cookiecutter \
+ openssl \
  nvm \
- aws/tap/aws-sam-cli \
  neovim \
  ical-buddy \
  hashicorp/tap/terraform \
- openjdk \
- rust
+ openjdk
 
 git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
 
@@ -56,10 +56,6 @@ brew tap heroku/brew && brew install heroku
 # Tmux Plugin Manager (TPM)
 mkdir -p ~/.config/tmux/plugins
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
-
-# Rust
-cargo install taplo-cli --locked --features lsp
-
 
 # Python
 # TODO: revise, maybe completely switch to home-manager

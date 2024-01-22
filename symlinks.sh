@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-for d in `ls -d */ | grep -v nix | grep -v home-manager`;
+for d in `ls -d */`;
 do
     ( stow --restow -t ${HOME} -v $d )
 done

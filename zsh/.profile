@@ -172,7 +172,7 @@ bindkey -v
 
 CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
 
-# eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
+eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
 
 eval "$(starship init zsh)"  # The minimal, blazing-fast, and infinitely customizable prompt for any shell!
 

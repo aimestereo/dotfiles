@@ -37,7 +37,7 @@
     # terminal: environment
     pkgs.tmux
     pkgs.starship
-    # pkgs.stow -- install by NIX, because it's needed prior to this
+    #pkgs.stow
     pkgs.antigen
 
     # terminal: essentials
@@ -54,7 +54,7 @@
     pkgs.procs
 
     # dev tools
-    pkgs.mise
+    # pkgs.mise
     pkgs.kubectl
     pkgs.minikube
     pkgs.poetry

@@ -59,3 +59,7 @@ brew install --cask qmk-toolbox
 brew install qmk/qmk/qmk
 brew install avr-gcc
 brew install armmbed/formulae/arm-none-eabi-gcc
+
+# Nix HomeManager
+
+[Nix and Home manager setup](https://rexk.github.io/en/blog/nix-home-manager-flake-setup/)
