@@ -132,6 +132,10 @@
         { name = "joshskidmore/zsh-fzf-history-search"; }
       ];
     };
-
   };
+
+  programs.lazygit = {
+    enable = true;
+  };
+
 }
