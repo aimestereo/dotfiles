@@ -12,11 +12,15 @@ keyboard-remapping:
 	launchctl unload -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2&> /dev/null || true
 	launchctl load   -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist
 
+#
+# WIP
+#
 nix-install:
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 	echo "Restart shell to enable Nix"
 
-nix: symlinks
+nix: hms symlinks
+hms:
 	# update NIX home-manager environment
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 		export XDG_CONFIG_HOME=$(current_dir)/nix/.config \

@@ -29,15 +29,18 @@
     pkgs.gnupg
     pkgs.rsync
 
-    # build tools
-    pkgs.openssl
-    pkgs.cmake
-    pkgs.gcc
+    # build tools - they are not added to shell env, so no need to specify them
+    # pkgs.openssl
+    # pkgs.cmake
+    # pkgs.gcc
+    # pkgs.gettext
+    # pkgs.readline
+    # pkgs.xz
 
     # terminal: environment
     pkgs.tmux
     pkgs.starship
-    #pkgs.stow
+    pkgs.stow
     pkgs.antigen
 
     # terminal: essentials
@@ -54,7 +57,6 @@
     pkgs.procs
 
     # dev tools
-    # pkgs.mise
     pkgs.kubectl
     pkgs.minikube
     pkgs.poetry
@@ -138,4 +140,22 @@
     enable = true;
   };
 
+  programs.rtx = {
+    enable = true;
+    package = pkgs.unstable.mise;
+    enableZshIntegration = true;
+    settings = {
+      tools = {
+        node = ["lts"];
+        python = ["3.10" "3.11"];
+      };
+    };
+  };
+
+  programs.neovim = {
+    enable = true;
+   #  plugins = [
+   #   pkgs.vimPlugins.nvim-treesitter
+   # ];
+  };
 }
