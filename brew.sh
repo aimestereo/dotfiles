@@ -24,17 +24,26 @@ brew install --cask \
   obsidian
 
 # Install shell utils
-#
-# TODO: move to home-manager
-# ruby-build ruby rust cookiecutter aws-sam-cli poetry rbenv
-#
+
+brew tap beeftornado/rmtree
 brew install \
- openssl \
+ openssl gettext xz readline cmake gcc \
  nvm \
- neovim \
- ical-buddy \
- hashicorp/tap/terraform \
- openjdk
+ ical-buddy
+
+# NIX home-manager
+brew install \
+  mise poetry cookiecutter \
+  rust go \
+  git curl wget gnupg rsync lazygit pre-commit \
+  tmux starship stow antigen \
+  neovim fzf ripgrep shfmt hadolint \
+  jq coreutils bat eza diff-so-fancy \
+  kubectl minikube hashicorp/tap/terraform terragrunt awscli
+
+# Nerd Font
+brew tap homebrew/cask-fonts
+brew install --cask font-jetbrains-mono-nerd-font
 
 git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
 
@@ -64,3 +73,8 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 # SSH
 ssh-keygen
+
+# Fix .zshrc
+if ! grep -qxF ". \$HOME/.config/zsh/profile" ~/.zshrc; then
+  echo ". \$HOME/.config/zsh/profile" >> ~/.zshrc
+fi

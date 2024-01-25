@@ -2,7 +2,7 @@
 
 current_dir := $(shell pwd)
 
-install: nix-install brew symlinks keyboard-remapping nix
+install: brew symlinks keyboard-remapping
 brew:
 	./brew.sh
 symlinks:

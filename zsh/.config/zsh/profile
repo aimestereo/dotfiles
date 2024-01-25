@@ -1,15 +1,10 @@
+ZDIR="${HOME}/.config/zsh"
+
 # correct max limits for open files and processes (done per bash session)
 # also ~/Library/LaunchAgents/limit.maxfiles.plist
 # https://docs.riak.com/riak/kv/2.1.4/using/performance/open-files-limit/#mac-os-x
 ulimit -n 200000
 ulimit -u 2048
-
-
-
-#
-#
-#
-#
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -28,7 +23,7 @@ export VISUAL="nvim"       # $VISUAL opens in GUI mode
 
 # Set PATH, MANPATH, etc., for Homebrew, will also set `HOMEBREW_PREFIX`
 eval "$(/opt/homebrew/bin/brew shellenv)"
-
+prefix=$(brew --prefix)
 
 # Load completions from Homebrew apps
 if type brew &>/dev/null; then
@@ -39,18 +34,24 @@ if type brew &>/dev/null; then
 fi
 
 
-# Use Homebrew openssl (can be bad for certs)
-export OPENSSL_PATH="/usr/local/opt/openssl@3" # $(brew --prefix openssl)
-path=(${OPENSSL_PATH}/bin $path)
-export LIBRARY_PATH="$LIBRARY_PATH:${OPENSSL_PATH}/lib/"
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=${OPENSSL_PATH}"
+# # Use Homebrew openssl (can be bad for certs)
+# export OPENSSL_PATH="/usr/local/opt/openssl@3" # $(brew --prefix openssl)
+# path=(${OPENSSL_PATH}/bin $path)
+# export LIBRARY_PATH="$LIBRARY_PATH:${OPENSSL_PATH}/lib/"
+# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=${OPENSSL_PATH}"
+#
+# # For compilers:
+# #export LDFLAGS="-L${HOMEBREW_PREFIX}/opt/libpq/lib"
+# #export CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/libpq/include"
+# #export CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/openjdk/include"
+# export LDFLAGS="-L${OPENSSL_PATH}/lib"
+# export CPPFLAGS="-I${OPENSSL_PATH}/include"
 
-# For compilers:
-#export LDFLAGS="-L${HOMEBREW_PREFIX}/opt/libpq/lib"
-#export CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/libpq/include"
-#export CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/openjdk/include"
-export LDFLAGS="-L${OPENSSL_PATH}/lib"
-export CPPFLAGS="-I${OPENSSL_PATH}/include"
+# CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
+
+export LDFLAGS="-L${prefix}/opt/xz/lib $LDFLAGS"
+export CPPFLAGS="-I${prefix}/opt/xz/include $CPPFLAGS"
+export PKG_CONFIG_PATH="${prefix}/opt/xz/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 # ------------
 
@@ -77,40 +78,8 @@ alias git_clean='git remote prune origin && currBranch=$(git rev-parse --abbrev-
 # path+=${GOPATH}/bin
 
 
-#
-# pyenv
-#
-# path+=${HOME}/.pyenv/bin
-# eval "$(pyenv init --path)"
-# eval "$(pyenv virtualenv-init -)"
-
-
-#
-# Poetry
-#
-# export PATH="/Users/aimestereo/.local/bin:$PATH"
-
-#
-# Node.js
-#
-# Installed, Configured & lazy loaded through zsh-nvm (see .zshrc)
-#  export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-
-#
-# rbenv
-#
-# Lazy loaded by zsh-rbenv in .zshrc
-# Why rbenv: https://habr.com/ru/post/137333/
-# Захожу в путь проекта B
-# Выполняю rbenv local B_VERSION. Это создаст файл .rbenv-version и теперь при нахождении в этой директории версия ruby будет устанавливаться из этого файла
-# bundle install --path=vendor/bundle. Это заморозит гемы, описанные в Gemfile в путь ./vendor/bundle
-# Делаю тоже самое с проектом A, устанавлявая версию A_VERSION
-
 # NVM
-. "${HOME}/.zsh_nvm"
+. "${ZDIR}/zsh_nvm"
 
 
 #
@@ -165,14 +134,12 @@ HIST_STAMPS="yyyy-mm-dd"
 export PATH="/usr/local/sbin:$PATH"
 fpath+=~/.zfunc
 
-. ${HOME}/.oh-my-zsh
+. ${ZDIR}/oh-my-zsh
 
 # vi motions
 bindkey -v
 
-CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
-
-eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
+# eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
 
 eval "$(starship init zsh)"  # The minimal, blazing-fast, and infinitely customizable prompt for any shell!
 
@@ -184,6 +151,7 @@ zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
+# TODO: DROP
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

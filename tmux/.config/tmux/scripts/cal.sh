@@ -21,7 +21,7 @@ get_attendees() {
 		--separateByDate \
 		--excludeEndDates \
 		--bullet "" \
-		--excludeCals "training,omerxx@gmail.com" \
+		--excludeCals "example_cal1,example_cal2" \
 		eventsToday)
 }
 
@@ -44,7 +44,7 @@ get_next_meeting() {
 		--excludeAllDayEvents \
 		--separateByDate \
 		--bullet "" \
-		--excludeCals "training,omerxx@gmail.com" \
+		--excludeCals "example_cal1,example_cal2" \
 		eventsToday)
 }
 
@@ -81,7 +81,7 @@ display_popup() {
 			--includeOnlyEventsFromNowOn \
 			--limitItems 1 \
 			--excludeAllDayEvents \
-			--excludeCals "training" \
+			--excludeCals "example_cal1,example_cal2" \
 			eventsToday
 }
 
