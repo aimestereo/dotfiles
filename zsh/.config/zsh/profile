@@ -139,7 +139,22 @@ fpath+=~/.zfunc
 # vi motions
 bindkey -v
 
-# eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
+#
+# Antigen plugins [that are not specified in .zprofile]
+#
+source $HOMEBREW_PREFIX/share/antigen/antigen.zsh
+
+antigen bundle zsh-users/zsh-autosuggestions
+bindkey '^ ' autosuggest-accept
+
+antigen bundle joshskidmore/zsh-fzf-history-search
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+# Tell Antigen that you're done.
+antigen apply
+
+
+eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
 
 eval "$(starship init zsh)"  # The minimal, blazing-fast, and infinitely customizable prompt for any shell!
 
