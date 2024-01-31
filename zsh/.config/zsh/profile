@@ -78,10 +78,6 @@ alias git_clean='git remote prune origin && currBranch=$(git rev-parse --abbrev-
 # path+=${GOPATH}/bin
 
 
-# NVM
-. "${ZDIR}/zsh_nvm"
-
-
 #
 # Aliases
 #

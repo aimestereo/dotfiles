@@ -28,7 +28,6 @@ brew install --cask \
 brew tap beeftornado/rmtree
 brew install \
  openssl gettext xz readline cmake gcc \
- nvm \
  ical-buddy
 
 # NIX home-manager
