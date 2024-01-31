@@ -49,9 +49,16 @@ fi
 
 # CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
 
+# xz
 export LDFLAGS="-L${prefix}/opt/xz/lib $LDFLAGS"
 export CPPFLAGS="-I${prefix}/opt/xz/include $CPPFLAGS"
 export PKG_CONFIG_PATH="${prefix}/opt/xz/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+# openssl@1.1
+# export LDFLAGS="-L/opt/homebrew/opt/openssl@1.1/lib $LDFLAGS"
+# export CPPFLAGS="-I/opt/homebrew/opt/openssl@1.1/include $CPPFLAGS"
+# export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@1.1/lib/pkgconfig:$PKG_CONFIG_PATH"
+
 
 # ------------
 
