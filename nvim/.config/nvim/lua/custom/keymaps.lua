@@ -84,13 +84,6 @@ vim.keymap.set("n", "Q", "<nop>", { desc = "Silence Q" })
 
 vim.keymap.set(
   "n",
-  "<C-f>",
-  "<cmd>silent !tmux neww tmux-sessionizer<CR>",
-  { desc = "Tmux sessionizer: [f]ind project" }
-)
-
-vim.keymap.set(
-  "n",
   "<leader>sr",
   [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
   { desc = "[S]earch and [R]eplace (with regex over whole file) currenft word" }
