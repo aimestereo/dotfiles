@@ -49,7 +49,8 @@ require("custom.options")
 require("custom.keymaps")
 require("custom.plugins.after.init")
 
-vim.api.nvim_command("autocmd BufNewFile .rtx.toml 0r ~/.config/nvim/templates/rtx.toml")
+vim.api.nvim_command("autocmd BufNewFile .mise.toml 0r ~/.config/nvim/templates/mise.toml")
+vim.api.nvim_command("autocmd BufNewFile main.go 0r ~/.config/nvim/templates/main.go")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
