@@ -21,7 +21,8 @@ brew install --cask \
   postman \
   amethyst  `# window manager` \
   kitty \
-  obsidian
+  obsidian \
+  ariga/tap/atlas
 
 # Install shell utils
 
@@ -72,7 +73,7 @@ mise use --global python@3.11
 curl -sSL https://install.python-poetry.org | python3 -
 
 # GO
-go install github.com/pressly/goose/v3/cmd/goose@latest
+go install github.com/pressly/goose/v3/cmd/goose@latest  # todo: review
 go install github.com/a-h/templ/cmd/templ@latest
 go install github.com/melkeydev/go-blueprint@latest
 
