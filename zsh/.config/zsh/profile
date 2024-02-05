@@ -80,9 +80,10 @@ alias git_clean='git remote prune origin && currBranch=$(git rev-parse --abbrev-
 #
 # go
 #
-# export GOPATH=${HOME}/projects/go
-# export GOROOT=/usr/local/opt/go/libexec
-# path+=${GOPATH}/bin
+export GOPATH="$HOME/go"
+export GOROOT="$(brew --prefix go)/libexec"
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin
 
 
 #
