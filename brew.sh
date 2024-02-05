@@ -28,7 +28,8 @@ brew install --cask \
 brew tap beeftornado/rmtree
 brew install \
  openssl gettext xz readline cmake gcc \
- ical-buddy
+ ical-buddy \
+ sqlc
 
 # NIX home-manager
 brew install \
