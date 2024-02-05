@@ -71,6 +71,11 @@ git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 mise use --global python@3.11
 curl -sSL https://install.python-poetry.org | python3 -
 
+# GO
+go install github.com/pressly/goose/v3/cmd/goose@latest
+go install github.com/a-h/templ/cmd/templ@latest
+go install github.com/melkeydev/go-blueprint@latest
+
 # SSH
 ssh-keygen
 
