@@ -108,6 +108,9 @@ alias tf=terraform
 alias tg=terragrunt
 alias k=kubectl
 
+# It will automatically copy over the terminfo files and also magically enable shell integration on the remote machine.
+alias s="kitten ssh"
+
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 
 #
