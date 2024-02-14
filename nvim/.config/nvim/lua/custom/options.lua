@@ -22,8 +22,12 @@ vim.opt.colorcolumn = "80"
 -- allow @ sing in file names
 vim.opt.isfname:append("@-@")
 
--- Enable break indent
+-- Wrapping
+vim.wo.wrap = true
 vim.o.breakindent = true
+vim.o.showbreak = " "
+vim.wo.linebreak = true
+vim.wo.breakindent = true
 
 -- Auto indent new lines
 vim.o.smartindent = true
