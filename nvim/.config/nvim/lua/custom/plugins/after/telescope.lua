@@ -17,7 +17,7 @@ telescope.setup({
       -- define mappings, e.g.
       mappings = { -- extend mappings
         i = {
-          ["<C-k>"] = lga_actions.quote_prompt(),
+          ["<C-o>"] = lga_actions.quote_prompt(),
           ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
         },
       },
@@ -38,7 +38,6 @@ telescope.setup({
     file_ignore_patterns = {
       ".git/", -- `.git/` is not in `.gitignore`
       "build/",
-      "custom/",
       "dist/",
       "sdist/",
       "%.lock",
@@ -137,9 +136,14 @@ vim.keymap.set(
   { desc = "[S]earch [P]roject files (Git Files)" }
 )
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
+vim.keymap.set(
+  "n",
+  "<leader>sF",
+  ":Telescope find_files find_command=rg,--files,--hidden,--no-ignore<CR>",
+  { desc = "[S]earch [F]iles including hidden and ignored" }
+)
 vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
 vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch current [W]ord" })
---vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set("n", "<leader>sg", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 vim.keymap.set("n", "<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
 -- See `:help telescope.builtin`
