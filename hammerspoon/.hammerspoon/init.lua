@@ -26,7 +26,9 @@ hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("d", hyper.appHandler("com.hnc.Discord"))
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
-hyper.bindKey("p", hyper.appHandler("com.jetbrains.pycharm"))
+
+-- hyper.bindKey("p", hyper.appHandler("com.jetbrains.pycharm"))
+hyper.bindKey("p", hyper.appHandler("com.postmanlabs.mac"))
 
 hyper.bindKey("c", hyper.appHandler("com.apple.iCal"))
 
