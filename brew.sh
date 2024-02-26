@@ -34,7 +34,7 @@ brew install \
 
 # NIX home-manager
 brew install \
-  mise poetry cookiecutter \
+  mise poetry cookiecutter ruff \
   rust go \
   git curl wget gnupg rsync lazygit pre-commit \
   tmux starship stow antigen \
