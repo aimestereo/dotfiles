@@ -30,7 +30,8 @@ brew tap beeftornado/rmtree
 brew install \
  openssl gettext xz readline cmake gcc \
  ical-buddy \
- sqlc
+ sqlc \
+ pantsbuild/tap/pants \
 
 # NIX home-manager
 brew install \
