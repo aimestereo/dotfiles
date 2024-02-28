@@ -78,6 +78,11 @@ go install github.com/pressly/goose/v3/cmd/goose@latest  # todo: review
 go install github.com/a-h/templ/cmd/templ@latest
 go install github.com/melkeydev/go-blueprint@latest
 
+# Ollama
+brew install ollama
+brew services start ollama
+ollama pull deepseek-coder
+
 # SSH
 ssh-keygen
 
