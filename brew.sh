@@ -28,7 +28,7 @@ brew install --cask \
 
 brew tap beeftornado/rmtree
 brew install \
- openssl gettext xz readline cmake gcc \
+ openssl gettext xz readline cmake gcc htop \
  ical-buddy \
  sqlc \
  pantsbuild/tap/pants \
