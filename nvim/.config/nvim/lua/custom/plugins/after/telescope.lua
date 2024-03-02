@@ -62,9 +62,13 @@ telescope.setup({
 
         ["<C-u>"] = telescope_actions.preview_scrolling_up,
         ["<C-d>"] = telescope_actions.preview_scrolling_down,
+        -- ["<C-h>"] = telescope_actions.preview_scrolling_left,
+        -- ["<C-l>"] = telescope_actions.preview_scrolling_right,
 
         ["<M-u>"] = telescope_actions.results_scrolling_up,
         ["<M-d>"] = telescope_actions.results_scrolling_down,
+        -- ["<M-f>"] = telescope_actions.results_scrolling_left,
+        -- ["<M-k>"] = telescope_actions.results_scrolling_right,
 
         ["<PageUp>"] = telescope_actions.results_scrolling_up,
         ["<PageDown>"] = telescope_actions.results_scrolling_down,
@@ -73,7 +77,7 @@ telescope.setup({
         ["<S-Tab>"] = telescope_actions.toggle_selection + telescope_actions.move_selection_better,
         ["<C-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
         ["<M-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
-        ["<C-l>"] = telescope_actions.complete_tag,
+        -- ["<C-l>"] = telescope_actions.complete_tag,
         ["<C-_>"] = telescope_actions.which_key, -- keys from pressing <C-/>
       },
 
@@ -102,9 +106,13 @@ telescope.setup({
 
         ["<C-u>"] = telescope_actions.preview_scrolling_up,
         ["<C-d>"] = telescope_actions.preview_scrolling_down,
+        -- ["<C-h>"] = telescope_actions.preview_scrolling_left,
+        -- ["<C-l>"] = telescope_actions.preview_scrolling_right,
 
         ["<M-u>"] = telescope_actions.results_scrolling_up,
         ["<M-d>"] = telescope_actions.results_scrolling_down,
+        -- ["<M-f>"] = telescope_actions.results_scrolling_left,
+        -- ["<M-k>"] = telescope_actions.results_scrolling_right,
 
         ["<PageUp>"] = telescope_actions.results_scrolling_up,
         ["<PageDown>"] = telescope_actions.results_scrolling_down,
