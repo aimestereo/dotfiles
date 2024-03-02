@@ -11,12 +11,26 @@ return {
     {
       "<leader>tt",
       function()
+        require("neotest").run.run_last()
+      end,
+      desc = "Re-run the latest test/tests",
+    },
+    {
+      "<leader>tT",
+      function()
+        require("neotest").run.run_last({ strategy = "dap" })
+      end,
+      desc = "Re-run the latest test/tests in debug mode",
+    },
+    {
+      "<leader>tf",
+      function()
         require("neotest").run.run(vim.fn.expand("%"))
       end,
       desc = "Run File",
     },
     {
-      "<leader>tT",
+      "<leader>tF",
       function()
         require("neotest").run.run(vim.loop.cwd())
       end,
