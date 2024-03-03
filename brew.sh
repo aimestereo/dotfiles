@@ -28,20 +28,21 @@ brew install --cask \
 
 brew tap beeftornado/rmtree
 brew install \
- openssl gettext xz readline cmake gcc htop \
- ical-buddy \
- sqlc \
- pantsbuild/tap/pants \
+ openssl gettext xz readline cmake gcc \
 
 # NIX home-manager
 brew install \
   mise poetry cookiecutter ruff \
+  pantsbuild/tap/pants \
   rust go \
   git curl wget gnupg rsync lazygit pre-commit \
-  tmux starship stow antigen \
+  tmux ical-buddy \
+  starship stow antigen \
   neovim fzf ripgrep shfmt hadolint \
   jq coreutils bat eza diff-so-fancy \
-  kubectl minikube hashicorp/tap/terraform terragrunt awscli
+  kubectl minikube hashicorp/tap/terraform terragrunt awscli \
+  htop \
+  sqlc \
 
 # Nerd Font
 brew tap homebrew/cask-fonts
