@@ -154,7 +154,7 @@ bindkey -v
 source $HOMEBREW_PREFIX/share/antigen/antigen.zsh
 
 antigen bundle zsh-users/zsh-autosuggestions
-bindkey '^ ' autosuggest-accept
+bindkey '^y' autosuggest-accept
 
 antigen bundle joshskidmore/zsh-fzf-history-search
 antigen bundle zsh-users/zsh-syntax-highlighting
