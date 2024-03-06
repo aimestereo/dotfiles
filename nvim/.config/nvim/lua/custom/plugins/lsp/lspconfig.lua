@@ -56,17 +56,7 @@ return {
       opts.desc = "Smart rename"
       keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
 
-      opts.desc = "Show buffer diagnostics"
-      keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
-
-      opts.desc = "Show line diagnostics"
-      keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
-
-      opts.desc = "Go to previous diagnostic"
-      keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
-
-      opts.desc = "Go to next diagnostic"
-      keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+      -- Documentation
 
       opts.desc = "Show documentation for what is under cursor"
       keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
@@ -74,11 +64,33 @@ return {
       opts.desc = "Show signature documentation"
       keymap.set("n", "L", vim.lsp.buf.signature_help, opts)
 
-      opts.desc = "[D]ocument [S]ymbols"
-      keymap.set("n", "<leader>ds", require("telescope.builtin").lsp_document_symbols, opts)
+      -- Symbols
+
+      opts.desc = "[B]uffer [S]ymbols"
+      keymap.set("n", "<leader>bs", require("telescope.builtin").lsp_document_symbols, opts)
 
       opts.desc = "[W]orkspace [S]ymbols"
       keymap.set("n", "<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, opts)
+
+      -- Diagnostics
+
+      opts.desc = "[T]oggle [D]iagnostics"
+      keymap.set("n", "<leader>dtd", ":DiagnosticsToggle<CR>", opts)
+
+      opts.desc = "[T]oggle [D]iagnostics [I]nline text"
+      keymap.set("n", "<leader>dti", ":DiagnosticsToggleVirtualText<CR>", opts)
+
+      opts.desc = "Show [B]uffer [D]iagnostics"
+      keymap.set("n", "<leader>bd", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+
+      opts.desc = "Show [D]iagnostics per [L]ine"
+      keymap.set("n", "<leader>dl", vim.diagnostic.open_float, opts) -- show diagnostics for line
+
+      opts.desc = "Go to previous diagnostic"
+      keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
+
+      opts.desc = "Go to next diagnostic"
+      keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
 
       -- See formatting.lua
       -- opts.desc = '[F]ormat'
@@ -127,5 +139,27 @@ return {
     --                })
     --        end,
     --})
+
+    -- Diagnostics
+
+    -- Command to toggle inline diagnostics
+    vim.api.nvim_create_user_command("DiagnosticsToggleVirtualText", function()
+      local current_value = vim.diagnostic.config().virtual_text
+      if current_value then
+        vim.diagnostic.config({ virtual_text = false })
+      else
+        vim.diagnostic.config({ virtual_text = true })
+      end
+    end, {})
+
+    -- Command to toggle diagnostics
+    vim.api.nvim_create_user_command("DiagnosticsToggle", function()
+      local current_value = vim.diagnostic.is_disabled()
+      if current_value then
+        vim.diagnostic.enable()
+      else
+        vim.diagnostic.disable()
+      end
+    end, {})
   end,
 }
