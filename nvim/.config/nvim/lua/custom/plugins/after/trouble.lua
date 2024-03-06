@@ -1,18 +1,31 @@
-vim.keymap.set("n", "<leader>xx", function()
+function Map(mode, lhs, rhs, opts)
+  local options = { noremap = true, silent = true }
+  if opts then
+    options = vim.tbl_extend("force", options, opts)
+  end
+  vim.keymap.set(mode, lhs, rhs, options)
+end
+
+Map("n", "<leader>xx", function()
   require("trouble").toggle()
-end)
-vim.keymap.set("n", "<leader>xw", function()
+end, { desc = "Toggle Trouble" })
+
+Map("n", "<leader>xw", function()
   require("trouble").toggle("workspace_diagnostics")
-end)
-vim.keymap.set("n", "<leader>xd", function()
+end, { desc = "workspace diagnostics" })
+
+Map("n", "<leader>xd", function()
   require("trouble").toggle("document_diagnostics")
-end)
-vim.keymap.set("n", "<leader>xq", function()
+end, { desc = "document diagnostics" })
+
+Map("n", "<leader>xq", function()
   require("trouble").toggle("quickfix")
-end)
-vim.keymap.set("n", "<leader>xl", function()
+end, { desc = "quickfix list" })
+
+Map("n", "<leader>xl", function()
   require("trouble").toggle("loclist")
-end)
-vim.keymap.set("n", "gR", function()
+end, { desc = "loclist" })
+
+Map("n", "<leader>xR", function()
   require("trouble").toggle("lsp_references")
-end)
+end, { desc = "LSP references" })
