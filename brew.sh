@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+mkdir -p ~/.zfunc/
+
 # Install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -73,6 +75,9 @@ git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 # TODO: revise, maybe completely switch to home-manager
 mise use --global python@3.11
 curl -sSL https://install.python-poetry.org | python3 -
+
+curl -sSf https://rye-up.com/get | bash
+rye self completion -s zsh > ~/.zfunc/_rye
 
 # GO
 go install github.com/a-h/templ/cmd/templ@latest
