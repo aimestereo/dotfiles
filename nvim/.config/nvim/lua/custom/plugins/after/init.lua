@@ -1,6 +1,7 @@
 require("custom.plugins.after.nvim-bqf")
 require("custom.plugins.after.nvim-cmp")
 require("custom.plugins.after.nvim-tree")
+require("custom.plugins.after.nvim-treesitter-context")
 require("custom.plugins.after.git-worktree")
 require("custom.plugins.after.harpoon")
 require("custom.plugins.after.telescope")
