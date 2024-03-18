@@ -25,10 +25,10 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "[W]indow (Splits) manager", nor
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "[W]indow (Splits) manager", noremap = true })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "[W]indow (Splits) manager", noremap = true })
 
-Map("n", "<C-Up>", ":resize +2<CR>", { desc = "Resize Window (Split)" })
-Map("n", "<C-Down>", ":resize -2<CR>", { desc = "Resize Window (Split)" })
-Map("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Resize Window (Split)" })
-Map("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Resize Window (Split)" })
+Map("n", "<A-Up>", ":resize +2<CR>", { desc = "Resize Window (Split)" })
+Map("n", "<A-Down>", ":resize -2<CR>", { desc = "Resize Window (Split)" })
+Map("n", "<A-Left>", ":vertical resize -2<CR>", { desc = "Resize Window (Split)" })
+Map("n", "<A-Right>", ":vertical resize +2<CR>", { desc = "Resize Window (Split)" })
 
 --
 -- Helix or inspired by it
