@@ -26,13 +26,12 @@ return {
       markdown = { "prettier" },
       graphql = { "prettier" },
       lua = { "stylua" },
-      -- python = { "isort", "black" },
-      python = { "isort", "ruff_format" },
+      python = { "ruff_fix", "ruff_format" },
     },
     -- Customize formatters
     formatters = {
-      ruff = {
-        prepend_args = { "format" },
+      ruff_fix = {
+        prepend_args = { "check", "--select", "I" },
       },
     },
     format_on_save = function(bufnr)

@@ -34,6 +34,11 @@ return {
     local on_attach = function(client, bufnr)
       opts.buffer = bufnr
 
+      if client.name == "ruff_lsp" then
+        -- Disable hover in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+      end
+
       -- set keybinds
       opts.desc = "Show LSP references"
       keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
