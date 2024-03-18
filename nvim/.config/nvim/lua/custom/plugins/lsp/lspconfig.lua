@@ -66,8 +66,8 @@ return {
 
       -- Symbols
 
-      opts.desc = "[B]uffer [S]ymbols"
-      keymap.set("n", "<leader>bs", require("telescope.builtin").lsp_document_symbols, opts)
+      opts.desc = "[D]ocument [S]ymbols"
+      keymap.set("n", "<leader>ds", require("telescope.builtin").lsp_document_symbols, opts)
 
       opts.desc = "[W]orkspace [S]ymbols"
       keymap.set("n", "<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, opts)
@@ -80,8 +80,8 @@ return {
       opts.desc = "[T]oggle [D]iagnostics [I]nline text"
       keymap.set("n", "<leader>dti", ":DiagnosticsToggleVirtualText<CR>", opts)
 
-      opts.desc = "Show [B]uffer [D]iagnostics"
-      keymap.set("n", "<leader>bd", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+      opts.desc = "Show [D]ocument [D]iagnostics"
+      keymap.set("n", "<leader>dd", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
 
       opts.desc = "Show [D]iagnostics per [L]ine"
       keymap.set("n", "<leader>dl", vim.diagnostic.open_float, opts) -- show diagnostics for line
