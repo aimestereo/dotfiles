@@ -8,7 +8,10 @@ end
 
 local neogit = require("neogit")
 
-Map("n", "<leader>gs", neogit.open, { desc = "Neogit status" })
+Map("n", "<leader>gs", function()
+  neogit.open({ kind = "replace" })
+end, { desc = "Neogit status" })
+
 Map("n", "<leader>gc", ":Neogit commit<CR>")
 Map("n", "<leader>gp", ":Neogit pull<CR>")
 Map("n", "<leader>gP", ":Neogit push<CR>")
