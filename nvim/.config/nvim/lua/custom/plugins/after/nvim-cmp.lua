@@ -41,7 +41,6 @@ cmp.setup({
     -- end, { "i", "s" }),
   }),
   sources = {
-    { name = "codeium" },
     { name = "luasnip" },
     { name = "nvim_lsp" },
   },
