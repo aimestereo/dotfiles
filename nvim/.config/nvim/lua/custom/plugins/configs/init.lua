@@ -32,6 +32,7 @@ return {
 
   -- LLM
   "David-Kunz/gen.nvim",
+  "github/copilot.vim",
 
   -- Git related plugins
   "tpope/vim-fugitive",
