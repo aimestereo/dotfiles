@@ -43,7 +43,7 @@ brew install \
   neovim fzf ripgrep shfmt hadolint \
   jq coreutils bat eza diff-so-fancy \
   kubectl minikube hashicorp/tap/terraform terragrunt awscli \
-  htop \
+  btop tldr \
   sqlc \
 
 # Nerd Font
