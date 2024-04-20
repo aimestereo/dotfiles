@@ -159,11 +159,11 @@ cursorLocator.init(hyper_old, "l")
 hyperBindings["l"] = "Cursor locator"
 
 -- Show help when ctrl double pressed
-ctrlDoublePress = require("ctrlDoublePress")
-ctrlDoublePress.timeFrame = 1
-ctrlDoublePress.action = function()
-  help(5)
-end
+-- ctrlDoublePress = require("ctrlDoublePress")
+-- ctrlDoublePress.timeFrame = 1
+-- ctrlDoublePress.action = function()
+--   help(5)
+-- end
 
 -- Alt hold
 -- altHold = require("altHold")
