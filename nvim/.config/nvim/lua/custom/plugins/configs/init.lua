@@ -16,7 +16,13 @@ return {
   },
 
   -- Navigation
-  "theprimeagen/harpoon",
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+  },
   { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
   "christoomey/vim-tmux-navigator", -- tmux & split window navigation
   {

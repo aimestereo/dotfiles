@@ -1,36 +1,74 @@
-local mark = require("harpoon.mark")
-local ui = require("harpoon.ui")
+local harpoon = require("harpoon")
+local Config = require("harpoon.config")
 
-vim.keymap.set("n", "<leader>hi", mark.add_file, { desc = "[H]arpoon add [I]tem" })
-vim.keymap.set("n", "<leader>hm", ui.toggle_quick_menu, { desc = "[H]arpoon [M]enu" })
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
 
-vim.keymap.set("n", "<leader>ha", function()
-  ui.nav_file(1)
-end, { desc = "[H]arpoon 1st file" })
-vim.keymap.set("n", "<leader>hs", function()
-  ui.nav_file(2)
-end, { desc = "[H]arpoon 2nd file" })
-vim.keymap.set("n", "<leader>hd", function()
-  ui.nav_file(3)
-end, { desc = "[H]arpoon 3rd file" })
-vim.keymap.set("n", "<leader>hf", function()
-  ui.nav_file(4)
-end, { desc = "[H]arpoon 4th file" })
-vim.keymap.set("n", "<leader>hg", function()
-  ui.nav_file(5)
-end, { desc = "[H]arpoon 5th file" })
-vim.keymap.set("n", "<leader>hh", function()
-  ui.nav_file(6)
-end, { desc = "[H]arpoon 6th file" })
-vim.keymap.set("n", "<leader>hj", function()
-  ui.nav_file(7)
-end, { desc = "[H]arpoon 7th file" })
-vim.keymap.set("n", "<leader>hk", function()
-  ui.nav_file(8)
-end, { desc = "[H]arpoon 8th file" })
-vim.keymap.set("n", "<leader>hl", function()
-  ui.nav_file(9)
-end, { desc = "[H]arpoon 9th file" })
-vim.keymap.set("n", "<leader>h;", function()
-  ui.nav_file(10)
-end, { desc = "[H]arpoon 10th file" })
+local wk = require("which-key")
+wk.register({
+  ["<leader>"] = {
+    h = {
+      name = "[H]arpoon",
+    },
+  },
+})
+
+local harpoon_prefix = "<leader>h"
+
+local function add_list(name, key)
+  local prefix
+  if key == nil then
+    prefix = harpoon_prefix
+  else
+    prefix = harpoon_prefix .. key
+    wk.register({ ["<leader>"] = {
+      h = {
+        [key] = {
+          name = name,
+        },
+      },
+    } })
+  end
+
+  vim.keymap.set("n", prefix .. "i", function()
+    harpoon:list(name):add()
+  end, { desc = "[I]nsert" })
+
+  vim.keymap.set("n", prefix .. "e", function()
+    harpoon.ui:toggle_quick_menu(harpoon:list(name))
+  end, { desc = "[E]xplore" })
+
+  -- Toggle previous & next buffers stored within list
+  vim.keymap.set("n", prefix .. "p", function()
+    harpoon:list(name):prev()
+  end, { desc = "[P]revious" })
+
+  vim.keymap.set("n", prefix .. "n", function()
+    harpoon:list(name):next()
+  end, { desc = "[N]ext" })
+
+  -- Select files from Harpoon list
+  vim.keymap.set("n", prefix .. "a", function()
+    harpoon:list(name):select(1)
+  end, { desc = "1st file" })
+
+  vim.keymap.set("n", prefix .. "s", function()
+    harpoon:list(name):select(2)
+  end, { desc = "2nd file" })
+
+  vim.keymap.set("n", prefix .. "d", function()
+    harpoon:list(name):select(3)
+  end, { desc = "3rd file" })
+
+  vim.keymap.set("n", prefix .. "f", function()
+    harpoon:list(name):select(4)
+  end, { desc = "4th file" })
+end
+
+-- Lists
+add_list(Config.DEFAULT_LIST, nil)
+add_list("config", "c")
+add_list("tests", "t")
+add_list("views", "v")
+add_list("models", "m")
