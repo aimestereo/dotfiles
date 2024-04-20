@@ -21,7 +21,7 @@ hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 hyper.bindCommandKey("f", hyper.appHandler("com.apple.Terminal"))
 
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
-hyper.bindCommandKey("a", hyper.appHandler("com.google.Chrome"))
+hyper.bindKey("w", hyper.appHandler("com.google.Chrome"))
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("d", hyper.appHandler("com.hnc.Discord"))
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
