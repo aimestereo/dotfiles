@@ -35,11 +35,11 @@ function enterHyperMode()
 end
 
 -- Leave Hyper Mode when F18 (Hyper) is pressed,
--- trigger Esc if nothing else is triggered (Vim user nicety)
 function exitHyperMode()
-  if not This.triggered then
-    hs.eventtap.keyStroke({}, "escape", 1)
-  end
+  -- if not This.triggered then
+  --   -- trigger Esc if nothing else is triggered (Vim user nicety)
+  --   hs.eventtap.keyStroke({}, "escape", 1)
+  -- end
 
   This.triggered = false
   This.hyperMode:exit()
