@@ -29,10 +29,12 @@ return {
     local servers = require("custom.plugins.lsp.consts.servers")
 
     local on_attach = function(client, bufnr)
-      local function map(mode, l, r, opts)
-        opts = opts or {}
-        opts.buffer = bufnr
-        vim.keymap.set(mode, l, r, opts)
+      function Map(mode, lhs, rhs, opts)
+        local options = { noremap = true, silent = true, buffer = bufnr }
+        if opts then
+          options = vim.tbl_extend("force", options, opts)
+        end
+        vim.keymap.set(mode, lhs, rhs, options)
       end
 
       if client.name == "ruff_lsp" then
@@ -41,25 +43,25 @@ return {
       end
 
       -- set keybinds
-      map("n", "gR", "<cmd>Telescope lsp_references<CR>", { desc = "Show LSP references" }) -- show definition, references
-      map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" }) -- go to declaration
-      map("n", "gd", "<cmd>Telescope lsp_definitions<CR>", { desc = "Show LSP definitions" }) -- show lsp definitions
-      map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", { desc = "Show LSP implementations" }) -- show lsp implementations
-      map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", { desc = "Show LSP type definitions" }) -- show lsp type definitions
+      Map("n", "gR", "<cmd>Telescope lsp_references<CR>", { desc = "Show LSP references" }) -- show definition, references
+      Map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" }) -- go to declaration
+      Map("n", "gd", "<cmd>Telescope lsp_definitions<CR>", { desc = "Show LSP definitions" }) -- show lsp definitions
+      Map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", { desc = "Show LSP implementations" }) -- show lsp implementations
+      Map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", { desc = "Show LSP type definitions" }) -- show lsp type definitions
 
-      map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "See available code actions" }) -- see available code actions, in visual mode will apply to selection
+      Map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "See available code actions" }) -- see available code actions, in visual mode will apply to selection
 
-      map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Smart rename" }) -- smart rename
+      Map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Smart rename" }) -- smart rename
 
       -- Documentation
 
-      map("n", "K", vim.lsp.buf.hover, { desc = "Show documentation for what is under cursor" }) -- show documentation for what is under cursor
-      map("n", "L", vim.lsp.buf.signature_help, { desc = "Show signature documentation" })
+      Map("n", "K", vim.lsp.buf.hover, { desc = "Show documentation for what is under cursor" }) -- show documentation for what is under cursor
+      Map("n", "L", vim.lsp.buf.signature_help, { desc = "Show signature documentation" })
 
       -- Symbols
 
-      map("n", "<leader>ds", require("telescope.builtin").lsp_document_symbols, { desc = "[D]ocument [S]ymbols" })
-      map(
+      Map("n", "<leader>ds", require("telescope.builtin").lsp_document_symbols, { desc = "[D]ocument [S]ymbols" })
+      Map(
         "n",
         "<leader>ws",
         require("telescope.builtin").lsp_dynamic_workspace_symbols,
@@ -68,16 +70,16 @@ return {
 
       -- Diagnostics
 
-      map("n", "<leader>dtd", ":DiagnosticsToggle<CR>", { desc = "[T]oggle [D]iagnostics" })
-      map("n", "<leader>dti", ":DiagnosticsToggleVirtualText<CR>", { desc = "[T]oggle [D]iagnostics [I]nline text" })
-      map("n", "<leader>dd", "<cmd>Telescope diagnostics bufnr=0<CR>", { desc = "Show [D]ocument [D]iagnostics" }) -- show  diagnostics for file
-      map("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show [D]iagnostics per [L]ine" }) -- show diagnostics for line
-      map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" }) -- jump to previous diagnostic in buffer
-      map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" }) -- jump to next diagnostic in buffer
+      Map("n", "<leader>dtd", ":DiagnosticsToggle<CR>", { desc = "[T]oggle [D]iagnostics" })
+      Map("n", "<leader>dti", ":DiagnosticsToggleVirtualText<CR>", { desc = "[T]oggle [D]iagnostics [I]nline text" })
+      Map("n", "<leader>dd", "<cmd>Telescope diagnostics bufnr=0<CR>", { desc = "Show [D]ocument [D]iagnostics" }) -- show  diagnostics for file
+      Map("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show [D]iagnostics per [L]ine" }) -- show diagnostics for line
+      Map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" }) -- jump to previous diagnostic in buffer
+      Map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" }) -- jump to next diagnostic in buffer
 
       -- See formatting.lua
       -- map('n', '<leader>f', vim.lsp.buf.format, { desc = '[F]ormat' }) -- set in conform
-      map("n", "<leader>rs", ":LspRestart<CR>", { desc = "Restart LSP" }) -- mapping to restart lsp if necessary
+      Map("n", "<leader>rs", ":LspRestart<CR>", { desc = "Restart LSP" }) -- mapping to restart lsp if necessary
     end
 
     -- used to enable autocompletion (assign to every lsp server config)
