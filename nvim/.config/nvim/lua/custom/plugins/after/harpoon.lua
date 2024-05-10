@@ -2,7 +2,12 @@ local harpoon = require("harpoon")
 local Config = require("harpoon.config")
 
 -- REQUIRED
-harpoon:setup()
+harpoon:setup({
+  settings = {
+    save_on_toggle = true,
+    sync_on_ui_close = true,
+  },
+})
 -- REQUIRED
 
 local wk = require("which-key")
