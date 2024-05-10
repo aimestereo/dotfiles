@@ -24,7 +24,6 @@ brew install --cask \
   amethyst  `# window manager` \
   kitty \
   obsidian \
-  ariga/tap/atlas
 
 # Install shell utils
 
@@ -35,8 +34,7 @@ brew install \
 # NIX home-manager
 brew install \
   mise poetry cookiecutter ruff \
-  pantsbuild/tap/pants \
-  rust go \
+  go \
   git curl wget gnupg rsync lazygit pre-commit \
   tmux ical-buddy \
   starship stow antigen \
@@ -45,6 +43,7 @@ brew install \
   kubectl minikube hashicorp/tap/terraform terragrunt awscli \
   btop tldr \
   sqlc \
+  ariga/tap/atlas \
 
 # Nerd Font
 brew tap homebrew/cask-fonts
