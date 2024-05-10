@@ -155,6 +155,11 @@ export PATH="/usr/local/sbin:$PATH"
 # vi motions
 bindkey -v
 
+# edit command line in nvim
+autoload edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd '^v' edit-command-line
+
 #
 # Antigen plugins [that are not specified in .zprofile]
 #
