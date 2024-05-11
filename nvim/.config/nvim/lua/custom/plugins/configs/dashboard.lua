@@ -1,40 +1,7 @@
-return {
-  "nvimdev/dashboard-nvim",
-  event = "VimEnter",
-  config = function()
-    local db = require("dashboard")
-    db.setup({
-      theme = "hyper",
-      config = {
-        week_header = {
-          enable = true,
-        },
-        project = { enable = false },
-        shortcut = {
-          { desc = "󰊳 Update", group = "@property", action = "Lazy update", key = "u" },
-          {
-            icon = " ",
-            icon_hl = "@variable",
-            desc = "Files",
-            group = "Label",
-            action = "Telescope find_files",
-            key = "f",
-          },
-          {
-            desc = " Quit Dashboard",
-            group = "DiagnosticHint",
-            action = "lua vim.cmd.bdelete(); vim.cmd.startinsert()",
-            key = "q",
-          },
-          -- {
-          --   desc = " dotfiles",
-          --   group = "Number",
-          --   action = "Telescope dotfiles",
-          --   key = "d",
-          -- },
-        },
-      },
-    })
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if vim.fn.argv(0) == "" then
+      require("telescope.builtin").oldfiles({ only_cwd = true })
+    end
   end,
-  dependencies = { { "nvim-tree/nvim-web-devicons" } },
-}
+})
