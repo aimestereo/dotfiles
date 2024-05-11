@@ -40,17 +40,6 @@ return {
   -- LLM
   "David-Kunz/gen.nvim",
   "github/copilot.vim",
-  -- {
-  --   "zbirenbaum/copilot-cmp",
-  --   dependencies = { "zbirenbaum/copilot.lua" },
-  --   config = function()
-  --     require("copilot").setup({
-  --       suggestion = { enabled = false },
-  --       panel = { enabled = false },
-  --     })
-  --     require("copilot_cmp").setup()
-  --   end,
-  -- },
 
   -- Git related plugins
   "tpope/vim-fugitive",
