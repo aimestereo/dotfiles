@@ -29,7 +29,7 @@ brew install --cask \
 
 brew tap beeftornado/rmtree
 brew install \
- openssl gettext xz readline cmake gcc \
+ openssl gettext xz readline cmake gcc cffi \
 
 # NIX home-manager
 brew install \
