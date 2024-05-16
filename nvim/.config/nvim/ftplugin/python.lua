@@ -1,23 +1,54 @@
--- Run current .py file in Neovim built-in terminal
-local function run_curr_python_file()
-  -- Get file name in the current buffer
+local temp_file = vim.api.nvim_call_function("tempname", {})
+
+local function run_curr_python_file_in_terminal()
+  print("Running current python file in terminal")
   local file_name = vim.api.nvim_buf_get_name(0)
-
-  -- Get terminal codes for running python file
-  -- ("i" to enter insert before typing rest of the command)
-  local py_cmd = vim.api.nvim_replace_termcodes('ipython "' .. file_name .. '"<cr>', true, false, true)
-
-  -- Determine terminal window split and launch terminal
-  local percent_of_win = 0.4
-  local curr_win_height = vim.api.nvim_win_get_height(0) -- Current window height
-  local term_height = math.floor(curr_win_height * percent_of_win) -- Terminal height
-  vim.cmd(":below " .. term_height .. "split | term") -- Launch terminal (horizontal split)
-
-  -- Press keys to run python command on current file
-  vim.api.nvim_feedkeys(py_cmd, "t", false)
+  RUN_IN_TERMINAL({ "python", file_name }, true)
 end
 
-vim.keymap.set({ "n" }, "<A-r>", "", {
+local function run_lines_in_terminal()
+  print("Running selected lines in terminal")
+  local lines = GET_SELECTED_LINES()
+  vim.api.nvim_call_function("writefile", { lines, temp_file })
+  RUN_IN_TERMINAL({ "python", temp_file }, true)
+end
+
+local function run_curr_python_file()
+  print("Running current python file")
+  local lines = GET_CURRENT_BUFFER_CONTENT(0)
+  local file_name = vim.api.nvim_buf_get_name(0)
+  RUN_IN_TERMINAL({ "python", file_name }, false)
+
+  -- local output = EXEC({ "!python", '"' .. file_name .. '"' })
+  -- OUTPUT_TO_BUFFER("python", lines, output)
+end
+
+local function run_lines()
+  print("Running selected lines")
+  local lines = GET_SELECTED_LINES()
+  vim.api.nvim_call_function("writefile", { lines, temp_file })
+  RUN_IN_TERMINAL({ "python", temp_file }, false)
+
+  -- local output = EXEC({ "!python", '"' .. temp_file .. '"' })
+  -- OUTPUT_TO_BUFFER("python", lines, output)
+end
+
+-- Key mappings
+
+vim.keymap.set({ "n" }, "<A-R>", "", {
   desc = "Run .py file via Neovim built-in terminal",
   callback = run_curr_python_file,
+})
+vim.keymap.set({ "n" }, "<leader><A-R>", "", {
+  desc = "Run .py file via Neovim built-in terminal",
+  callback = run_curr_python_file_in_terminal,
+})
+
+vim.keymap.set({ "n", "v" }, "<A-r>", "", {
+  desc = "Run lines via Neovim built-in terminal",
+  callback = run_lines,
+})
+vim.keymap.set({ "n", "v" }, "<leader><A-r>", "", {
+  desc = "Run lines via Neovim built-in terminal",
+  callback = run_lines_in_terminal,
 })
