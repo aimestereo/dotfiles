@@ -19,19 +19,6 @@ return {
   },
   "onsails/lspkind.nvim",
 
-  -- Git related plugins
-  "tpope/vim-fugitive",
-  "lewis6991/gitsigns.nvim",
-  {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
-      "nvim-telescope/telescope.nvim", -- optional
-    },
-    config = true,
-  },
-
   -- 'preservim/nerdcommenter'
   { "numToStr/Comment.nvim", opts = {} }, -- "gc" to comment visual regions/lines
   "mg979/vim-visual-multi",
