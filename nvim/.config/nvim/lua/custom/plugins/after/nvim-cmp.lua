@@ -29,6 +29,8 @@ cmp.setup({
   sources = {
     { name = "luasnip" },
     { name = "nvim_lsp" },
+    { name = "path" },
+    { name = "buffer" },
   },
 
   formatting = {
@@ -70,5 +72,13 @@ cmp.setup({
       ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
       show_labelDetails = true, -- show labelDetails in menu. Disabled by default
     }),
+  },
+})
+
+-- Setup up vim-dadbod
+cmp.setup.filetype({ "sql" }, {
+  sources = {
+    { name = "vim-dadbod-completion" },
+    { name = "buffer" },
   },
 })
