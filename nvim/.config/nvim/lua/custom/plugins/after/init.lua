@@ -5,7 +5,6 @@ require("custom.plugins.after.nvim-treesitter-context")
 
 require("custom.plugins.after.dashboard")
 require("custom.plugins.after.folding")
-require("custom.plugins.after.harpoon")
 require("custom.plugins.after.telescope")
 require("custom.plugins.after.formatting")
 require("custom.plugins.after.ai")
