@@ -6,10 +6,6 @@ return {
   -- Navigation
   { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
   "christoomey/vim-tmux-navigator", -- tmux & split window navigation
-  {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-  },
 
   -- Autocompletion
   {
