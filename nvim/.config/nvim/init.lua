@@ -42,9 +42,6 @@ require("lazy").setup({
   },
 })
 
-require("custom.misc")
-require("custom.options")
-require("custom.keymaps")
 require("custom.plugins.after.init")
 
 vim.api.nvim_command("autocmd BufNewFile .mise.toml 0r ~/.config/nvim/templates/mise.toml")
