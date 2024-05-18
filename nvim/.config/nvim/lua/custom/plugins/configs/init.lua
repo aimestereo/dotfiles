@@ -37,7 +37,6 @@ return {
   -- Git related plugins
   "tpope/vim-fugitive",
   "lewis6991/gitsigns.nvim",
-  "ThePrimeagen/git-worktree.nvim",
   {
     "NeogitOrg/neogit",
     dependencies = {
