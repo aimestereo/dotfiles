@@ -19,10 +19,6 @@ return {
   },
   "onsails/lspkind.nvim",
 
-  -- LLM
-  "David-Kunz/gen.nvim",
-  "github/copilot.vim",
-
   -- Git related plugins
   "tpope/vim-fugitive",
   "lewis6991/gitsigns.nvim",
