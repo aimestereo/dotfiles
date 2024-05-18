@@ -195,3 +195,5 @@
 	newHighlight = green bold 22
 [interactive]
 	diffFilter = diff-so-fancy --patch
+[rerere]
+	enabled = true
