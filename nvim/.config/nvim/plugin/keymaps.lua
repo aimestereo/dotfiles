@@ -1,11 +1,3 @@
-function Map(mode, lhs, rhs, opts)
-  local options = { noremap = true, silent = true }
-  if opts then
-    options = vim.tbl_extend("force", options, opts)
-  end
-  vim.keymap.set(mode, lhs, rhs, options)
-end
-
 --
 -- Buffers
 --
@@ -99,7 +91,8 @@ Map(
   [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
   { desc = "[S]earch and [R]eplace (with regex over whole file) currenft word" }
 )
-Map("n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make current file e[x]ecutable" })
+
+Map("n", "<leader>X", "<cmd>!chmod +x %<CR>", { desc = "Make current file e[x]ecutable" })
 
 -- Tabs
 Map("n", "<leader><S-Tab>", ":set invlist<CR>", { desc = "Show tabs" })
