@@ -82,5 +82,23 @@ return {
   --
   --   -- Install golang specific config
   --   require("dap-go").setup()
+  --
+  --   dap.adapters.python = {
+  --     type = "executable",
+  --     command = "python",
+  --     args = { "-m", "debugpy.adapter" },
+  --   }
+  --
+  --   dap.configurations.python = {
+  --     {
+  --       type = "python",
+  --       request = "launch",
+  --       name = "Launch file",
+  --       program = "${file}",
+  --       pythonPath = function()
+  --         return "/usr/bin/python"
+  --       end,
+  --     },
+  --   }
   -- end,
 }
