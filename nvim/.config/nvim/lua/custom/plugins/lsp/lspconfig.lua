@@ -60,20 +60,20 @@ return {
 
       -- Symbols
 
-      Map("n", "<leader>ds", require("telescope.builtin").lsp_document_symbols, { desc = "[D]ocument [S]ymbols" })
+      Map("n", "<leader>sD", require("telescope.builtin").lsp_document_symbols, { desc = "Document Symbols" })
       Map(
         "n",
-        "<leader>ws",
+        "<leader>sW",
         require("telescope.builtin").lsp_dynamic_workspace_symbols,
         { desc = "[W]orkspace [S]ymbols" }
       )
 
       -- Diagnostics
 
-      Map("n", "<leader>dtd", ":DiagnosticsToggle<CR>", { desc = "[T]oggle [D]iagnostics" })
-      Map("n", "<leader>dti", ":DiagnosticsToggleVirtualText<CR>", { desc = "[T]oggle [D]iagnostics [I]nline text" })
-      Map("n", "<leader>dd", "<cmd>Telescope diagnostics bufnr=0<CR>", { desc = "Show [D]ocument [D]iagnostics" }) -- show  diagnostics for file
-      Map("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show [D]iagnostics per [L]ine" }) -- show diagnostics for line
+      Map("n", "<leader>Dt", ":DiagnosticsToggle<CR>", { desc = "[T]oggle [D]iagnostics" })
+      Map("n", "<leader>Di", ":DiagnosticsToggleVirtualText<CR>", { desc = "[T]oggle [D]iagnostics [I]nline text" })
+      Map("n", "<leader>Dd", "<cmd>Telescope diagnostics bufnr=0<CR>", { desc = "Show [D]ocument [D]iagnostics" }) -- show  diagnostics for file
+      Map("n", "<leader>Dl", vim.diagnostic.open_float, { desc = "Show [D]iagnostics per [L]ine" }) -- show diagnostics for line
       Map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" }) -- jump to previous diagnostic in buffer
       Map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" }) -- jump to next diagnostic in buffer
 
