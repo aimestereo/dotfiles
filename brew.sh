@@ -45,6 +45,9 @@ brew install \
   sqlc \
   ariga/tap/atlas \
 
+# nvim fzf: Installing dependencies using Homebrew
+brew install fzf bat ripgrep the_silver_searcher perl universal-ctags
+
 # Nerd Font
 brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font
