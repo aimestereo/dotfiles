@@ -29,19 +29,23 @@ end
 -- Key mappings
 
 vim.keymap.set({ "n" }, "<A-R>", "", {
-  desc = "Run .py file via Neovim built-in terminal",
+  desc = "Run .py file non-interactive.",
   callback = run_curr_python_file,
+  buffer = 0,
 })
 vim.keymap.set({ "n" }, "<leader><A-R>", "", {
-  desc = "Run .py file via Neovim built-in terminal",
+  desc = "Run .py file interactive",
   callback = run_curr_python_file_in_terminal,
+  buffer = 0,
 })
 
 vim.keymap.set({ "n", "v" }, "<A-r>", "", {
-  desc = "Run lines via Neovim built-in terminal",
+  desc = "Run py lines non-interactive",
   callback = run_lines,
+  buffer = 0,
 })
 vim.keymap.set({ "n", "v" }, "<leader><A-r>", "", {
-  desc = "Run lines via Neovim built-in terminal",
+  desc = "Run py lines interactive",
   callback = run_lines_in_terminal,
+  buffer = 0,
 })
