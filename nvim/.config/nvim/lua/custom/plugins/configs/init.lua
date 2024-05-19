@@ -3,7 +3,6 @@ return {
   "nvim-lua/plenary.nvim", -- lua functions that many plugins use
 
   -- Navigation
-  { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
   "christoomey/vim-tmux-navigator", -- tmux & split window navigation
 
   -- Autocompletion

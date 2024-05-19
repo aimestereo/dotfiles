@@ -1,12 +1,3 @@
--- Make Neovim's quickfix window better: preview, fzf, actions.
-require("bqf").setup({
-  filter = {
-    fzf = {
-      extra_opts = { "--bind", "ctrl-o:toggle-all", "--delimiter", "│" },
-    },
-  },
-})
-
 --
 -- Quickfix
 --
@@ -64,20 +55,3 @@ function _G.qftf(info)
 end
 
 vim.o.qftf = "{info -> v:lua._G.qftf(info)}"
-
--- Quickfix list: quick navigation
-vim.keymap.set(
-  "n",
-  "<leader>j",
-  "<cmd>cnext<CR>zz",
-  { desc = "Moves the cursor to the next item in the quickfix list" }
-)
-vim.keymap.set(
-  "n",
-  "<leader>k",
-  "<cmd>cprev<CR>zz",
-  { desc = "Moves the cursor to the previous item in the quickfix list" }
-)
---vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz", { desc = "Moves the cursor to the next item in the location list" })
---vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz",
---  { desc = "Moves the cursor to the previous item in the location list" })

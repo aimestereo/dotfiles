@@ -1,4 +1,3 @@
-require("custom.plugins.after.nvim-bqf")
 require("custom.plugins.after.nvim-cmp")
 require("custom.plugins.after.nvim-treesitter-context")
 

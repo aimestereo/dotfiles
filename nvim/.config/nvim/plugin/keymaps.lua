@@ -103,3 +103,17 @@ Map("n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make current file e[x]ec
 
 -- Tabs
 Map("n", "<leader><S-Tab>", ":set invlist<CR>", { desc = "Show tabs" })
+
+-- Quickfix list: quick navigation
+vim.keymap.set(
+  "n",
+  "<leader>j",
+  "<cmd>cnext<CR>zz",
+  { desc = "Moves the cursor to the next item in the quickfix list" }
+)
+vim.keymap.set(
+  "n",
+  "<leader>k",
+  "<cmd>cprev<CR>zz",
+  { desc = "Moves the cursor to the previous item in the quickfix list" }
+)
