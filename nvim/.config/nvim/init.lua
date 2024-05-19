@@ -42,8 +42,6 @@ require("lazy").setup({
   },
 })
 
-require("custom.plugins.after.init")
-
 vim.api.nvim_command("autocmd BufNewFile .mise.toml 0r ~/.config/nvim/templates/mise.toml")
 vim.api.nvim_command("autocmd BufNewFile main.go 0r ~/.config/nvim/templates/main.go")
 
