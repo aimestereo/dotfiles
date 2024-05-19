@@ -69,10 +69,6 @@ Map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 --
 Map("n", "<C-e>", vim.cmd.Ex, { desc = "Open file [E]xplorer / vim folder view containing current file" })
 
--- Move selected line / block of text in visual mode
-Map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down in visual mode" })
-Map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up in visual mode" })
-
 -- Concatenate with next line and keep cursor at the same position
 Map("n", "J", "mzJ`z", { desc = "Concatenate with next line and keep cursor at the same position" })
 
@@ -110,3 +106,23 @@ vim.keymap.set(
   "<cmd>cprev<CR>zz",
   { desc = "Moves the cursor to the previous item in the quickfix list" }
 )
+
+-- Move selected line / block of text in visual mode
+Map("v", "<M-j>", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down in visual mode" })
+Map("v", "<M-k>", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up in visual mode" })
+
+Map("n", "<M-j>", function()
+  if vim.opt.diff:get() then
+    vim.cmd([[normal! ]c]])
+  else
+    vim.cmd([[m .+1<CR>==]])
+  end
+end, { desc = "Move current line down" })
+
+Map("n", "<M-k>", function()
+  if vim.opt.diff:get() then
+    vim.cmd([[normal! [c]])
+  else
+    vim.cmd([[m .-2<CR>==]])
+  end
+end, { desc = "Move current line up" })
