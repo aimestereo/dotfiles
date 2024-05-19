@@ -53,8 +53,5 @@ vim.cmd.colorscheme("catppuccin")
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
--- Set completeopt to have a better completion experience
-vim.o.completeopt = "menuone,noselect,preview"
-
 -- Concealed text is completely hidden unless it's under the cursor.
 vim.o.conceallevel = 2
