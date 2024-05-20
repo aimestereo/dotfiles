@@ -9,7 +9,11 @@ return {
     },
     config = function()
       local neogit = require("neogit")
-      neogit.setup()
+      neogit.setup({
+        status = {
+          recent_commit_count = 50,
+        },
+      })
 
       Map("n", "<leader>gs", function()
         neogit.open({ kind = "replace" })
