@@ -4,6 +4,8 @@ return {
   -- Navigation
   "christoomey/vim-tmux-navigator", -- tmux & split window navigation
 
+  -- 'preservim/nerdcommenter'
+  { "numToStr/Comment.nvim", opts = {} }, -- "gc" to comment visual regions/lines
   "mg979/vim-visual-multi",
   "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 
