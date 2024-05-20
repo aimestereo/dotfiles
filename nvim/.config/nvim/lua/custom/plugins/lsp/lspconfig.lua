@@ -57,6 +57,17 @@ return {
 
       Map("n", "K", vim.lsp.buf.hover, { desc = "Show documentation for what is under cursor" }) -- show documentation for what is under cursor
       Map("n", "L", vim.lsp.buf.signature_help, { desc = "Show signature documentation" })
+      Map("n", "lh", function()
+        -- not accurate for tsserver
+        -- local inlay_hint_availabe = client.server_capabilities.inlayHintProvider
+        -- if not inlay_hint_availabe then
+        --   print("Inlay hints not available for this server")
+        --   return
+        -- end
+        local enable = not vim.lsp.inlay_hint.is_enabled({})
+        vim.lsp.inlay_hint.enable(enable)
+        print("Inlay hints " .. (enable and "enabled" or "disabled"))
+      end, { desc = "Show inline hints" })
 
       -- Symbols
 

@@ -22,7 +22,31 @@ return {
   },
 
   rust_analyzer = {},
-  tsserver = {},
+  tsserver = {
+    javascript = {
+      inlayHints = {
+        includeInlayEnumMemberValueHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayVariableTypeHints = true,
+      },
+    },
+
+    typescript = {
+      inlayHints = {
+        includeInlayEnumMemberValueHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayVariableTypeHints = true,
+      },
+    },
+  },
   html = {},
   cssls = {},
   tailwindcss = {},
@@ -36,6 +60,9 @@ return {
       -- make the language server recognize "vim" global
       diagnostics = {
         globals = { "vim" },
+      },
+      hint = {
+        enable = true,
       },
       workspace = {
         --checkThirdParty = false,
