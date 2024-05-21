@@ -37,7 +37,7 @@ brew install \
   go \
   git curl wget gnupg rsync lazygit pre-commit \
   tmux ical-buddy \
-  starship stow antigen \
+  stow antigen \
   neovim fzf ripgrep shfmt hadolint \
   jq coreutils bat eza diff-so-fancy \
   kubectl minikube hashicorp/tap/terraform terragrunt awscli \
