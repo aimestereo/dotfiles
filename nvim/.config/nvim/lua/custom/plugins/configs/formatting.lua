@@ -28,6 +28,7 @@ return {
         graphql = { "prettier" },
         lua = { "stylua" },
         python = { "ruff_fix", "ruff_format" },
+        sql = { "sql_formatter" },
       },
       -- Customize formatters
       formatters = {

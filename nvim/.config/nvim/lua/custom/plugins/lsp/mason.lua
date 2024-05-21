@@ -38,6 +38,7 @@ return {
         "stylua", -- lua formatter
         "eslint_d", -- js linter
         "ruff",
+        "sql-formatter",
       },
     })
   end,
