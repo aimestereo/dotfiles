@@ -21,7 +21,6 @@ return {
     },
   },
 
-  rust_analyzer = {},
   tsserver = {
     javascript = {
       inlayHints = {
