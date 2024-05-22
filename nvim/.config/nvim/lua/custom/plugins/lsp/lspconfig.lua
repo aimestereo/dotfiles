@@ -57,7 +57,7 @@ return {
 
       Map("n", "K", vim.lsp.buf.hover, { desc = "Show documentation for what is under cursor" }) -- show documentation for what is under cursor
       Map("n", "L", vim.lsp.buf.signature_help, { desc = "Show signature documentation" })
-      Map("n", "lh", function()
+      Map("n", "<leader>lh", function()
         -- not accurate for tsserver
         -- local inlay_hint_availabe = client.server_capabilities.inlayHintProvider
         -- if not inlay_hint_availabe then
