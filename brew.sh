@@ -38,7 +38,7 @@ brew install \
   git curl wget gnupg rsync lazygit pre-commit \
   tmux ical-buddy \
   stow antigen \
-  neovim fzf ripgrep shfmt hadolint \
+  neovim fzf ripgrep shfmt hadolint pgformatter \
   jq coreutils bat eza diff-so-fancy \
   kubectl minikube hashicorp/tap/terraform terragrunt awscli \
   btop tldr \
