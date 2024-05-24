@@ -45,7 +45,6 @@ opt.timeout = true
 opt.timeoutlen = 300
 
 -- Appearance
-vim.cmd.colorscheme("catppuccin")
 opt.termguicolors = true
 -- Columns
 opt.signcolumn = "yes"
