@@ -39,7 +39,11 @@ return {
           prepend_args = { "check", "--select", "I" },
         },
         pg_format = {
-          args = { "--wrap-limit=70", "--wrap-after=6", "--keyword-case=2" },
+          args = {
+            -- "--wrap-limit=70",
+            "--wrap-after=1",
+            -- "--keyword-case=2",
+          },
         },
       },
 
