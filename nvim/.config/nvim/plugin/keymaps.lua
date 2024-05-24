@@ -10,13 +10,7 @@ Map({ "n" }, "<A-g>", ":0G<cr>", { desc = "Open [G]it fugitive in current pane."
 --
 -- Splits
 --
---map({ "n" }, "<A-w>", "<C-w>", { desc = "[W]indow (Splits) manager" })
---map({ "n" }, "<A-w>", ":echo 'hi'", { desc = "[W]indow (Splits) manager" })
-Map("n", "<C-h>", "<C-w>h", { desc = "[W]indow (Splits) manager" })
-Map("n", "<C-j>", "<C-w>j", { desc = "[W]indow (Splits) manager" })
-Map("n", "<C-k>", "<C-w>k", { desc = "[W]indow (Splits) manager" })
-Map("n", "<C-l>", "<C-w>l", { desc = "[W]indow (Splits) manager" })
-
+-- see nvim-tmux-navigation.lua for navigation
 Map("n", "<A-Up>", ":resize +2<CR>", { desc = "Resize Window (Split)" })
 Map("n", "<A-Down>", ":resize -2<CR>", { desc = "Resize Window (Split)" })
 Map("n", "<A-Left>", ":vertical resize -2<CR>", { desc = "Resize Window (Split)" })
