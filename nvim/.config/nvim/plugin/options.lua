@@ -1,57 +1,55 @@
+local opt = vim.opt
+
 -- Set highlight on search
-vim.o.hlsearch = false
-vim.o.incsearch = true
+opt.hlsearch = false
+opt.incsearch = true
 
 -- Make line numbers default
-vim.wo.number = true
-vim.o.relativenumber = true
+opt.number = true
+opt.relativenumber = true
 
 -- Enable mouse mode
--- vim.o.mouse = "a"
+-- opt.mouse = "a"
 -- Disable mouse mode
-vim.o.mouse = ""
+opt.mouse = ""
 
 -- Scroll padding (lines from cursor to top/bottom)
-vim.o.scrolloff = 8
-
--- Columns
-vim.o.signcolumn = "yes"
-vim.wo.signcolumn = "yes"
-vim.opt.colorcolumn = "80"
+opt.scrolloff = 8
 
 -- allow @ sing in file names
-vim.opt.isfname:append("@-@")
+opt.isfname:append("@-@")
 
 -- Wrapping
-vim.wo.wrap = true
-vim.o.breakindent = true
-vim.o.showbreak = " "
-vim.wo.linebreak = true
-vim.wo.breakindent = true
+opt.wrap = true
+opt.breakindent = true
+opt.showbreak = " "
+opt.linebreak = true
+opt.breakindent = true
 
 -- Auto indent new lines
-vim.o.smartindent = true
+opt.smartindent = true
 
 -- Save undo history
-vim.o.swapfile = false
-vim.o.backup = false
-vim.o.undofile = true
-vim.o.undodir = os.getenv("HOME") .. "/.vim/undodir"
+opt.swapfile = false
+opt.backup = false
+opt.undofile = true
+opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 
 -- Case insensitive searching UNLESS /C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
+opt.ignorecase = true
+opt.smartcase = true
 
 -- Decrease update time
-vim.o.updatetime = 250
-vim.o.timeout = true
-vim.o.timeoutlen = 300
+opt.updatetime = 250
+opt.timeout = true
+opt.timeoutlen = 300
 
--- Set colorscheme
---vim.cmd [[colorscheme onedark]]
+-- Appearance
 vim.cmd.colorscheme("catppuccin")
--- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
+opt.termguicolors = true
+-- Columns
+opt.signcolumn = "yes"
+opt.colorcolumn = "80"
 
 -- Concealed text is completely hidden unless it's under the cursor.
-vim.o.conceallevel = 2
+opt.conceallevel = 2
