@@ -50,6 +50,7 @@ opt.termguicolors = true
 -- Columns
 opt.signcolumn = "yes"
 opt.colorcolumn = "80"
+opt.cursorline = true
 
 -- Concealed text is completely hidden unless it's under the cursor.
 opt.conceallevel = 2
