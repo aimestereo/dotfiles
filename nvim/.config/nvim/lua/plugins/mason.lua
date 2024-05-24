@@ -12,7 +12,7 @@ return {
     local mason_lspconfig = require("mason-lspconfig")
 
     local mason_tool_installer = require("mason-tool-installer")
-    local servers = require("custom.plugins.lsp.consts.servers")
+    local servers = require("plugins.consts.servers")
 
     -- enable mason and configure icons
     mason.setup({

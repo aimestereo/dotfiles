@@ -14,7 +14,7 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
-      require("custom.plugins.scripts.completion")
+      require("plugins.scripts.completion")
     end,
   },
 }

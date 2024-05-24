@@ -8,8 +8,6 @@ return {
   "mg979/vim-visual-multi",
   "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 
-  { import = "custom.plugins.lsp" },
-
   -- Python
   {
     -- TODO: investigate how useful it is

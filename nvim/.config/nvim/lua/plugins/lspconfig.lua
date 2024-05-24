@@ -26,7 +26,7 @@ return {
     -- import cmp-nvim-lsp plugin
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-    local servers = require("custom.plugins.lsp.consts.servers")
+    local servers = require("plugins.consts.servers")
 
     local on_attach = function(client, bufnr)
       function Map(mode, lhs, rhs, opts)
