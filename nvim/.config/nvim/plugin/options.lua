@@ -7,9 +7,9 @@ vim.wo.number = true
 vim.o.relativenumber = true
 
 -- Enable mouse mode
-vim.o.mouse = "a"
+-- vim.o.mouse = "a"
 -- Disable mouse mode
---vim.o.mouse = ''
+vim.o.mouse = ""
 
 -- Scroll padding (lines from cursor to top/bottom)
 vim.o.scrolloff = 8
