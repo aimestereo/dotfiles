@@ -24,6 +24,12 @@ brew install --cask \
   amethyst  `# window manager` \
   kitty \
   obsidian \
+  open-video-downloader \
+  iina \
+  monitorcontrol \
+  fantastical \
+  amie \
+  alfred \
 
 # Install shell utils
 
@@ -31,7 +37,6 @@ brew tap beeftornado/rmtree
 brew install \
  openssl gettext xz readline cmake gcc cffi \
 
-# NIX home-manager
 brew install \
   mise poetry cookiecutter ruff \
   go \
@@ -44,6 +49,7 @@ brew install \
   btop tldr \
   sqlc \
   ariga/tap/atlas \
+  languagetool \
 
 # nvim fzf: Installing dependencies using Homebrew
 brew install fzf bat ripgrep the_silver_searcher perl universal-ctags
