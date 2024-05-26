@@ -7,6 +7,30 @@ return {
       Map("n", "<A-g>", ":0G<cr>", { desc = "Open [G]it fugitive in current pane." })
     end,
   },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+    init = function()
+      require("telescope").load_extension("lazygit")
+      -- autocmd BufEnter * :lua require('lazygit.utils').project_root_dir()
+    end,
+  },
   -- {
   --   "NeogitOrg/neogit",
   --   dependencies = {
