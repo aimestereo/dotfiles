@@ -163,7 +163,7 @@ zstyle ':completion:*:*:docker-*:*' option-stacking yes
 #
 
 alias v='nvim'
-alias c='clear'
+alias cl='clear'
 
 alias l='eza -lah'
 alias ll='eza -lh'

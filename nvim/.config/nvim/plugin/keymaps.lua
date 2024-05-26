@@ -5,7 +5,6 @@
 Map({ "n" }, "<A-x>", ":bp|bd #<cr>", { desc = "[C]lose current buffer" })
 Map({ "n" }, "<A-s>", ":wa<cr>", { desc = "[S]ave all changed files" })
 Map({ "i" }, "<A-s>", "<esc>:wa<cr>", { desc = "[S]ave all changed files" })
-Map({ "n" }, "<A-g>", ":0G<cr>", { desc = "Open [G]it fugitive in current pane." })
 
 --
 -- Splits
