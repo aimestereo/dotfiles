@@ -2,7 +2,7 @@
 	name = Valentin Kuznetsov
 	email = aimestereo@gmail.com
 [core]
-	editor = vim
+	editor = nvim
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	excludesfile = ~/.gitignore_global
 	pager = diff-so-fancy | less --tabs=4 -RFX
@@ -62,9 +62,9 @@
 	dlc = difftool --cached
 	dk = diff --check
 	dp = diff --patience
-    dck = diff --cached --check
-  dt = diff-tree --no-commit-id --name-only -r
-  diff-commits = log --left-right --graph --cherry-mark --oneline 
+	dck = diff --cached --check
+	dt = diff-tree --no-commit-id --name-only -r
+	diff-commits = log --left-right --graph --cherry-mark --oneline 
 	#############
 	f = fetch
 	fo = fetch origin
@@ -77,8 +77,8 @@
 	g = grep -p
 	#############
 	l = log --oneline
-    lg = log --oneline --graph --decorate
-    scd = log --left-right --graph --cherry-pick --oneline
+	lg = log --oneline --graph --decorate
+	scd = log --left-right --graph --cherry-pick --oneline
 	#############
 	ls = ls-files
 	lsf = "!git ls-files | grep -i"
