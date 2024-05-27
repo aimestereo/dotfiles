@@ -1,7 +1,7 @@
 local opt = vim.opt
 
 -- Set highlight on search
-opt.hlsearch = false
+opt.hlsearch = true
 opt.incsearch = true
 
 -- Make line numbers default
