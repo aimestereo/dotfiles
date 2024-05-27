@@ -53,6 +53,7 @@ brew install \
   gnupg \
   rsync \
   lazygit \
+  lazydocker \
   pre-commit \
   tmux \
   ical-buddy \
