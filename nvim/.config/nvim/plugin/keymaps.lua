@@ -51,7 +51,8 @@ vim.api.nvim_set_keymap(
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
-Map({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
+Map({ "n", "v" }, "<Space>", "<Nop>")
+Map({ "n", "v" }, "<A-/>", "<cmd>nohlsearch<CR>")
 
 -- Remap for dealing with word wrap
 Map("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
