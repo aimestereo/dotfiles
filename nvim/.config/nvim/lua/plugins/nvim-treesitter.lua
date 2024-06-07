@@ -39,6 +39,7 @@ return {
         "sql",
         "zig",
         "lua",
+        "regex",
         "bash",
         "cmake",
         "ini",
