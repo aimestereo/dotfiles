@@ -9,14 +9,17 @@ return {
       "s",
       mode = { "n", "x", "o" },
       function()
-        require("flash").jump({
-          search = {
-            mode = function(str)
-              return "\\<" .. str
-            end,
-          },
-        })
+        require("flash").jump()
       end,
+      -- function()
+      --   require("flash").jump({
+      --     search = {
+      --       mode = function(str)
+      --         return "\\<" .. str
+      --       end,
+      --     },
+      --   })
+      -- end,
       desc = "[S]earch Flash [J]ump",
     },
     {
