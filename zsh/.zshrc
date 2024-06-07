@@ -195,8 +195,6 @@ alias s="kitten ssh"
 
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 
-alias git_clean='git remote prune origin && currBranch=$(git rev-parse --abbrev-ref HEAD) && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v $currBranch | while read branch; do mergeBase=$(git merge-base $currBranch $branch) && [[ $(git cherry $currBranch $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done'
-
 export DOCKER_USER="$(id -u):$(id -g)"
 
 function pyclean() {

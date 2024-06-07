@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# set -o errexit
+set -o pipefail
+set -o nounset
+# set -o xtrace
+
+git remote prune origin
+
+currBranch=$(git rev-parse --abbrev-ref HEAD)
+IFS=$'\n'
+read -rd '' -a merged_branches < <(
+	git for-each-ref refs/heads --format "%(refname:short)" --merged |
+		rg --invert-match "^${currBranch}\$"
+)
+
+if [ "$merged_branches" == "" ]; then
+	echo "No merged branches to delete."
+	exit 0
+fi
+
+echo "The detected merged branches are:"
+for branch in "${merged_branches[@]}"; do
+	echo "*  $branch"
+done
+
+read -p "Delete these branches? (y/n): " confirm
+echo
+
+if [ "$confirm" = "y" ]; then
+	for branch in "${merged_branches[@]}"; do
+		git branch -d "$branch"
+	done
+else
+	echo "Aborted."
+fi
