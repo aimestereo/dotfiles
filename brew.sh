@@ -62,7 +62,9 @@ brew install \
   neovim \
   fzf \
   ripgrep \
+  luarocks \
   shfmt \
+  shellharden \
   hadolint \
   pgformatter \
   jq \

@@ -32,6 +32,11 @@ return {
         python = { "ruff_fix", "ruff_format" },
         -- sql = { "sql_formatter" },
         sql = { "pg_format" },
+        sh = {
+          -- "shellcheck", -- A static analysis tool for shell scripts.
+          "shellharden", -- The corrective bash syntax highlighter.
+          "shfmt", -- A shell parser, formatter, and interpreter with bash support.
+        },
       },
       -- Customize formatters
       formatters = {
