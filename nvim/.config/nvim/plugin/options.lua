@@ -55,3 +55,10 @@ opt.cursorline = true
 
 -- Concealed text is completely hidden unless it's under the cursor.
 opt.conceallevel = 2
+
+-- Suport for Russian symbols, default keymap is <C-^>
+opt.keymap = "russian-jcukenmac"
+-- Language on start: English
+opt.iminsert = 0
+-- Language for search: English
+opt.imsearch = 0
