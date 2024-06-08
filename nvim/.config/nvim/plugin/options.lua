@@ -21,8 +21,7 @@ opt.isfname:append("@-@")
 
 -- Wrapping
 opt.wrap = true
-opt.breakindent = true
-opt.showbreak = " "
+opt.showbreak = "↪"
 opt.linebreak = true
 opt.breakindent = true
 
