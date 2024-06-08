@@ -20,6 +20,14 @@ return {
     },
     routes = {
       {
+        -- redirect long messages to a split
+        filter = {
+          event = "notify",
+          min_height = 15,
+        },
+        view = "split",
+      },
+      {
         filter = {
           event = "msg_show",
           any = {
@@ -30,6 +38,23 @@ return {
           },
         },
         view = "mini",
+      },
+      {
+        -- hide ChatGPT missing key message
+        filter = {
+          event = "msg_show",
+          find = "OPENAI_API_KEY variable not set",
+        },
+        opts = { skip = true },
+      },
+      {
+        -- hide the `written` messages
+        filter = {
+          event = "msg_show",
+          kind = "",
+          find = "written",
+        },
+        opts = { skip = true },
       },
     },
     -- you can enable a preset for easier configuration
