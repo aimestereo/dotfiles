@@ -29,8 +29,9 @@ hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
 hyper.bindKey("v", hyper.appHandler("com.jelleglebbeek.youtube-dl-gui"))
 
--- hyper.bindKey("p", hyper.appHandler("com.jetbrains.pycharm"))
-hyper.bindKey("p", hyper.appHandler("com.postmanlabs.mac"))
+hyper.bindKey("p", hyper.appHandler("com.1password.1password"))
+hyper.bindCommandKey("p", hyper.appHandler("com.postmanlabs.mac"))
+hyper.bindShiftKey("p", hyper.appHandler("com.jetbrains.pycharm"))
 
 -- hyper.bindKey("c", hyper.appHandler("com.apple.iCal"))
 hyper.bindKey("c", hyper.appHandler("com.flexibits.fantastical2.mac"))
