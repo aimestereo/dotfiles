@@ -36,6 +36,9 @@ hyper.bindKey("p", hyper.appHandler("com.postmanlabs.mac"))
 hyper.bindKey("c", hyper.appHandler("com.flexibits.fantastical2.mac"))
 hyper.bindCommandKey("c", hyper.appHandler("so.amie.electron-app"))
 
+hyper.bindKey(".", hyper.appHandler("com.runningwithcrayons.Alfred-Preferences"))
+hyper.bindKey(",", hyper.appHandler("com.apple.systempreferences"))
+
 -- Show the bundleID of the currently open window
 hyper.bindKey("b", function()
   local bundleId = hs.window.focusedWindow():application():bundleID()
