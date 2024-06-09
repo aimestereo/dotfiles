@@ -10,78 +10,77 @@ mkdir -p ~/.zfunc/
 # Install Xcode and command line tool
 sudo xcode-select --switch /Applications/Xcode.app
 
-
 # Install apps
 brew install --cask \
-  hammerspoon \
-  fluor \
-  mos \
-  raycast \
-  1password/tap/1password-cli \
-  arc \
-  force-paste \
-  gitup \
-  slack \
-  zoom \
-  raycast \
-  1password/tap/1password-cli \
-  postman \
-  amethyst \
-  kitty \
-  obsidian \
-  open-video-downloader \
-  iina \
-  monitorcontrol \
-  fantastical \
-  alfred \
+	hammerspoon \
+	fluor \
+	mos \
+	raycast \
+	1password/tap/1password-cli \
+	arc \
+	force-paste \
+	gitup \
+	slack \
+	zoom \
+	raycast \
+	1password/tap/1password-cli \
+	postman \
+	amethyst \
+	kitty \
+	obsidian \
+	open-video-downloader \
+	iina \
+	monitorcontrol \
+	fantastical \
+	alfred
 
 # Install shell utils
 
 brew tap beeftornado/rmtree
 brew install \
- openssl gettext xz readline cmake gcc cffi \
+	openssl gettext xz readline cmake gcc cffi
 
 brew install \
-  mise \
-  poetry \
-  cookiecutter \
-  ruff \
-  go \
-  git \
-  curl \
-  wget \
-  gnupg \
-  rsync \
-  lazygit \
-  lazydocker \
-  pre-commit \
-  tmux \
-  ical-buddy \
-  stow \
-  antigen \
-  neovim \
-  fzf \
-  ripgrep \
-  luarocks \
-  shfmt \
-  shellharden \
-  hadolint \
-  pgformatter \
-  jq \
-  coreutils \
-  bat \
-  eza \
-  diff-so-fancy \
-  kubectl \
-  minikube \
-  hashicorp/tap/terraform \
-  terragrunt \
-  awscli \
-  btop \
-  tldr \
-  sqlc \
-  ariga/tap/atlas \
-  languagetool \
+	mise \
+	poetry \
+	cookiecutter \
+	ruff \
+	go \
+	git \
+	curl \
+	wget \
+	gnupg \
+	rsync \
+	lazygit \
+	lazydocker \
+	pre-commit \
+	tmux \
+	ical-buddy \
+	stow \
+	antigen \
+	neovim \
+	fzf \
+	ripgrep \
+	luarocks \
+	shfmt \
+	shellharden \
+	hadolint \
+	pgformatter \
+	jq \
+	coreutils \
+	bat \
+	eza \
+	diff-so-fancy \
+	kubectl \
+	minikube \
+	hashicorp/tap/terraform \
+	terragrunt \
+	awscli \
+	btop \
+	tldr \
+	sqlc \
+	ariga/tap/atlas \
+	languagetool
 
 # nvim fzf: Installing dependencies using Homebrew
 brew install fzf bat ripgrep the_silver_searcher perl universal-ctags
@@ -95,7 +94,6 @@ git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
 # Copy all config files
 mkdir ~/.config
 stow --target ~/.config .
-
 
 # PostgresQL
 brew install libpq
@@ -117,7 +115,7 @@ mise use --global python@3.11
 curl -sSL https://install.python-poetry.org | python3 -
 
 curl -sSf https://rye-up.com/get | bash
-rye self completion -s zsh > ~/.zfunc/_rye
+rye self completion -s zsh >~/.zfunc/_rye
 
 # GO
 go install github.com/a-h/templ/cmd/templ@latest
@@ -133,5 +131,5 @@ ssh-keygen
 
 # Fix .zshrc
 if ! grep -qxF ". \$HOME/.config/zsh/profile" ~/.zshrc; then
-  echo ". \$HOME/.config/zsh/profile" >> ~/.zshrc
+	echo ". \$HOME/.config/zsh/profile" >>~/.zshrc
 fi
