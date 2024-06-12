@@ -133,3 +133,7 @@ ssh-keygen
 if ! grep -qxF ". \$HOME/.config/zsh/profile" ~/.zshrc; then
 	echo ". \$HOME/.config/zsh/profile" >>~/.zshrc
 fi
+
+# projen
+npm i -g projen
+projen completion >~/.zfunc/_projen
