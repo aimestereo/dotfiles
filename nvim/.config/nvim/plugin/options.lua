@@ -61,3 +61,10 @@ opt.keymap = "russian-jcukenmac"
 opt.iminsert = 0
 -- Language for search: English
 opt.imsearch = 0
+
+-- Folding
+opt.foldcolumn = "1"
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldenable = true
+opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
