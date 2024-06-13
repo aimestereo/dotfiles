@@ -58,11 +58,6 @@ Map({ "n", "v" }, "<A-/>", "<cmd>nohlsearch<CR>")
 Map("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
 Map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 
---
--- from ThePrimeagen: https://www.youtube.com/watch?v=w7i4amO_zaE&t=38s&ab_channel=ThePrimeagen
---
-Map("n", "<C-e>", vim.cmd.Ex, { desc = "Open file [E]xplorer / vim folder view containing current file" })
-
 -- Concatenate with next line and keep cursor at the same position
 Map("n", "J", "mzJ`z", { desc = "Concatenate with next line and keep cursor at the same position" })
 
