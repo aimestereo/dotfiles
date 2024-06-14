@@ -1,24 +1,7 @@
 hs.console.clearConsole()
 
-local installSpoonsFlag = false
-
---
--- Spoons
---
-
-local installSpoons = function()
-  hs.loadSpoon("SpoonInstall")
-  local Install = spoon.SpoonInstall
-  Install.use_syncinstall = true
-  Install:updateRepo("default")
-
-  Install:installSpoonFromRepo("EmmyLua")
-  Install:installSpoonFromRepo("KSheet")
-end
-
-if installSpoonsFlag then
-  installSpoons()
-end
+local spoons = require("spoons")
+spoons.init({ install = true })
 
 -- LSP annotations for Hammerspoon
 hs.loadSpoon("EmmyLua")
