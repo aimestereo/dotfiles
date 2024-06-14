@@ -1,41 +1,108 @@
--- Load and install the Hyper key extension. Binding to F18
-local hyper = require("hyper.hyper")
+local This = {}
 
-hyper.install("F18")
+local am = require("hyper.app-management")
 
--- Quick Reloading of Hammerspoon
-hyper.bindKey("r", hs.reload)
+-----------------------------------------------------------------------------------
+-- File: hyper.lua
+-- Author: J.H. Kuperus
+-- Source: https://github.com/jhkuperus/dotfiles/blob/master/hammerspoon/hyper.lua
+-- "License": Feel free to use this file any way you like. Issues or improvements
+--            are welcome on the GitHub repository. No warranties whatsoever.
+-----------------------------------------------------------------------------------
 
--- Global Application Keyboard Shortcuts
-hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
-hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
-
-hyper.bindKey("k", hyper.appHandler("net.kovidgoyal.kitty"))
-
-hyper.bindKey("f", hyper.appHandler("com.apple.finder"))
-
-hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
-hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
--- hyper.bindKey("d", hyper.appHandler("com.hnc.Discord"))
+-- To use Hyper in your init.lua script, import it and adapt this example to
+-- your needs:
 --
-hyper.bindKey("o", hyper.appHandler("md.obsidian"))
-hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
-hyper.bindKey("v", hyper.appHandler("com.jelleglebbeek.youtube-dl-gui"))
+-- local hyper = require('hyper')
+-- hyper.install('F18')
+-- hyper.bindkey('r', hs.reload)
+--
+-- The above three lines initialize Hyper to respond to F18 key-events and binds
+-- Hyper+r to Hammerspoon Reload (easy way to refresh Hammerspoon's config)
 
-hyper.bindKey("\\", hyper.appHandler("com.1password.1password"))
+-- Hyper mode needs to be bound to a key. Here we are binding
+-- it to F17, because this is yet another key that's unused.
+-- Why not F18? We will use key-events from F18 to turn hyper
+-- mode on and off. Using F17 as the modal and source of key
+-- events, will result in a very jittery Hyper mode.
 
-hyper.bindKey("p", hyper.appHandler("com.postmanlabs.mac"))
-hyper.bindShiftKey("p", hyper.appHandler("com.jetbrains.pycharm"))
+This.hyperMode = hs.hotkey.modal.new({}, "F17")
+This.triggered = false
 
-hyper.bindKey("c", hyper.appHandler("com.flexibits.fantastical2.mac"))
-hyper.bindShiftKey("c", hyper.appHandler("com.apple.iCal"))
+-- Enter Hyper Mode when F18 (Hyper) is pressed
+function enterHyperMode()
+  This.hyperMode:enter()
+end
 
-hyper.bindKey(".", hyper.appHandler("com.runningwithcrayons.Alfred-Preferences"))
-hyper.bindKey(",", hyper.appHandler("com.apple.systempreferences"))
+-- Leave Hyper Mode when F18 (Hyper) is pressed,
+function exitHyperMode()
+  -- if not This.triggered then
+  --   -- trigger Esc if nothing else is triggered (Vim user nicety)
+  --   hs.eventtap.keyStroke({}, "escape", 1)
+  -- end
 
--- Show the bundleID of the currently open window
-hyper.bindKey("b", function()
-  local bundleId = hs.window.focusedWindow():application():bundleID()
-  hs.alert.show(bundleId)
-  hs.pasteboard.setContents(bundleId)
-end)
+  This.triggered = false
+  This.hyperMode:exit()
+end
+
+function This.handler(fn, ...)
+  local args = { ... }
+  return function()
+    This.triggered = true
+    fn(table.unpack(args))
+  end
+end
+
+function This.appHandler(bundleID)
+  return function()
+    This.triggered = true
+    am.switchToAndFromApp(bundleID)
+  end
+end
+
+-- Utility to bind handler to Hyper+key
+function This.bindKey(key, handler)
+  This.hyperMode:bind({}, key, handler)
+end
+
+-- Utility to bind handler to Hyper+Shift+key
+function This.bindShiftKey(key, handler)
+  This.hyperMode:bind({ "shift" }, key, handler)
+end
+
+-- Utility to bind handler to Hyper+Command+Shift+key
+function This.bindCommandShiftKey(key, handler)
+  This.hyperMode:bind({ "command", "shift" }, key, handler)
+end
+
+-- Utility to bind handler to Hyper+Command+key
+function This.bindCommandKey(key, handler)
+  This.hyperMode:bind({ "command" }, key, handler)
+end
+
+-- Utility to bind handler to Hyper+modifiers+key
+function This.bindKeyWithModifiers(key, mods, handler)
+  This.hyperMode:bind(mods, key, handler)
+end
+
+-- Binds the enter/exit functions of the Hyper modal to all combinations of modifiers
+function This.install(hotKey)
+  hs.hotkey.bind({}, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "ctrl" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "ctrl", "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "cmd" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "cmd", "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "cmd", "ctrl" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "cmd", "ctrl", "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "ctrl" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "ctrl", "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "cmd" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "cmd", "shift" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "cmd", "ctrl" }, hotKey, enterHyperMode, exitHyperMode)
+  hs.hotkey.bind({ "alt", "cmd", "shift", "ctrl" }, hotKey, enterHyperMode, exitHyperMode)
+end
+
+return This
