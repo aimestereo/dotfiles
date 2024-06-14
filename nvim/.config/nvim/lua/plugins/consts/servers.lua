@@ -58,7 +58,7 @@ return {
     Lua = {
       -- make the language server recognize "vim" global
       diagnostics = {
-        globals = { "vim" },
+        globals = { "vim", "hs" },
       },
       hint = {
         enable = true,
@@ -70,6 +70,7 @@ return {
         library = {
           [vim.fn.expand("$VIMRUNTIME/lua")] = true,
           [vim.fn.stdpath("config") .. "/lua"] = true,
+          ["/Applications/Hammerspoon.app/Contents/Resources/extensions/hs"] = true,
         },
       },
       telemetry = { enable = false },

@@ -9,16 +9,8 @@ return {
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { "j-hui/fidget.nvim", tag = "legacy", opts = {} },
-
-      -- Additional lua configuration, makes nvim stuff amazing!
-      "folke/neodev.nvim",
     },
     config = function()
-      -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
-      require("neodev").setup({
-        library = { plugins = { "neotest" }, types = true },
-      })
-
       -- import lspconfig plugin
       local lspconfig = require("lspconfig")
       -- import mason-lspconfig
