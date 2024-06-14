@@ -18,9 +18,51 @@
                 },
                 "rules": [
                     {
+                        "manipulators": [
+                            {
+                                "description": "Change right command to Hyper (i.e., F18)",
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "set_variable": {
+                                            "name": "hyper-mode",
+                                            "value": 1
+                                        }
+                                    },
+                                    {
+                                        "key_code": "f18"
+                                    }
+                                ],
+                                "to_after_key_up": [
+                                    {
+                                        "set_variable": {
+                                            "name": "hyper-mode",
+                                            "value": 0
+                                        }
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "S+D -> (S)uper(D)uper Mode",
                         "manipulators": [
                             {
+                                "conditions": [
+                                    {
+                                        "name": "hyper-mode",
+                                        "type": "variable_unless",
+                                        "value": 1
+                                    }
+                                ],
                                 "from": {
                                     "simultaneous": [
                                         {
@@ -672,16 +714,6 @@
                     "to": [
                         {
                             "key_code": "left_control"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "right_command"
-                    },
-                    "to": [
-                        {
-                            "key_code": "f18"
                         }
                     ]
                 }
