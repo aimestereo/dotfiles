@@ -1,5 +1,7 @@
+local This = {}
+
 hs.window.animationDuration = 0
-window = hs.getObjectMetatable("hs.window")
+local window = hs.getObjectMetatable("hs.window")
 
 -- +-----------------+
 -- |        |        |
@@ -81,8 +83,8 @@ function window.upLeft(win)
 
   f.x = max.x
   f.y = max.y
-  f.w = max.w/2
-  f.h = max.h/2
+  f.w = max.w / 2
+  f.h = max.h / 2
   win:setFrame(f)
 end
 
@@ -98,8 +100,8 @@ function window.downLeft(win)
 
   f.x = max.x
   f.y = max.y + (max.h / 2)
-  f.w = max.w/2
-  f.h = max.h/2
+  f.w = max.w / 2
+  f.h = max.h / 2
   win:setFrame(f)
 end
 
@@ -115,8 +117,8 @@ function window.downRight(win)
 
   f.x = max.x + (max.w / 2)
   f.y = max.y + (max.h / 2)
-  f.w = max.w/2
-  f.h = max.h/2
+  f.w = max.w / 2
+  f.h = max.h / 2
 
   win:setFrame(f)
 end
@@ -133,8 +135,8 @@ function window.upRight(win)
 
   f.x = max.x + (max.w / 2)
   f.y = max.y
-  f.w = max.w/2
-  f.h = max.h/2
+  f.w = max.w / 2
+  f.h = max.h / 2
   win:setFrame(f)
 end
 
@@ -149,7 +151,7 @@ function window.centerWithFullHeight(win)
   local max = screen:fullFrame()
 
   f.x = max.x + (max.w / 5)
-  f.w = max.w * 3/5
+  f.w = max.w * 3 / 5
   f.y = max.y
   f.h = max.h
   win:setFrame(f)
@@ -202,37 +204,55 @@ function window.nextScreen(win)
   end
 end
 
-windowLayoutMode = hs.hotkey.modal.new({}, 'F16')
+local windowLayoutMode = hs.hotkey.modal.new({}, "F16")
+local modeActive = false
+local showHelp = false
+local msgStr = "Window Layout Mode ( Right ⌘ + w )"
+local shortMsgStr = msgStr .. "\n? => toggle help"
+
+local setMsg = function()
+  local message = require("keyboard.status-message")
+
+  local msg
+  if showHelp then
+    msg = msgStr
+  else
+    msg = shortMsgStr
+  end
+
+  windowLayoutMode.statusMessage = message.new(msg)
+end
 
 windowLayoutMode.entered = function()
+  modeActive = true
   windowLayoutMode.statusMessage:show()
 end
 windowLayoutMode.exited = function()
+  modeActive = false
   windowLayoutMode.statusMessage:hide()
 end
 
 -- Bind the given key to call the given function and exit WindowLayout mode
 function windowLayoutMode.bindWithAutomaticExit(mode, modifiers, key, fn)
   mode:bind(modifiers, key, function()
-    mode:exit()
-    fn()
+    local exit = fn()
+    if exit then
+      mode:exit()
+    end
   end)
 end
 
-local status, windowMappings = pcall(require, 'keyboard.windows-bindings')
+local status, windowMappings = pcall(require, "keyboard.windows-bindings")
 
 if not status then
-  windowMappings = require('keyboard.windows-bindings-defaults')
+  windowMappings = require("keyboard.windows-bindings-defaults")
 end
 
-local modifiers = windowMappings.modifiers
-local showHelp  = windowMappings.showHelp
-local trigger   = windowMappings.trigger
-local mappings  = windowMappings.mappings
+local mappings = windowMappings.mappings
 
 function getModifiersStr(modifiers)
-  local modMap = { shift = '⇧', ctrl = '⌃', alt = '⌥', cmd = '⌘' }
-  local retVal = ''
+  local modMap = { shift = "⇧", ctrl = "⌃", alt = "⌥", cmd = "⌘" }
+  local retVal = ""
 
   for i, v in ipairs(modifiers) do
     retVal = retVal .. modMap[v]
@@ -241,35 +261,40 @@ function getModifiersStr(modifiers)
   return retVal
 end
 
-local msgStr = getModifiersStr(modifiers)
-msgStr = 'Window Layout Mode (' .. msgStr .. (string.len(msgStr) > 0 and '+' or '') .. trigger .. ')'
-
 for i, mapping in ipairs(mappings) do
   local modifiers, trigger, winFunction = table.unpack(mapping)
   local hotKeyStr = getModifiersStr(modifiers)
 
-  if showHelp == true then
-    if string.len(hotKeyStr) > 0 then
-      msgStr = msgStr .. (string.format('\n%10s+%s => %s', hotKeyStr, trigger, winFunction))
-    else
-      msgStr = msgStr .. (string.format('\n%11s => %s', trigger, winFunction))
-    end
+  if string.len(hotKeyStr) > 0 then
+    msgStr = msgStr .. (string.format("\n%10s+%s => %s", hotKeyStr, trigger, winFunction))
+  else
+    msgStr = msgStr .. (string.format("\n%11s => %s", trigger, winFunction))
   end
 
   windowLayoutMode:bindWithAutomaticExit(modifiers, trigger, function()
+    if winFunction == "toggle help" then
+      showHelp = not showHelp
+      windowLayoutMode.statusMessage:hide()
+      setMsg()
+      windowLayoutMode.statusMessage:show()
+      return false
+    end
+
     --example: hs.window.focusedWindow():upRight()
     local fw = hs.window.focusedWindow()
     fw[winFunction](fw)
+    return true
   end)
 end
 
-local message = require('keyboard.status-message')
-windowLayoutMode.statusMessage = message.new(msgStr)
+setMsg()
 
--- Use modifiers+trigger to toggle WindowLayout Mode
-hs.hotkey.bind(modifiers, trigger, function()
-  windowLayoutMode:enter()
-end)
-windowLayoutMode:bind(modifiers, trigger, function()
-  windowLayoutMode:exit()
-end)
+This.toggle = function()
+  if modeActive then
+    windowLayoutMode:exit()
+  else
+    windowLayoutMode:enter()
+  end
+end
+
+return This

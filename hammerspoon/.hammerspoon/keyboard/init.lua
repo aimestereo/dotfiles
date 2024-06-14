@@ -1,3 +1,5 @@
+local This = {}
+
 local log = hs.logger.new("init.lua", "debug")
 
 keyUpDown = function(modifiers, key)
@@ -29,4 +31,7 @@ end
 require("keyboard.control-escape")
 -- require("keyboard.delete-words")
 -- require("keyboard.markdown")
--- require("keyboard.windows")
+
+This.windows = require("keyboard.windows")
+
+return This
