@@ -53,12 +53,17 @@
                         ]
                     },
                     {
-                        "description": "S+D -> (S)uper(D)uper Mode",
+                        "description": "S+D -> (S)uper(D)uper Mode (Enter)",
                         "manipulators": [
                             {
                                 "conditions": [
                                     {
                                         "name": "hyper-mode",
+                                        "type": "variable_unless",
+                                        "value": 1
+                                    },
+                                    {
+                                        "name": "superduper-mode",
                                         "type": "variable_unless",
                                         "value": 1
                                     }
@@ -75,16 +80,7 @@
                                     "simultaneous_options": {
                                         "detect_key_down_uninterruptedly": true,
                                         "key_down_order": "insensitive",
-                                        "key_up_order": "insensitive",
-                                        "key_up_when": "any",
-                                        "to_after_key_up": [
-                                            {
-                                                "set_variable": {
-                                                    "name": "superduper-mode",
-                                                    "value": 0
-                                                }
-                                            }
-                                        ]
+                                        "key_up_order": "insensitive"
                                     }
                                 },
                                 "to": [
@@ -92,6 +88,49 @@
                                         "set_variable": {
                                             "name": "superduper-mode",
                                             "value": 1
+                                        }
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "S+D -> (S)uper(D)uper Mode (Exit)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "hyper-mode",
+                                        "type": "variable_unless",
+                                        "value": 1
+                                    },
+                                    {
+                                        "name": "superduper-mode",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "simultaneous": [
+                                        {
+                                            "key_code": "s"
+                                        },
+                                        {
+                                            "key_code": "d"
+                                        }
+                                    ],
+                                    "simultaneous_options": {
+                                        "detect_key_down_uninterruptedly": true,
+                                        "key_down_order": "insensitive",
+                                        "key_up_order": "insensitive"
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "set_variable": {
+                                            "name": "superduper-mode",
+                                            "value": 0
                                         }
                                     }
                                 ],
