@@ -1,6 +1,6 @@
 local This = {}
 
-local am = require("app-management")
+local am = require("hyper.app-management")
 
 -----------------------------------------------------------------------------------
 -- File: hyper.lua

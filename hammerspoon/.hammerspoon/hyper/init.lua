@@ -1,5 +1,5 @@
 -- Load and install the Hyper key extension. Binding to F18
-local hyper = require("hyper")
+local hyper = require("hyper.hyper")
 
 hyper.install("F18")
 
@@ -8,24 +8,27 @@ hyper.bindKey("r", hs.reload)
 
 -- Global Application Keyboard Shortcuts
 hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
-hyper.bindCommandKey("m", hyper.appHandler("com.apple.Music"))
+hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
 
 hyper.bindKey("k", hyper.appHandler("net.kovidgoyal.kitty"))
 
 hyper.bindKey("f", hyper.appHandler("com.apple.finder"))
+
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 -- hyper.bindKey("d", hyper.appHandler("com.hnc.Discord"))
+--
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
 hyper.bindKey("v", hyper.appHandler("com.jelleglebbeek.youtube-dl-gui"))
 
-hyper.bindKey("p", hyper.appHandler("com.1password.1password"))
-hyper.bindCommandKey("p", hyper.appHandler("com.postmanlabs.mac"))
+hyper.bindKey("\\", hyper.appHandler("com.1password.1password"))
+
+hyper.bindKey("p", hyper.appHandler("com.postmanlabs.mac"))
 hyper.bindShiftKey("p", hyper.appHandler("com.jetbrains.pycharm"))
 
--- hyper.bindKey("c", hyper.appHandler("com.apple.iCal"))
 hyper.bindKey("c", hyper.appHandler("com.flexibits.fantastical2.mac"))
+hyper.bindShiftKey("c", hyper.appHandler("com.apple.iCal"))
 
 hyper.bindKey(".", hyper.appHandler("com.runningwithcrayons.Alfred-Preferences"))
 hyper.bindKey(",", hyper.appHandler("com.apple.systempreferences"))

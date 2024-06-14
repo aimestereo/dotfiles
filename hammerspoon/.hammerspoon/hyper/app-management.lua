@@ -6,8 +6,12 @@ local This = {}
 -- (Thanks Teije)
 local previousApp = ""
 
+local log = hs.logger.new("app-management", "debug")
+
 function This.switchToAndFromApp(bundleID)
   local focusedWindow = hs.window.focusedWindow()
+
+  log.i("Switching to and from app with bundle ID: " .. bundleID)
 
   if focusedWindow == nil then
     hs.application.launchOrFocusByBundleID(bundleID)

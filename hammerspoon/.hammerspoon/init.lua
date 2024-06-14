@@ -31,7 +31,7 @@ sheet:bindHotkeys({ toggle = { nohyper, "/" } })
 -- Super Duper mode (hold s and d), Ah Fudge mode (hold a and f). Hold 5 seconds for help.
 require("keyboard") -- Load Hammerspoon bits from https://github.com/jasonrudolph/keyboard
 
-require("init_hyper")
+require("hyper")
 
 local alert_sound = hs.sound.getByName("Tink")
 alert_sound:play()
