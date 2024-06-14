@@ -1,4 +1,19 @@
-hs.loadSpoon("EmmyLua") -- annotation support for Hammerspoon
+--
+-- Spoons
+--
+hs.loadSpoon("SpoonInstall")
+spoon.SpoonInstall.use_syncinstall = true
+local Install = spoon.SpoonInstall
+
+Install:updateRepo("default")
+
+-- LSP annotations for Hammerspoon
+Install:installSpoonFromRepo("EmmyLua")
+hs.loadSpoon("EmmyLua")
+
+--
+-- Hyper key
+--
 
 -- Load and install the Hyper key extension. Binding to F18
 local hyper = require("hyper")

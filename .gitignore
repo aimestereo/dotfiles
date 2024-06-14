@@ -5,6 +5,3 @@ lazy-lock.json
 
 # downloaded git submodules of plugins
 tmux/.config/tmux/plugins/
-
-# auto-generated files
-hammerspoon/.hammerspoon/Spoons/EmmyLua.spoon/annotations/
