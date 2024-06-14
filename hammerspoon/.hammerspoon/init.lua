@@ -1,5 +1,6 @@
 hs.console.clearConsole()
 
+local nohyper = { "alt" }
 local installSpoonsFlag = false
 
 --
@@ -12,6 +13,7 @@ local installSpoons = function()
   Install:updateRepo("default")
 
   Install:installSpoonFromRepo("EmmyLua")
+  Install:installSpoonFromRepo("KSheet")
 end
 
 if installSpoonsFlag then
@@ -20,6 +22,10 @@ end
 
 -- LSP annotations for Hammerspoon
 hs.loadSpoon("EmmyLua")
+
+-- Hotkey cheatsheet for any app.
+local sheet = hs.loadSpoon("KSheet")
+sheet:bindHotkeys({ toggle = { nohyper, "/" } })
 
 --
 -- Hyper key
