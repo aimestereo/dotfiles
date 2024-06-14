@@ -25,6 +25,7 @@ hyper.bindKey("w", keyboard.windows.toggle)
 local drawonscreen = require("drawonscreen")
 hyper.bindKey("i", drawonscreen.start)
 
+-- End
 local alert_sound = hs.sound.getByName("Tink")
 alert_sound:play()
 hs.notify.new({ title = "Hammerspoon", informativeText = "Ready to rock 🤘" }):send()
