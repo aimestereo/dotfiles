@@ -74,7 +74,7 @@ hyper.bindKey("b", function()
 end)
 
 --
--- TODO: revisit old crap
+-- / Hyper
 --
 
 hs.alert.show("Hammerspoon, at your service.", 2)
