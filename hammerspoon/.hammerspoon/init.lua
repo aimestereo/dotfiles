@@ -6,6 +6,7 @@ local installSpoonsFlag = false
 --
 -- Spoons
 --
+
 local installSpoons = function()
   hs.loadSpoon("SpoonInstall")
   local Install = spoon.SpoonInstall
@@ -26,6 +27,9 @@ hs.loadSpoon("EmmyLua")
 -- Hotkey cheatsheet for any app.
 local sheet = hs.loadSpoon("KSheet")
 sheet:bindHotkeys({ toggle = { nohyper, "/" } })
+
+-- Super Duper mode (hold s and d), Ah Fudge mode (hold a and f). Hold 5 seconds for help.
+require("keyboard") -- Load Hammerspoon bits from https://github.com/jasonrudolph/keyboard
 
 --
 -- Hyper key

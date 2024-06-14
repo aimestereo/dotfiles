@@ -128,3 +128,8 @@ ssh-keygen
 # projen
 npm i -g projen
 projen completion >~/.zfunc/_projen
+
+# Autolaunch
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' >/dev/null
+
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Karabiner-Elements.app", hidden:true}' >/dev/null
