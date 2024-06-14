@@ -56,8 +56,8 @@ return {
 
         -- Set <space>ha..<space>hf be my shortcuts to moving to the files
         for idx, k in ipairs({ "a", "s", "d", "f" }) do
-          vim.keymap.set("n", "<space>h" .. k, function()
-            harpoon:list():select(idx)
+          vim.keymap.set("n", prefix .. k, function()
+            harpoon:list(name):select(idx)
           end, { desc = string.format("%d file", idx) })
         end
       end
