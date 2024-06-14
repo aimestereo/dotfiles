@@ -32,4 +32,7 @@ sheet:bindHotkeys({ toggle = { nohyper, "/" } })
 require("keyboard") -- Load Hammerspoon bits from https://github.com/jasonrudolph/keyboard
 
 require("init_hyper")
+
+local alert_sound = hs.sound.getByName("Tink")
+alert_sound:play()
 hs.notify.new({ title = "Hammerspoon", informativeText = "Ready to rock 🤘" }):send()
