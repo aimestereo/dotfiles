@@ -89,8 +89,6 @@ brew install fzf bat ripgrep the_silver_searcher perl universal-ctags
 brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font
 
-git clone git@github.com:ohmyzsh/ohmyzsh.git ~/.config/oh-my-zsh
-
 # Copy all config files
 mkdir ~/.config
 stow --target ~/.config .
@@ -102,8 +100,6 @@ brew link --force libpq
 # Redis-cli
 brew tap ringohub/redis-cli
 brew install redis-cli
-
-brew tap heroku/brew && brew install heroku
 
 # Tmux Plugin Manager (TPM)
 mkdir -p ~/.config/tmux/plugins
@@ -128,11 +124,6 @@ ollama pull deepseek-coder
 
 # SSH
 ssh-keygen
-
-# Fix .zshrc
-if ! grep -qxF ". \$HOME/.config/zsh/profile" ~/.zshrc; then
-	echo ". \$HOME/.config/zsh/profile" >>~/.zshrc
-fi
 
 # projen
 npm i -g projen
