@@ -20,6 +20,10 @@ require("keyboard") -- Load Hammerspoon bits from https://github.com/jasonrudolp
 local menusearch = require("menusearch")
 hyper.bindKey("/", menusearch.toggle)
 
+-- Draw on screen. hyper + i (c/a/t).  (c)lear/(a)nnotate/(t)oggle
+local drawonscreen = require("drawonscreen")
+hyper.bindKey("i", drawonscreen.start)
+
 local alert_sound = hs.sound.getByName("Tink")
 alert_sound:play()
 hs.notify.new({ title = "Hammerspoon", informativeText = "Ready to rock 🤘" }):send()
