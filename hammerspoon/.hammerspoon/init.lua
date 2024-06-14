@@ -1,14 +1,24 @@
+hs.console.clearConsole()
+
+local installSpoonsFlag = false
+
 --
 -- Spoons
 --
-hs.loadSpoon("SpoonInstall")
-spoon.SpoonInstall.use_syncinstall = true
-local Install = spoon.SpoonInstall
+local installSpoons = function()
+  hs.loadSpoon("SpoonInstall")
+  local Install = spoon.SpoonInstall
+  Install.use_syncinstall = true
+  Install:updateRepo("default")
 
-Install:updateRepo("default")
+  Install:installSpoonFromRepo("EmmyLua")
+end
+
+if installSpoonsFlag then
+  installSpoons()
+end
 
 -- LSP annotations for Hammerspoon
-Install:installSpoonFromRepo("EmmyLua")
 hs.loadSpoon("EmmyLua")
 
 --
@@ -60,8 +70,5 @@ end)
 --
 -- TODO: revisit old crap
 --
-
-hs.console.clearConsole()
-logger = hs.logger.new("main")
 
 hs.alert.show("Hammerspoon, at your service.", 2)
