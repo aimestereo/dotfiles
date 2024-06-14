@@ -29,5 +29,4 @@ end
 require("keyboard.control-escape")
 -- require("keyboard.delete-words")
 -- require("keyboard.markdown")
--- require("keyboard.panes")
 -- require("keyboard.windows")
