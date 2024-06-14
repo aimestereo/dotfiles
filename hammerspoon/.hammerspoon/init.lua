@@ -1,4 +1,4 @@
--- inspired by https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
+hs.loadSpoon("EmmyLua") -- annotation support for Hammerspoon
 
 -- Load and install the Hyper key extension. Binding to F18
 local hyper = require("hyper")

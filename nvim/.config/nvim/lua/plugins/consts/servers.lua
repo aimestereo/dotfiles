@@ -58,7 +58,7 @@ return {
     Lua = {
       -- make the language server recognize "vim" global
       diagnostics = {
-        globals = { "vim", "hs" },
+        globals = {},
       },
       hint = {
         enable = true,
@@ -68,9 +68,10 @@ return {
 
         -- make language server aware of runtime files
         library = {
-          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-          [vim.fn.stdpath("config") .. "/lua"] = true,
-          ["/Applications/Hammerspoon.app/Contents/Resources/extensions/hs"] = true,
+          vim.fn.expand("$VIMRUNTIME/lua"),
+          vim.fn.stdpath("config") .. "/lua",
+          "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs",
+          string.format("%s/.hammerspoon/Spoons/EmmyLua.spoon/annotations", os.getenv("HOME")),
         },
       },
       telemetry = { enable = false },
