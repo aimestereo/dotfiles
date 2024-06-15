@@ -1,3 +1,5 @@
+.env
+
 tags
 test.sh
 .luarc.json
