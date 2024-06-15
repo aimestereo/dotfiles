@@ -2,11 +2,9 @@
 
 set -euo pipefail
 
-function stow() {
-    bash -c "stow $* 2> >(grep -v 'BUG in find_stowed_path? Absolute/relative mismatch' 1>&2)"
-}
+ignored_line='BUG in find_stowed_path? Absolute/relative mismatch'
 
-for d in `ls -d */`;
-do
-    ( stow --restow -t ${HOME} -v $d )
-done
+ls -d */ |
+	grep -v karabiner-config |
+	xargs -I{} bash -c \
+		"stow --restow -t $HOME -v {} 2> >(grep -v '${ignored_line}' 1>&2)"
