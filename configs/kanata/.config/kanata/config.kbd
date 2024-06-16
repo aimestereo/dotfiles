@@ -40,7 +40,7 @@
 
 (deflayer nomods
   a    s    d    f    j    k    l    ;
-                 _   _
+                 _         _
 )
 (deffakekeys
   to-base (layer-switch base)
