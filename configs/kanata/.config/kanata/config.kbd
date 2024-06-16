@@ -11,7 +11,9 @@
 )
 (defsrc
   a   s   d   f   j   k   l   ;
+  spc
 )
+
 (defvar
   ;; Note: consider using different time values for your different fingers.
   ;; For example, your pinkies might be slower to release keys and index
@@ -30,12 +32,15 @@
     n m , . /
   )
 )
+
 (deflayer base
   @a  @s  @d  @f  @j  @k  @l  @;
+	@spc
 )
 
 (deflayer nomods
   a   s   d   f   j   k   l   ;
+  spc
 )
 (deffakekeys
   to-base (layer-switch base)
@@ -50,8 +55,21 @@
   s (tap-hold-release-keys $tap-time $hold-time (multi s @tap) lalt $left-hand-keys)
   d (tap-hold-release-keys $tap-time $hold-time (multi d @tap) lctl $left-hand-keys)
   f (tap-hold-release-keys $tap-time $hold-time (multi f @tap) lsft $left-hand-keys)
+
   j (tap-hold-release-keys $tap-time $hold-time (multi j @tap) rsft $right-hand-keys)
   k (tap-hold-release-keys $tap-time $hold-time (multi k @tap) rctl $right-hand-keys)
   l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) ralt $right-hand-keys)
   ; (tap-hold-release-keys $tap-time $hold-time (multi ; @tap) rmet $right-hand-keys)
+
+
+  spc (tap-hold 200 200 spc (layer-while-held nav))
+)
+
+
+
+(deflayermap (nav)
+  h left
+  j down
+  k up
+  l right
 )
