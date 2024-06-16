@@ -132,4 +132,9 @@ projen completion >~/.zfunc/_projen
 # Autolaunch
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' >/dev/null
 
-osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Karabiner-Elements.app", hidden:true}' >/dev/null
+echo "Please install Karabiner-DriverKit-VirtualHIDDevice"
+open https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases
+/Applications/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
+
+echo "Please install Kanata"
+open https://github.com/jtroo/kanata/releases
