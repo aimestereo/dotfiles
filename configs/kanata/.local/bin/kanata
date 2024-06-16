@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+if [ "$EUID" != 0 ]; then
+	sudo "$0" "$@"
+	exit $?
+fi
+
+'/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon' 2>&1 >/tmp/karabiner.log &
+
+"$SCRIPT_DIR"/kanata_macos_arm64 --cfg "$HOME"/.config/kanata/config.kbd 2>&1 >/tmp/kanata.log &
