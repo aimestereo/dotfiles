@@ -68,6 +68,7 @@ return {
         "vim",
         "markdown",
         "markdown_inline",
+        "commonlisp",
       },
 
       incremental_selection = {
