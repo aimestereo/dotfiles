@@ -4,7 +4,8 @@ set -euo pipefail
 
 ignored_line='BUG in find_stowed_path? Absolute/relative mismatch'
 
+cd configs/
+
 ls -d */ |
-	grep -v karabiner-config |
 	xargs -I{} bash -c \
 		"stow --restow -t $HOME -v {} 2> >(grep -v '${ignored_line}' 1>&2)"
