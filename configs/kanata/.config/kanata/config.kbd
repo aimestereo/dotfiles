@@ -10,8 +10,18 @@
   process-unmapped-keys yes
 )
 (defsrc
-  caps a    s    d    f    j    k    l    ;
-                     spc        rmet
+  ;; left
+       q    w    e    r   t
+  caps a    s    d    f   g
+       z    x    c    v   b
+  ;;
+  ;; right
+  y    u    i    o    p
+  h    j    k    l    ;
+  n    m    ,    .    /
+  ;;
+  ;; extra keys
+  spc rmet
 )
 
 (defvar
@@ -35,10 +45,14 @@
 
 (deflayer base
   ;; left
-  @cap @a   @s   @d   @f
+       q    w    e    r   t
+  @cap @a   @s   @d   @f  g
+       z    x    c    v   b
   ;;
   ;; right
-  @j   @k   @l   @;
+  y    u    i    o    p
+  h    @j   @k   @l   @;
+  n    m    ,    .    /
   ;;
   ;; extra keys
   @spc f18
@@ -46,10 +60,14 @@
 
 (deflayer nomods
   ;; left
-  _    a    s    d    f
+       _    _    _    _   _
+  _    a    s    d    f   _
+       _    _    _    _   _
   ;;
   ;; right
-  j    k    l    ;
+  _    _    _    _    _
+  _    j    k    l    ;
+  _    _    _    _    _
   ;;
   ;; extra keys
   _    _
