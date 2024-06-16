@@ -10,8 +10,8 @@
   process-unmapped-keys yes
 )
 (defsrc
-  a   s   d   f   j   k   l   ;
-  spc rmet
+  a    s    d    f    j    k    l    ;
+                spc        rmet
 )
 
 (defvar
@@ -35,12 +35,12 @@
 
 (deflayer base
   @a   @s   @d   @f   @j   @k   @l   @;
-  @spc f18
+                @spc       f18
 )
 
 (deflayer nomods
-  a   s   d   f   j   k   l   ;
-  _   _
+  a    s    d    f    j    k    l    ;
+                 _   _
 )
 (deffakekeys
   to-base (layer-switch base)
