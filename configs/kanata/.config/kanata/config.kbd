@@ -61,9 +61,9 @@
   l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) ralt $right-hand-keys)
   ; (tap-hold-release-keys $tap-time $hold-time (multi ; @tap) rmet $right-hand-keys)
 
-  cap (tap-hold 200 200 esc f18)
+  cap (tap-hold $tap-time $hold-time esc f18)
 
-  spc (tap-hold 200 200 spc (layer-while-held nav))
+  spc (tap-hold $tap-time $hold-time spc (layer-while-held nav))
 )
 
 
