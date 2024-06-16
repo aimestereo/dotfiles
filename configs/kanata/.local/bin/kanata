@@ -7,6 +7,9 @@ if [ "$EUID" != 0 ]; then
 	exit $?
 fi
 
+pkill Karabiner-VirtualHIDDevice-Daemon
+pkill kanata_macos_arm64
+
 '/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon' 2>&1 >/tmp/karabiner.log &
 
 "$SCRIPT_DIR"/kanata_macos_arm64 --cfg "$HOME"/.config/kanata/config.kbd 2>&1 >/tmp/kanata.log &
