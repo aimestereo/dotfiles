@@ -34,14 +34,27 @@
 )
 
 (deflayer base
-  @cap @a   @s   @d   @f   @j   @k   @l   @;
-                     @spc       f18
+  ;; left
+  @cap @a   @s   @d   @f
+  ;;
+  ;; right
+  @j   @k   @l   @;
+  ;;
+  ;; extra keys
+  @spc f18
 )
 
 (deflayer nomods
-  _    a    s    d    f    j    k    l    ;
-                      _         _
+  ;; left
+  _    a    s    d    f
+  ;;
+  ;; right
+  j    k    l    ;
+  ;;
+  ;; extra keys
+  _    _
 )
+
 (deffakekeys
   to-base (layer-switch base)
 )
