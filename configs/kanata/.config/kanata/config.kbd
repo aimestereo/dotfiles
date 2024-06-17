@@ -41,26 +41,6 @@
   lctl lalt lmet   spc   rmet ralt
 )
 
-(defvar
-  ;; Note: consider using different time values for your different fingers.
-  ;; For example, your pinkies might be slower to release keys and index
-  ;; fingers faster.
-  tap-time 250
-  tap-time-long 500
-  hold-time 200
-
-  left-hand-keys (
-    q w e r t
-    a s d f g
-    z x c v b
-  )
-  right-hand-keys (
-    y u i o p
-    h j k l ;
-    n m , . /
-  )
-)
-
 (deflayer base
   ;; left
        q    w    e    r   t
@@ -121,6 +101,26 @@
   XX   XX   XX     XX     XX   XX
 )
 
+
+(defvar
+  ;; Note: consider using different time values for your different fingers.
+  ;; For example, your pinkies might be slower to release keys and index
+  ;; fingers faster.
+  tap-time 250
+  tap-time-long 500
+  hold-time 200
+
+  left-hand-keys (
+    q w e r t
+    a s d f g
+    z x c v b
+  )
+  right-hand-keys (
+    y u i o p
+    h j k l ;
+    n m , . /
+  )
+)
 
 (deffakekeys
   to-base (layer-switch base)
