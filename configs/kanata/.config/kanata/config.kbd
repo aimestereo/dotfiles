@@ -6,6 +6,22 @@
 ;; - pressing another key on the same half of the keyboard
 ;;   as the home row mod will activate an early tap action
 
+;; Template to copy/paste layers
+;; (defsrc
+;;   ;; left
+;;        XX   XX   XX   XX   XX
+;;   XX   XX   XX   XX   XX
+;;        XX   XX   XX   XX   XX
+;;   ;;
+;;   ;; right
+;;   XX   XX   XX   XX   XX
+;;   XX   XX   XX   XX   XX
+;;   XX   XX   XX   XX   XX
+;;   ;;
+;;   ;; extra keys
+;;   XX   XX   XX     XX     XX   XX
+;; )
+
 (defcfg
   process-unmapped-keys yes
 )
