@@ -94,16 +94,16 @@
 (deflayer U_NUM
   ;; left
        [  7    8    9   ]
-  _    ;  4    5    6   =
+  XX   ;  4    5    6   =
        `  1    2    3   \
   ;;
   ;; right
-  _    _    _    _    _
-  _    rsft rctl ralt rmet
-  _    _    _    _    _
+  XX   XX   XX   XX   XX
+  XX   rsft rctl ralt rmet
+  XX   XX   XX   XX   XX
   ;;
   ;; extra keys
-  _    @mdot    0     -      _    _
+  XX   @mdot    0     -      XX   XX
 )
 
 
