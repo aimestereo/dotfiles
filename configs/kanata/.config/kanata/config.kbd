@@ -153,7 +153,7 @@
 
   j (tap-hold-release-keys $tap-time $hold-time (multi j @tap) rsft $right-hand-keys)
   k (tap-hold-release-keys $tap-time $hold-time (multi k @tap) rctl $right-hand-keys)
-  l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) ralt $right-hand-keys)
+  l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) lalt $right-hand-keys)
   ; (tap-hold-release-keys $tap-time-long $hold-time (multi ; @tap) rmet $right-hand-keys)
 
   cap (tap-hold $tap-time $hold-time esc f18)
