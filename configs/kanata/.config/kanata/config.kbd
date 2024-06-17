@@ -106,6 +106,20 @@
   XX   @mdot    0     -      XX   XX
 )
 
+(deflayer U_NAV
+  ;; left
+       XX   XX   XX   XX   XX
+  XX   XX   XX   XX   XX   XX
+       XX   XX   XX   XX   XX
+  ;;
+  ;; right
+  XX   XX   XX   XX    XX
+  left down up   right XX
+  home pgdn pgup end   XX
+  ;;
+  ;; extra keys
+  XX   XX   XX     XX     XX   XX
+)
 
 
 (deffakekeys
@@ -131,18 +145,9 @@
   cap (tap-hold $tap-time $hold-time esc f18)
   lmet (tap-hold $tap-time $hold-time ret _)
 
-  spc (tap-hold $tap-time $hold-time spc (layer-while-held nav))
+  spc (tap-hold $tap-time $hold-time spc (layer-while-held U_NAV))
   num (tap-hold $tap-time $hold-time bspc (layer-while-held U_NUM))
 
   ;; Maybe keys: unorthodox Shift behavior
   mdot (fork . S-9 (rsft))
-)
-
-
-
-(deflayermap (nav)
-  h left
-  j down
-  k up
-  l right
 )
