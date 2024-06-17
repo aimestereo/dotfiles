@@ -7,7 +7,7 @@
 ;;   as the home row mod will activate an early tap action
 
 ;; Template to copy/paste layers
-;; (defsrc
+;; (deflayer NAME
 ;;   ;; left
 ;;        XX   XX   XX   XX   XX
 ;;   XX   XX   XX   XX   XX
