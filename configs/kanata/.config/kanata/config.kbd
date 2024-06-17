@@ -53,7 +53,7 @@
   n    m    ,    .    /
   ;;
   ;; extra keys
-  lctl lalt @lmet  @spc  @num ralt
+  lctl lalt @lmet  @spc  @num @fun
 )
 
 (deflayer nomods
@@ -101,6 +101,20 @@
   XX   XX   XX     XX     XX   XX
 )
 
+(deflayer U_FUN
+  ;; left
+       f12  f7   f8   f9   XX
+  XX   f11  f4   f5   f6   XX
+       f10  f1   f2   f3   pause
+  ;;
+  ;; right
+  XX   XX   XX   XX   XX
+  XX   XX   XX   XX   XX
+  XX   XX   XX   XX   XX
+  ;;
+  ;; extra keys
+  XX   XX   XX     XX     XX   XX
+)
 
 (defvar
   ;; Note: consider using different time values for your different fingers.
@@ -145,8 +159,9 @@
   cap (tap-hold $tap-time $hold-time esc f18)
   lmet (tap-hold $tap-time $hold-time ret _)
 
-  spc (tap-hold $tap-time $hold-time spc (layer-while-held U_NAV))
+  spc (tap-hold $tap-time $hold-time spc  (layer-while-held U_NAV))
   num (tap-hold $tap-time $hold-time bspc (layer-while-held U_NUM))
+  fun (tap-hold $tap-time $hold-time del  (layer-while-held U_FUN))
 
   ;; Maybe keys: unorthodox Shift behavior
   mdot (fork . S-9 (rsft))
