@@ -56,7 +56,7 @@
   n    m    ,    .    /
   ;;
   ;; extra keys
-  lctl lalt lmet  @spc   @num ralt
+  lctl lalt @lmet  @spc  @num ralt
 )
 
 (deflayer nomods
@@ -112,10 +112,10 @@
   ; (tap-hold-release-keys $tap-time $hold-time (multi ; @tap) rmet $right-hand-keys)
 
   cap (tap-hold $tap-time $hold-time esc f18)
+  lmet (tap-hold $tap-time $hold-time ret _)
 
   spc (tap-hold $tap-time $hold-time spc (layer-while-held nav))
-
-  num (layer-while-held U_NUM)
+  num (tap-hold $tap-time $hold-time bspc (layer-while-held U_NUM))
 
   ;; Maybe keys: unorthodox Shift behavior
   mdot (fork . S-9 (rsft))
