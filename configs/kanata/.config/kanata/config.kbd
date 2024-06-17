@@ -84,7 +84,7 @@
   ;; right
   _    _    _    _    _
   _    rsft rctl ralt rmet
-  bspc ret  _    _    _
+  _    _    _    _    _
   ;;
   ;; extra keys
   _    @mdot    0     -      _    _
