@@ -157,10 +157,10 @@
   ; (tap-hold-release-keys $tap-time-long $hold-time (multi ; @tap) rmet $right-hand-keys)
 
   cap (tap-hold $tap-time $hold-time esc f18)
-  lmet (tap-hold $tap-time $hold-time ret _)
+  lmet (tap-hold $tap-time $hold-time bspc _)
 
   spc (tap-hold $tap-time $hold-time spc  (layer-while-held U_NAV))
-  num (tap-hold $tap-time $hold-time bspc (layer-while-held U_NUM))
+  num (tap-hold $tap-time $hold-time ret (layer-while-held U_NUM))
   fun (tap-hold $tap-time $hold-time del  (layer-while-held U_FUN))
 
   ;; Maybe keys: unorthodox Shift behavior
