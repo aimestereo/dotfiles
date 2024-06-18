@@ -11,8 +11,9 @@ hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
 hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
 
 hyper.bindKey("k", hyper.appHandler("net.kovidgoyal.kitty"))
+hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 
-hyper.bindKey("f", hyper.appHandler("com.apple.finder"))
+hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
