@@ -1,30 +1,52 @@
 return {
   "folke/trouble.nvim",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
-  opts = {},
-  config = function()
-    Map("n", "<leader>xx", function()
-      require("trouble").toggle()
-    end, { desc = "Toggle Trouble" })
-
-    Map("n", "<leader>xw", function()
-      require("trouble").toggle("workspace_diagnostics")
-    end, { desc = "workspace diagnostics" })
-
-    Map("n", "<leader>xd", function()
-      require("trouble").toggle("document_diagnostics")
-    end, { desc = "document diagnostics" })
-
-    Map("n", "<leader>xq", function()
-      require("trouble").toggle("quickfix")
-    end, { desc = "quickfix list" })
-
-    Map("n", "<leader>xl", function()
-      require("trouble").toggle("loclist")
-    end, { desc = "loclist" })
-
-    Map("n", "<leader>xR", function()
-      require("trouble").toggle("lsp_references")
-    end, { desc = "LSP references" })
-  end,
+  opts = {
+    modes = {
+      cascade = {
+        mode = "diagnostics", -- inherit from diagnostics mode
+        filter = function(items)
+          local severity = vim.diagnostic.severity.HINT
+          for _, item in ipairs(items) do
+            severity = math.min(severity, item.severity)
+          end
+          return vim.tbl_filter(function(item)
+            return item.severity == severity
+          end, items)
+        end,
+      },
+    },
+  }, -- for default options, refer to the configuration section for custom setup.
+  cmd = "Trouble",
+  keys = {
+    {
+      "<leader>xx",
+      "<cmd>Trouble diagnostics toggle<cr>",
+      desc = "Diagnostics (Trouble)",
+    },
+    {
+      "<leader>xX",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+      desc = "Buffer Diagnostics (Trouble)",
+    },
+    {
+      "<leader>xs",
+      "<cmd>Trouble symbols toggle focus=false<cr>",
+      desc = "Symbols (Trouble)",
+    },
+    {
+      "<leader>xl",
+      "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+      desc = "LSP Definitions / references / ... (Trouble)",
+    },
+    {
+      "<leader>xL",
+      "<cmd>Trouble loclist toggle<cr>",
+      desc = "Location List (Trouble)",
+    },
+    {
+      "<leader>xQ",
+      "<cmd>Trouble qflist toggle<cr>",
+      desc = "Quickfix List (Trouble)",
+    },
+  },
 }
