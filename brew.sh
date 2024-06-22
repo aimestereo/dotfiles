@@ -13,7 +13,6 @@ sudo xcode-select --switch /Applications/Xcode.app
 # Install apps
 brew install --cask \
 	hammerspoon \
-	fluor \
 	mos \
 	raycast \
 	1password/tap/1password-cli \
