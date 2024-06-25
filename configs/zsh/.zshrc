@@ -42,8 +42,6 @@ path=(
     $path
 )
 
-export WORKPLACE_ROOTS="~/projects/nw ~/projects/aimestereo ~/projects/sm ~/projects/ablt"
-
 # Python
 source "${HOME}/.rye/env"
 eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)

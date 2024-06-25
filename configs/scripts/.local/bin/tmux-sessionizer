@@ -1,11 +1,25 @@
 #!/usr/bin/env bash
 
+set -o errexit
+set -o pipefail
+set -o nounset
+
+DEBUG_SESSIONIZER=0
+
 # space separated list of directories
 # sessionizer will treat all children of these directories as projects
 # to start a new tmux session in
-WORKPLACE_ROOTS=${WORKPLACE_ROOTS:-"~"}
+WORKPLACE_ROOTS="~/projects/nw ~/projects/aimestereo ~/projects/sm ~/projects/ablt"
+
+debug() {
+	if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
+		echo "$@" >>/tmp/sessionizer.log
+	fi
+}
 
 handle_outside_call() {
+	debug "outside call"
+
 	if [ "$has_session" == "true" ]; then
 		tmux a -t "$selected_name"
 	else
@@ -15,22 +29,35 @@ handle_outside_call() {
 }
 
 handle_inside_call() {
+	debug "inside call"
+
 	if [ "$has_session" == "true" ]; then
+		debug "switching to existing session"
+		tmux switch-client -t "$selected_name"
+	else
+		debug "creating new session"
+		tmux new-session -ds "$selected_name" -c "$selected_path"
 		tmux switch-client -t "$selected_name"
 	fi
-
-	tmux new-session -s "$selected_name" -c "$selected_path"
 }
 
 #
 # Main
 #
 
+debug
+debug "started"
+
 if [[ $# -eq 1 ]]; then
 	selected_path=$1
 else
-	selected_path=$(find "$WORKPLACE_ROOTS" -mindepth 1 -maxdepth 1 -type l -o -type d | fzf)
+	# First, expand any tildes in WORKPLACE_ROOTS, then turn into an array
+	WORKPLACE_ROOTS_EXPANDED=$(eval echo "$WORKPLACE_ROOTS")
+	IFS=' ' read -ra WORKPLACE_ROOTS_ARRAY <<<"$WORKPLACE_ROOTS_EXPANDED"
+	selected_path=$(find "${WORKPLACE_ROOTS_ARRAY[@]}" -mindepth 1 -maxdepth 1 -type l -o -type d | fzf)
 fi
+
+debug "selected_path: ${selected_path}"
 
 if [[ -z $selected_path ]]; then
 	exit 0
@@ -39,7 +66,10 @@ fi
 selected_name=$(basename "$selected_path" | tr . _)
 has_session=$(tmux has-session -t="$selected_name" 2>/dev/null && echo "true" || echo "false")
 
-if [[ -z $TMUX ]]; then
+debug "selected_name: ${selected_name}"
+debug "has_session: ${has_session}"
+
+if [[ -z ${TMUX:-} ]]; then
 	handle_outside_call
 else
 	handle_inside_call
