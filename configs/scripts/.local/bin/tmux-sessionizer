@@ -1,26 +1,46 @@
 #!/usr/bin/env bash
 
+# space separated list of directories
+# sessionizer will treat all children of these directories as projects
+# to start a new tmux session in
+WORKPLACE_ROOTS=${WORKPLACE_ROOTS:-"~"}
+
+handle_outside_call() {
+	if [ "$has_session" == "true" ]; then
+		tmux a -t "$selected_name"
+	else
+		tmux new-session -s "$selected_name" -c "$selected_path"
+	fi
+	exit 0
+}
+
+handle_inside_call() {
+	if [ "$has_session" == "true" ]; then
+		tmux switch-client -t "$selected_name"
+	fi
+
+	tmux new-session -s "$selected_name" -c "$selected_path"
+}
+
+#
+# Main
+#
+
 if [[ $# -eq 1 ]]; then
-    selected=$1
+	selected_path=$1
 else
-    selected=$(find ~/projects/nw ~/projects/aimestereo ~/projects/sm ~/projects/ablt -mindepth 1 -maxdepth 1 -type l -o -type d | fzf)
+	selected_path=$(find "$WORKPLACE_ROOTS" -mindepth 1 -maxdepth 1 -type l -o -type d | fzf)
 fi
 
-if [[ -z $selected ]]; then
-    exit 0
+if [[ -z $selected_path ]]; then
+	exit 0
 fi
 
-selected_name=$(basename "$selected" | tr . _)
-tmux_running=$(pgrep tmux)
+selected_name=$(basename "$selected_path" | tr . _)
+has_session=$(tmux has-session -t="$selected_name" 2>/dev/null && echo "true" || echo "false")
 
-if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
-    exit 0
+if [[ -z $TMUX ]]; then
+	handle_outside_call
+else
+	handle_inside_call
 fi
-
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
-    tmux new-session -ds $selected_name -c $selected
-fi
-
-tmux switch-client -t $selected_name
-
