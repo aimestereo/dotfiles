@@ -28,7 +28,7 @@ opt.breakindent = true
 -- Auto indent new lines
 opt.smartindent = true
 -- Show tabs and trailing spaces
-opt.list = true
+opt.list = false
 
 -- Save undo history
 opt.swapfile = false
