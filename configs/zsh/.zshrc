@@ -170,6 +170,8 @@ alias cl='clear'
 
 alias l='eza -lah'
 alias ll='eza -lh'
+alias lt='eza -lh --tree'
+alias lat='eza -lah --tree'
 alias ls='eza'
 
 alias tree='eza --tree'
@@ -194,6 +196,7 @@ alias s="kitten ssh"
 #
 
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
+alias whatismyip='curl ipinfo.io/ip'
 
 export DOCKER_USER="$(id -u):$(id -g)"
 
