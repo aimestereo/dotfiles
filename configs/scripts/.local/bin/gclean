@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+# set -o xtrace
+
+# main=$(git rev-parse --abbrev-ref HEAD)
+main="main"
+
+# stash changes to avoid conflicts (save result to apply later if we stashed anything)
+stash_id="$(date +%s)"
+echo "Stashing changes with id: $stash_id"
+git stash save -m "cleanup: $stash_id" --include-untracked
+
+function stash_pop {
+	echo "Checking for stashed changes with id: $stash_id"
+	stash_index=$(git stash list | grep "$stash_id" | cut -d: -f1)
+	if [ "$stash_index" != "" ]; then
+		echo "Popping stashed changes"
+		git stash pop "$stash_index"
+	else
+		echo "No matching stash found"
+	fi
+}
+
+echo "checking out $main"
+git checkout -q "$main"
+echo "pulling $main"
+git pull origin "$main" || true
+echo "pruning remote branches"
+git remote prune origin
+
+echo "deleting merged branches"
+git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base "$main" "$branch") && [[ $(git cherry "$main" "$(git commit-tree "$(git rev-parse "$branch^{tree}")" -p "$mergeBase" -m _)") == "-"* ]] && git branch -D "$branch"; done || true
+
+stash_pop
