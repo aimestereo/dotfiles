@@ -124,9 +124,15 @@ ollama pull deepseek-coder
 # SSH
 ssh-keygen
 
-# projen
-npm i -g projen
+# Node
+mise use --global node@20
+npm i -g \
+	projen
+
 projen completion >~/.zfunc/_projen
+
+# that is a best way to install pnpm once for all Node versions
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 # Autolaunch
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' >/dev/null

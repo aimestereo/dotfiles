@@ -214,3 +214,11 @@ function listening() {
         echo "Usage: listening [pattern]"
     fi
 }
+
+# pnpm
+export PNPM_HOME="/Users/aimestereo/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
