@@ -19,15 +19,8 @@ return {
       -- REQUIRED
 
       local wk = require("which-key")
-      wk.register({
-        ["<leader>"] = {
-          h = {
-            name = "[H]arpoon",
-          },
-        },
-      })
-
       local harpoon_prefix = "<leader>h"
+      wk.add({ harpoon_prefix, group = "[H]arpoon" })
 
       local function add_list(name, key)
         local prefix
@@ -35,15 +28,7 @@ return {
           prefix = harpoon_prefix
         else
           prefix = harpoon_prefix .. key
-          wk.register({
-            ["<leader>"] = {
-              h = {
-                [key] = {
-                  name = name,
-                },
-              },
-            },
-          })
+          wk.add({ prefix, group = name })
         end
 
         vim.keymap.set("n", prefix .. "i", function()
