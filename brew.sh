@@ -131,6 +131,10 @@ npm i -g \
 
 projen completion >~/.zfunc/_projen
 
+# Neovim
+pnpm install -g neovim
+pip3 install neovim
+
 # that is a best way to install pnpm once for all Node versions
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 
