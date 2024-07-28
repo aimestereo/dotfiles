@@ -79,7 +79,8 @@ brew install \
 	tldr \
 	sqlc \
 	ariga/tap/atlas \
-	languagetool
+	languagetool \
+	atuin
 
 # nvim fzf: Installing dependencies using Homebrew
 brew install fzf bat ripgrep the_silver_searcher perl universal-ctags
