@@ -24,10 +24,10 @@ cmp.setup({
     }),
   },
   sources = {
-    { name = "luasnip" },
     { name = "nvim_lsp" },
     { name = "path" },
     { name = "buffer" },
+    { name = "luasnip" },
   },
 
   -- Enable luasnip to handle snippet expansion for nvim-cmp
