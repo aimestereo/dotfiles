@@ -42,6 +42,7 @@ brew install \
 brew install \
 	mise \
 	poetry \
+	pyright \
 	cookiecutter \
 	ruff \
 	go \
