@@ -62,7 +62,10 @@ return {
         gs.blame_line({ full = true })
       end, { desc = "Blame hunk" })
 
-      map("n", "<leader>ghd", gs.diffthis, { desc = "Diff this" })
+      map("n", "<leader>ghd", function()
+        vim.cmd("tabnew %")
+        gs.diffthis()
+      end, { desc = "Diff this against index" })
       map("n", "<leader>ghD", function()
         gs.diffthis("~")
       end, { desc = "Diff this" })

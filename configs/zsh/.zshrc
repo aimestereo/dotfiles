@@ -44,7 +44,7 @@ path=(
 
 # Python
 source "${HOME}/.rye/env"
-eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
+# eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
 
 # go
 export GOPATH="$HOME/go"
