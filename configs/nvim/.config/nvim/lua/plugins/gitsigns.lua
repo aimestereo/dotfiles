@@ -67,8 +67,9 @@ return {
         gs.diffthis()
       end, { desc = "Diff this against index" })
       map("n", "<leader>ghD", function()
+        vim.cmd("tabnew %")
         gs.diffthis("~")
-      end, { desc = "Diff this" })
+      end, { desc = "Diff this against HEAD" })
       map("n", "<leader>gtd", gs.toggle_deleted, { desc = "Toggle deleted" })
 
       -- Text object
