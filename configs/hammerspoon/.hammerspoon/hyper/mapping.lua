@@ -28,8 +28,7 @@ hyper.bindKey("\\", hyper.appHandler("com.1password.1password"))
 hyper.bindKey("p", hyper.appHandler("com.postmanlabs.mac"))
 hyper.bindShiftKey("p", hyper.appHandler("com.jetbrains.pycharm"))
 
-hyper.bindKey("c", hyper.appHandler("com.flexibits.fantastical2.mac"))
-hyper.bindShiftKey("c", hyper.appHandler("com.apple.iCal"))
+hyper.bindKey("c", hyper.appHandler("com.apple.iCal"))
 
 hyper.bindKey(".", hyper.appHandler("com.runningwithcrayons.Alfred-Preferences"))
 hyper.bindKey(",", hyper.appHandler("com.apple.systempreferences"))

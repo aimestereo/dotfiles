@@ -30,7 +30,6 @@ brew install --cask \
 	open-video-downloader \
 	iina \
 	monitorcontrol \
-	fantastical \
 	alfred
 
 # Install shell utils
