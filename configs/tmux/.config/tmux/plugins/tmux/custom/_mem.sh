@@ -5,7 +5,6 @@ INACTIVE_BLOCKS=$(vm_stat | grep inactive | awk '{ print $3 }' | sed 's/\.//')
 SPECULATIVE_BLOCKS=$(vm_stat | grep speculative | awk '{ print $3 }' | sed 's/\.//')
 
 FREE=$(echo "($FREE_BLOCKS + $SPECULATIVE_BLOCKS) * $(pagesize) / 1048576" | bc -l)
-echo "FREE=$FREE"
 INACTIVE=$(echo "$INACTIVE_BLOCKS * $(pagesize) / 1048576" | bc -l)
 TOTAL=$(echo "$FREE + $INACTIVE" | bc -l)
 
