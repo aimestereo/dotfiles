@@ -20,6 +20,18 @@
   home.packages = [
     # unstable.hello
 
+    # is not available in unstable
+    # unstable.ical-buddy  
+    # unstable.arc-browser
+    # unstable.zoom
+    # unstable.postman
+    # unstable.open-video-downloader
+    # unstable.alfres
+    # unstable.hammerspoon
+    # unstable.libpq
+    # unstable.redis-cli
+    # unstable.gitup
+
     (unstable.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 
     # internet
@@ -30,35 +42,19 @@
     unstable.rsync
 
     # internet apps
-    # unstable.arc-browser
     unstable.slack
-    # unstable.zoom  # zoom is not available in unstable
-    # unstable.postman
-    # unstable.open-video-downloader
-
-    # build tools - they are not added to shell env, so no need to specify them
-    # unstable.openssl
-    # unstable.cmake
-    # unstable.gcc
-    # unstable.gettext
-    # unstable.readline
-    # unstable.xz
-    # unstable.cffi
 
     # terminal: environment
     unstable.kitty
     unstable.tmux
     unstable.stow
     unstable.neovim
-    # unstable.ical-buddy
 
     # Mouse, keyboard, and touchpad
     unstable.mos
     unstable.monitorcontrol
-    # unstable.alfred  # alfred is not available in unstable
 
     # terminal: essentials
-    # unstable.hammerspoon
     unstable.eza
     unstable.bat
     unstable.coreutils
@@ -76,13 +72,10 @@
     unstable.btop
 
     # dev tools
-    # unstable.gitup
     unstable.lazygit
     unstable.lazydocker
     unstable.pre-commit
     unstable.awscli
-    # unstable.libpq
-    # unstable.redis-cli
 
     # others
     unstable.obsidian
