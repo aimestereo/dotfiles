@@ -1,4 +1,4 @@
-{ config, unstable, user, ... }:
+{ config, pkgs, unstable, user, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -48,7 +48,18 @@
     unstable.kitty
     unstable.tmux
     unstable.stow
+
+    # terminal: neovim
     unstable.neovim
+    unstable.go
+    unstable.nodejs_22
+    unstable.luarocks
+    unstable.rustc
+    unstable.cargo
+    unstable.shfmt
+    unstable.shellharden
+    unstable.hadolint
+    unstable.pgformatter
 
     # Mouse, keyboard, and touchpad
     unstable.mos
@@ -61,6 +72,7 @@
     unstable.jq
     unstable.ripgrep
     unstable.fzf
+    unstable.fd
     unstable.diff-so-fancy
     unstable.tldr
     unstable.atuin
@@ -81,10 +93,11 @@
     unstable.obsidian
     unstable.iina
 
-
-    # (unstable.python311.withPackages (ppkgs: [
-    #   ppkgs.ipdb
-    # ]))
+    (unstable.python312.withPackages (ppkgs: [
+      ppkgs.pip
+      ppkgs.ipdb
+      # ppkgs.neovim
+    ]))
 
 
     # # You can also create simple shell scripts directly inside your
