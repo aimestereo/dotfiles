@@ -8,6 +8,5 @@ set -e;
 # aliasing "home-manager switch" command for flake
 CONFIG_DIR=${XDG_CONFIG_HOME:=$HOME/.config}
 echo Config dir: $CONFIG_DIR
-/nix/var/nix/profiles/default/bin/nix \
-  --extra-experimental-features "nix-command flakes" \
+nix \
   run $CONFIG_DIR/home-manager#homeConfigurations.\"$USER\".activationPackage
