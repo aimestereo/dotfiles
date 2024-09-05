@@ -15,14 +15,20 @@ keyboard-remapping:
 #
 # WIP
 #
+nix: hms symlinks
+nix-update: nix-update-lockfile nix
+
 nix-install:
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 	@echo "Restart shell to enable Nix"
 
-nix: hms symlinks
+nix-update-lockfile:
+	nix flake update --flake $(current_dir)/configs/nix/.config/home-manager
+
 hms:
 	# update NIX home-manager environment
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 		export XDG_CONFIG_HOME=$(current_dir)/configs/nix/.config \
 		&& configs/nix/.config/bin/render-user-nix \
 		&& configs/nix/.config/bin/hms
+
