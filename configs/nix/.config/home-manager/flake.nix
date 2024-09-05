@@ -14,9 +14,17 @@
 
     # Flake-utils
     flake-utils.url = "github:numtide/flake-utils";
+    mac-app-util.url = "github:hraban/mac-app-util";
   };
 
-  outputs = inputs @ { self, nixpkgs, flake-utils, home-manager, nixpkgs-unstable, ... }:
+  outputs = inputs @ { self
+  , nixpkgs
+  , home-manager
+  , flake-utils
+  , mac-app-util
+  , nixpkgs-unstable
+  , ...
+  }:
     let
       utils = flake-utils;
       user = import ./user.nix;
@@ -42,6 +50,7 @@
             # the path to your home.nix.
             modules = [
               ./home.nix
+              mac-app-util.homeManagerModules.default
             ];
 
             # Optionally use extraSpecialArgs

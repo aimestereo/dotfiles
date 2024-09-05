@@ -54,7 +54,6 @@
 
     # Mouse, keyboard, and touchpad
     unstable.mos
-    # unstable.force-paaste
     unstable.monitorcontrol
     # unstable.alfred  # alfred is not available in unstable
 

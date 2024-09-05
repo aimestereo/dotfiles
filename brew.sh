@@ -14,7 +14,6 @@ sudo xcode-select --switch /Applications/Xcode.app
 brew install --cask \
 	hammerspoon \
 	mos \
-	raycast \
 	1password/tap/1password-cli \
 	arc \
 	force-paste \
