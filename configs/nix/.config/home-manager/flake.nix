@@ -2,31 +2,33 @@
   description = "Home Manager configuration";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    # Nixpkgs
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOs/nixpkgs/nixos-unstable";
+
+    # Home Manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Flake-utils
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, flake-utils, home-manager, nixpkgs-unstable, ... }:
+  outputs = inputs @ { self, nixpkgs, flake-utils, home-manager, nixpkgs-unstable, ... }:
     let
       utils = flake-utils;
       user = import ./user.nix;
     in
     utils.lib.eachDefaultSystem (system:
       let
-        stable-pkgs = nixpkgs.legacyPackages.${system};
-        unstable-pkgs = nixpkgs-unstable.legacyPackages.${system};
-        pkgs = stable-pkgs // {
-          # provides alias for all ustable pkgs
-          unstable = unstable-pkgs;
-
-          starship = unstable-pkgs.starship;
-          git = unstable-pkgs.git;
+        pkgs = nixpkgs.legacyPackages.${system};
+        unstable = import nixpkgs-unstable {
+          inherit system;
+          config = {
+            allowUnfree = true;
+          };
         };
       in
       {
@@ -45,7 +47,8 @@
             # Optionally use extraSpecialArgs
             # to pass through arguments to home.nix
             extraSpecialArgs = {
-              inherit pkgs;
+              inherit user;
+              inherit unstable;
             };
           };
         };

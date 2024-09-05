@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, unstable, user, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "aimestereo";
-  home.homeDirectory = "/Users/aimestereo";
+  home.username = user.name;
+  home.homeDirectory = user.homeDir;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -13,64 +13,87 @@
   # You should not change this value, even if you update Home Manager. If you do
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
-  home.stateVersion = "23.11"; # Please read the comment before changing.
+  home.stateVersion = "24.05"; # Please read the comment before changing.
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    # pkgs.hello
+    # unstable.hello
 
-    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (unstable.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 
     # internet
-    pkgs.git
-    pkgs.curl
-    pkgs.wget
-    pkgs.gnupg
-    pkgs.rsync
+    unstable.git
+    unstable.curl
+    unstable.wget
+    unstable.gnupg
+    unstable.rsync
+
+    # internet apps
+    # unstable.arc-browser
+    unstable.slack
+    # unstable.zoom  # zoom is not available in unstable
+    # unstable.postman
+    # unstable.open-video-downloader
 
     # build tools - they are not added to shell env, so no need to specify them
-    # pkgs.openssl
-    # pkgs.cmake
-    # pkgs.gcc
-    # pkgs.gettext
-    # pkgs.readline
-    # pkgs.xz
+    # unstable.openssl
+    # unstable.cmake
+    # unstable.gcc
+    # unstable.gettext
+    # unstable.readline
+    # unstable.xz
+    # unstable.cffi
 
     # terminal: environment
-    pkgs.tmux
-    pkgs.starship
-    pkgs.stow
-    pkgs.antigen
+    unstable.kitty
+    unstable.tmux
+    unstable.stow
+    unstable.neovim
+    # unstable.ical-buddy
+
+    # Mouse, keyboard, and touchpad
+    unstable.mos
+    # unstable.force-paaste
+    unstable.monitorcontrol
+    # unstable.alfred  # alfred is not available in unstable
 
     # terminal: essentials
-    pkgs.eza
-    pkgs.bat
-    pkgs.coreutils
-    pkgs.jq
-    pkgs.ripgrep
-    pkgs.fzf
-    pkgs.diff-so-fancy
+    # unstable.hammerspoon
+    unstable.eza
+    unstable.bat
+    unstable.coreutils
+    unstable.jq
+    unstable.ripgrep
+    unstable.fzf
+    unstable.diff-so-fancy
+    unstable.tldr
+    unstable.atuin
 
     # processes
-    pkgs.mprocs
-    pkgs.procs
+    unstable.mprocs
+    unstable.procs
+    unstable.htop
+    unstable.btop
 
     # dev tools
-    pkgs.kubectl
-    pkgs.minikube
-    pkgs.poetry
+    # unstable.gitup
+    unstable.lazygit
+    unstable.lazydocker
+    unstable.pre-commit
+    unstable.awscli
+    # unstable.libpq
+    # unstable.redis-cli
 
-    pkgs.terragrunt
-    pkgs.awscli
+    # others
+    unstable.obsidian
+    unstable.iina
 
-    pkgs.shfmt
-    pkgs.hadolint
-    pkgs.pre-commit
 
-    (pkgs.python311.withPackages (ppkgs: [
-      ppkgs.ipdb
-    ]))
+    # (unstable.python311.withPackages (ppkgs: [
+    #   ppkgs.ipdb
+    # ]))
+
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -102,60 +125,4 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
-  programs.direnv.enable = true;
-
-  programs.go = {
-    enable = true;
-  };
-
-  programs.zsh = {
-    enable = true;
-    dotDir = ".config/zsh";
-    enableCompletion = true;
-    enableAutosuggestions = true;
-    syntaxHighlighting = {
-      enable = true;
-    };
-    sessionVariables = {
-      EDITOR = "nvim";
-    };
-    # plugins = [ zsh-256color ];
-    initExtra = ''
-      if [ -e $HOME/.profile ]; then
-        . $HOME/.profile
-      fi
-      '';
-
-    zplug = {
-      enable = true;
-      plugins = [
-        { name = "zsh-users/zsh-autosuggestions"; }
-        { name = "joshskidmore/zsh-fzf-history-search"; }
-      ];
-    };
-  };
-
-  programs.lazygit = {
-    enable = true;
-  };
-
-  programs.rtx = {
-    enable = true;
-    package = pkgs.unstable.mise;
-    enableZshIntegration = true;
-    settings = {
-      tools = {
-        node = ["lts"];
-        python = ["3.10" "3.11"];
-      };
-    };
-  };
-
-  programs.neovim = {
-    enable = true;
-   #  plugins = [
-   #   pkgs.vimPlugins.nvim-treesitter
-   # ];
-  };
 }
