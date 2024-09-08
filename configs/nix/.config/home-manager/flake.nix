@@ -3,12 +3,9 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    nixpkgs-unstable.url = "github:NixOs/nixpkgs/nixos-unstable";
-
-    # Home Manager
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -22,7 +19,6 @@
   , home-manager
   , flake-utils
   , mac-app-util
-  , nixpkgs-unstable
   , ...
   }:
     let
@@ -31,8 +27,7 @@
     in
     utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-        unstable = import nixpkgs-unstable {
+        pkgs = import nixpkgs {
           inherit system;
           config = {
             allowUnfree = true;
@@ -65,7 +60,6 @@
             # to pass through arguments to home.nix
             extraSpecialArgs = {
               inherit user;
-              inherit unstable;
             };
           };
         };

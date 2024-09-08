@@ -1,4 +1,4 @@
-{ config, pkgs, unstable, user, ... }:
+{ config, pkgs, user, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -18,82 +18,82 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    # unstable.hello
+    # pkgs.hello
 
-    # is not available in unstable
-    # unstable.ical-buddy  
-    # unstable.arc-browser
-    # unstable.zoom
-    # unstable.postman
-    # unstable.open-video-downloader
-    # unstable.alfres
-    # unstable.hammerspoon
-    # unstable.libpq
-    # unstable.redis-cli
-    # unstable.gitup
+    # is not available in pkgs
+    # pkgs.ical-buddy  
+    # pkgs.arc-browser
+    # pkgs.zoom
+    # pkgs.postman
+    # pkgs.open-video-downloader
+    # pkgs.alfres
+    # pkgs.hammerspoon
+    # pkgs.libpq
+    # pkgs.redis-cli
+    # pkgs.gitup
 
-    (unstable.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 
     # internet
-    unstable.git
-    unstable.curl
-    unstable.wget
-    unstable.gnupg
-    unstable.rsync
+    pkgs.git
+    pkgs.curl
+    pkgs.wget
+    pkgs.gnupg
+    pkgs.rsync
 
     # internet apps
-    unstable.slack
+    pkgs.slack
 
     # terminal: environment
-    unstable.kitty
-    unstable.tmux
-    unstable.stow
+    pkgs.kitty
+    pkgs.tmux
+    pkgs.stow
 
     # terminal: neovim
-    unstable.neovim
-    unstable.go
-    unstable.nodejs_22
-    unstable.luarocks
-    unstable.rustc
-    unstable.cargo
-    unstable.shfmt
-    unstable.shellharden
-    unstable.hadolint
-    unstable.pgformatter
+    pkgs.neovim
+    pkgs.go
+    pkgs.nodejs_22
+    pkgs.luarocks
+    pkgs.rustc
+    pkgs.cargo
+    pkgs.shfmt
+    pkgs.shellharden
+    pkgs.hadolint
+    pkgs.pgformatter
 
     # Mouse, keyboard, and touchpad
-    unstable.mos
-    unstable.monitorcontrol
+    pkgs.mos
+    pkgs.monitorcontrol
 
     # terminal: essentials
-    unstable.eza
-    unstable.bat
-    unstable.coreutils
-    unstable.jq
-    unstable.ripgrep
-    unstable.fzf
-    unstable.fd
-    unstable.diff-so-fancy
-    unstable.tldr
-    unstable.atuin
+    pkgs.eza
+    pkgs.bat
+    pkgs.coreutils
+    pkgs.jq
+    pkgs.ripgrep
+    pkgs.fzf
+    pkgs.fd
+    pkgs.diff-so-fancy
+    pkgs.tldr
+    pkgs.atuin
 
     # processes
-    unstable.mprocs
-    unstable.procs
-    unstable.htop
-    unstable.btop
+    pkgs.mprocs
+    pkgs.procs
+    pkgs.htop
+    pkgs.btop
 
     # dev tools
-    unstable.lazygit
-    unstable.lazydocker
-    unstable.pre-commit
-    unstable.awscli
+    pkgs.lazygit
+    pkgs.lazydocker
+    pkgs.pre-commit
+    pkgs.awscli
 
     # others
-    unstable.obsidian
-    unstable.iina
+    pkgs.obsidian
+    pkgs.iina
 
-    (unstable.python312.withPackages (ppkgs: [
+    (pkgs.python312.withPackages (ppkgs: [
       ppkgs.pip
       ppkgs.ipdb
       # ppkgs.neovim
