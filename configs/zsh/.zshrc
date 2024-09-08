@@ -11,15 +11,17 @@ fi
 
 if [[ -f "/opt/homebrew/bin/brew" ]] then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-  
-  # Load completions
-  fpath=(
-      ~/.zfunc
-      ${HOMEBREW_PREFIX}/share/zsh/site-functions
-      "${fpath[@]}"
-  )
 fi
-eval "$(fzf --zsh)"
+  
+mkdir -p ~/.zfunc/
+# Load completions
+fpath=(
+  ~/.zfunc
+  ${HOMEBREW_PREFIX}/share/zsh/site-functions
+  "${fpath[@]}"
+)
+# eval "$(/opt/homebrew/bin/brew shellenv)"
+# eval "$(fzf --zsh)"
 
 #
 # User configuration
@@ -39,18 +41,9 @@ export FZF_DEFAULT_OPTS='--bind ctrl-y:accept'
 
 path=(
     ${HOME}/.local/bin
+    ${HOME}/.cache/npm/global/bin
     $path
 )
-
-# Python
-source "${HOME}/.rye/env"
-# eval "$(mise activate zsh)"   # Polyglot runtime manager (asdf rust clone)
-
-# go
-export GOPATH="$HOME/go"
-export GOROOT="$(brew --prefix go)/libexec"
-export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:$GOROOT/bin
 
 #
 # Plugins
@@ -75,10 +68,10 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
-zinit light atuinsh/atuin
+# zinit light atuinsh/atuin
 
-export DIRENV_HOME="${HOME}/.config/direnv"
-zinit light ptavares/zsh-direnv
+# export DIRENV_HOME="${HOME}/.config/direnv"
+# zinit light ptavares/zsh-direnv
 
 # Add in snippets
 zinit snippet OMZP::git
@@ -198,10 +191,3 @@ function listening() {
     fi
 }
 
-# pnpm
-export PNPM_HOME="/Users/aimestereo/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end

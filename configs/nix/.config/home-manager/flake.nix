@@ -61,5 +61,45 @@
             };
           };
         };
+
+        # Homebrew needs to be installed on its own!
+        homebrew = {
+          enable = true;
+
+          taps = [
+            "beeftornado/rmtree"
+            "ringohub/redis-cli"
+          ];
+
+          brews = [
+            "ical-buddy"  # for tmux calendar plugin
+
+            # devs
+            "libpq"
+            # "redis-cli"
+
+            # nvim fzf and its dependencies:
+            "fzf"
+            "bat"
+            "ripgrep"
+            "the_silver_searcher"
+            "perl"
+            "universal-ctags"
+          ];
+
+          casks = [
+            "hammerspoon"
+            "1password/tap/1password-cli"
+            "arc"
+            "force-paste"
+            "gitup"
+            "zoom"
+            "1password/tap/1password-cli"
+            "postman"
+            "open-video-downloader"
+            "alfred"
+          ];
+        };
+
       });
 }
