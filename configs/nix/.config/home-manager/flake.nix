@@ -40,7 +40,15 @@
         };
       in
       {
-        formatter = pkgs.nixpkgs-fmt;
+        nix.settings.experimental-features = "nix-command flakes";
+
+        # Use Touch ID for sudo authentication.
+        security.pam.enableSudoTouchIdAuth = true;
+
+        # Auto upgrade nix package and the daemon service (for non-root users).
+        services.nix-daemon.enable = true;
+
+        environment.systemPackages = [ pkgs.nixfmt-rfc-style ];
 
         packages = {
           homeConfigurations.${user.name} = home-manager.lib.homeManagerConfiguration {
