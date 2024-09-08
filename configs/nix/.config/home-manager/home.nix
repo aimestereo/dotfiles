@@ -20,18 +20,6 @@
   home.packages = [
     # pkgs.hello
 
-    # is not available in pkgs
-    # pkgs.ical-buddy  
-    # pkgs.arc-browser
-    # pkgs.zoom
-    # pkgs.postman
-    # pkgs.open-video-downloader
-    # pkgs.alfres
-    # pkgs.hammerspoon
-    # pkgs.libpq
-    # pkgs.redis-cli
-    # pkgs.gitup
-
     (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 
     # internet
