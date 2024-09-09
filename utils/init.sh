@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-mkdir -p ~/.zfunc/
-
 # Install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -11,13 +9,6 @@ mkdir -p ~/.zfunc/
 sudo xcode-select --switch /Applications/Xcode.app
 
 # Install shell utils
-
-brew install \
-	openssl gettext xz readline cmake gcc cffi
-
-# Copy all config files
-mkdir ~/.config
-stow --target ~/.config .
 
 # Tmux Plugin Manager (TPM)
 # todo: marry with nix

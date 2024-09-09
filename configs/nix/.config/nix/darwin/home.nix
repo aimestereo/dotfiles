@@ -1,8 +1,6 @@
-{ config, pkgs, user, ... }:
+{ pkgs, user, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home.username = user.name;
   home.homeDirectory = user.homeDir;
 
@@ -13,85 +11,101 @@
   # You should not change this value, even if you update Home Manager. If you do
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "23.05"; # Please read the comment before changing.
+
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
 
   # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = [
-    # pkgs.hello
+  # environment. To search by name, run:
+  # $ nix-env -qaP | grep wget
+  home.packages = with pkgs; [
+    hello
+    nixfmt-rfc-style
 
-    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 
     # internet
-    pkgs.git
-    pkgs.curl
-    pkgs.wget
-    pkgs.gnupg
-    pkgs.rsync
+    git
+    curl
+    wget
+    gnupg
+    rsync
 
     # internet apps
-    pkgs.slack
+    slack
+    zoom-us
+    arc-browser
+    postman
 
     # terminal: environment
-    pkgs.kitty
-    pkgs.tmux
-    pkgs.stow
+    kitty
+    tmux
+    stow
+    _1password
 
-    # terminal: neovim
-    pkgs.neovim
-    pkgs.go
-    pkgs.nodejs_22
-    pkgs.luarocks
-    pkgs.rustc
-    pkgs.cargo
-    pkgs.shfmt
-    pkgs.shellharden
-    pkgs.hadolint
-    pkgs.pgformatter
+    # neovim
+    neovim
+    go
+    nodejs_22
+    luarocks
+    rustc
+    cargo
+    shfmt
+    shellharden
+    hadolint
+    pgformatter
+    # neovim: fzf
+    perl
+    silver-searcher
+    universal-ctags
 
     # Mouse, keyboard, and touchpad
-    pkgs.mos
-    pkgs.monitorcontrol
+    mos
+    monitorcontrol
 
     # terminal: essentials
-    pkgs.eza
-    pkgs.bat
-    pkgs.coreutils
-    pkgs.jq
-    pkgs.ripgrep
-    pkgs.fzf
-    pkgs.fd
-    pkgs.diff-so-fancy
-    pkgs.tldr
-    pkgs.atuin
+    eza
+    bat
+    coreutils
+    jq
+    ripgrep
+    fzf
+    fd
+    diff-so-fancy
+    tldr
+    atuin
 
     # processes
-    pkgs.mprocs
-    pkgs.procs
-    pkgs.htop
-    pkgs.btop
+    mprocs
+    procs
+    htop
+    btop
 
-    # dev tools
-    pkgs.lazygit
-    pkgs.lazydocker
-    pkgs.pre-commit
-    pkgs.awscli
+    # dev: tools
+    lazygit
+    lazydocker
+    pre-commit
+    awscli
+    redli # redis-cli alternative
+
+    # dev: build tools
+    readline
 
     # others
-    pkgs.obsidian
-    pkgs.iina
+    obsidian
+    iina
 
-    (pkgs.python312.withPackages (ppkgs: [
+    (python312.withPackages (ppkgs: [
       ppkgs.pip
       ppkgs.ipdb
       # ppkgs.neovim
     ]))
 
-
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
+    # (writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
   ];
@@ -116,6 +130,10 @@
     FOO = "bar";
   };
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  programs.zsh = {
+    enable = true;
+    initExtra = ''
+      . "$HOME/.config/zsh/init.zsh"
+    '';
+  };
 }

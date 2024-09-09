@@ -13,15 +13,15 @@ if [[ -f "/opt/homebrew/bin/brew" ]] then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
   
-mkdir -p ~/.zfunc/
 # Load completions
+mkdir -p ~/.zfunc/
 fpath=(
   ~/.zfunc
   ${HOMEBREW_PREFIX}/share/zsh/site-functions
   "${fpath[@]}"
 )
-# eval "$(/opt/homebrew/bin/brew shellenv)"
-# eval "$(fzf --zsh)"
+
+eval "$(fzf --zsh)"
 
 #
 # User configuration
@@ -92,7 +92,7 @@ zinit cdreplay -q
 unalias gclean
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
 #
 # Keybindings

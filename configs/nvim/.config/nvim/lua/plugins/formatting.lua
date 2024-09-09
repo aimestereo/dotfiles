@@ -30,6 +30,7 @@ return {
         graphql = { "prettier" },
         lua = { "stylua" },
         python = { "ruff_fix", "ruff_format" },
+        nix = { "nixfmt" },
         -- sql = { "sql_formatter" },
         sql = { "pg_format" },
         sh = {

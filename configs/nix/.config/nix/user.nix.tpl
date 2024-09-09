@@ -1,5 +1,5 @@
 {
   name = "$USER";
-  hostname = "$(hostname)";
+  hostname = "$(hostname -s)";
   homeDir = "$HOME";
 }

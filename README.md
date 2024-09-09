@@ -12,9 +12,19 @@ On interactive step:
 - verify, that it works (will require reboot kitty)
 - open tmux and install plugins via TPM `Alt+a + I`
 
-### Amethyst
+# Kitty + Nerd Font
 
-disable MacOS settings Mission Control: "Automatically rearrange Spaces based on most recent use"
+Check that kitty know about specified font
+
+```shell
+kitty +list-fonts --psnames | grep Nerd
+```
+
+verify that desired font is used by kitty
+
+```shell
+kitty --debug-font-fallback
+```
 
 # MOS
 

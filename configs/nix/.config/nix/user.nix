@@ -1,5 +1,5 @@
 {
   name = "aimestereo";
-  hostname = "aimestereo-Air.local";
+  hostname = "aimestereo-Air";
   homeDir = "/Users/aimestereo";
 }
