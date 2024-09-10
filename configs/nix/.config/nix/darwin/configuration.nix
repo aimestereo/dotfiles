@@ -35,6 +35,7 @@
       "gitup"
       "open-video-downloader"
       "alfred"
+      "1password"
     ];
   };
 
