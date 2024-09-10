@@ -75,6 +75,7 @@
     diff-so-fancy
     tldr
     atuin
+    yazi
 
     # processes
     mprocs
