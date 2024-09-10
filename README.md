@@ -46,7 +46,7 @@ Use Search Everywhere (Shift+Shift) shortcut instead of Find Action (Cmd+Shift+A
 
 # Configure Login items:
 
-- Add such apps as Messages, Hammerspoon, (not Karabiner, it's run as background job), Flour, Mos, iTerm, Spectacle, OpenVPN Connect
+- Add such apps as Hammerspoon, (not Karabiner, it's run as background job), Mos
 - Check background jobs and disable useless staff, i.e. Google Updater, TeamViewer
 
 # SSH
@@ -55,21 +55,9 @@ Use Search Everywhere (Shift+Shift) shortcut instead of Find Action (Cmd+Shift+A
 
 - add new ssh .pub key to Github, DigitalOcean (VPN)
 
-# VPN
-
-```shell
-ssh do-vpn
-# add new user/pass
-# download and add vpn profile to MacOS
-```
-
 # Keyboard layout build/flash
 
 brew install --cask qmk-toolbox
 brew install qmk/qmk/qmk
 brew install avr-gcc
 brew install armmbed/formulae/arm-none-eabi-gcc
-
-# Nix HomeManager
-
-[Nix and Home manager setup](https://rexk.github.io/en/blog/nix-home-manager-flake-setup/)

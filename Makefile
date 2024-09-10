@@ -40,6 +40,9 @@ nix-install:
 
 	@echo "Restart shell to enable Nix"
 
+nix-update:
+	nix run nix-darwin -- switch --flake $(NIX_CONFIG_DIR)
+
 nix-upgrade:
 	nix flake update $(NIX_CONFIG_DIR)
 	nix run nix-darwin -- switch --flake $(NIX_CONFIG_DIR)

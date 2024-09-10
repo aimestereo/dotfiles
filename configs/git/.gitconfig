@@ -191,3 +191,7 @@
 	diffFilter = diff-so-fancy --patch
 [rerere]
 	enabled = true
+[http]
+	# can't install homebrew otherwise
+	postBuffer = 157286400
+	version = HTTP/1.1

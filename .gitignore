@@ -6,5 +6,5 @@ test.sh
 lazy-lock.json
 
 # downloaded git submodules of plugins
-tmux/.config/tmux/plugins/
+configs/tmux/.config/tmux/plugins/
 
