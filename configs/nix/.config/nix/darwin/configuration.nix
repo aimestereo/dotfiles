@@ -12,6 +12,7 @@
   system.defaults = {
     dock.autohide = true;
     dock.mru-spaces = false;
+    finder.ShowPathbar = true;
   };
 
   homebrew = {
