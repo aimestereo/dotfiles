@@ -131,10 +131,12 @@
     FOO = "bar";
   };
 
-  programs.zsh = {
-    enable = true;
-    initExtra = ''
-      . "$HOME/.config/zsh/init.zsh"
-    '';
+  programs = {
+    zsh = {
+      enable = true;
+      initExtra = ''
+        . "$HOME/.config/zsh/init.zsh"
+      '';
+    };
   };
 }
