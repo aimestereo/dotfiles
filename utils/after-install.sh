@@ -10,3 +10,10 @@ launchctl unload -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2 &>/dev
 launchctl load -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist
 
 /Applications/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
+
+# Nix
+nix run nix-darwin -- switch --flake "$PWD/configs/nix/.config/nix"
+
+npm config set prefix "${HOME}/.cache/npm/global" &&
+	mkdir -p "${HOME}/.cache/npm/global" &&
+	npm install -g -U pnpm neovim

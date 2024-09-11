@@ -18,3 +18,8 @@ open https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases/t
 
 # echo "Please install Kanata"
 # open https://github.com/jtroo/kanata/releases/tag/v1.6.1
+
+# Nix
+sh <(curl -L https://nixos.org/nix/install)
+echo "Restart shell to enable Nix"
+exit 0
