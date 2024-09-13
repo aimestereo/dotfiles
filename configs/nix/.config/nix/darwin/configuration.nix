@@ -36,6 +36,8 @@
       "open-video-downloader"
       "alfred"
       "1password"
+
+      "docker"
     ];
   };
 
