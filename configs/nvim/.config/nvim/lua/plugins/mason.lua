@@ -39,6 +39,7 @@ return {
         "eslint_d", -- js linter
         "ruff",
         "sql-formatter",
+        "typescript-language-server",
       },
     })
   end,
