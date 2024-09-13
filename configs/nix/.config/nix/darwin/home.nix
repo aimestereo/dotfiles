@@ -88,7 +88,8 @@
     lazydocker
     pre-commit
     awscli
-    redli # redis-cli alternative
+    # redli # redis-cli alternative
+    devenv
 
     # dev: build tools
     readline
@@ -138,5 +139,7 @@
         . "$HOME/.config/zsh/init.zsh"
       '';
     };
+
+    direnv.enable = true;
   };
 }
