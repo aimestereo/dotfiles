@@ -69,7 +69,7 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
-# zinit light atuinsh/atuin
+zinit light atuinsh/atuin
 
 export DIRENV_HOME="${HOME}/.config/direnv"
 zinit light ptavares/zsh-direnv
