@@ -42,7 +42,7 @@
     kitty
     tmux
     stow
-    _1password
+    _1password-cli
 
     # neovim
     neovim
