@@ -24,10 +24,10 @@ cmp.setup({
     }),
   },
   sources = {
+    { name = "luasnip" },
     { name = "nvim_lsp" },
     { name = "path" },
     { name = "buffer" },
-    { name = "luasnip" },
   },
 
   -- Enable luasnip to handle snippet expansion for nvim-cmp
@@ -137,7 +137,7 @@ ls.config.set_config({
 })
 
 require("luasnip.loaders.from_vscode").lazy_load()
-for _, ft_path in ipairs(vim.api.nvim_get_runtime_file("lua/custom/snippets/*.lua", true)) do
+for _, ft_path in ipairs(vim.api.nvim_get_runtime_file("snippets/*.lua", true)) do
   loadfile(ft_path)()
 end
 
