@@ -70,8 +70,8 @@ zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 # zinit light atuinsh/atuin
 
-# export DIRENV_HOME="${HOME}/.config/direnv"
-# zinit light ptavares/zsh-direnv
+export DIRENV_HOME="${HOME}/.config/direnv"
+zinit light ptavares/zsh-direnv
 
 # Add in snippets
 zinit snippet OMZP::git
