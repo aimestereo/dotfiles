@@ -42,6 +42,7 @@ export FZF_DEFAULT_OPTS='--bind ctrl-y:accept'
 path=(
     ${HOME}/.local/bin
     ${HOME}/.cache/npm/global/bin
+    ${HOMEBREW_PREFIX}/opt/libpq/bin
     $path
 )
 
