@@ -52,7 +52,7 @@ return {
     config = function()
       Map("n", "<leader>gb", ":Telescope git_branches<CR>")
       Map("n", "<leader>gB", ":Git blame<CR>")
-      Map("n", "<A-g>", ":0G<cr>", { desc = "Open [G]it fugitive in current pane." })
+      Map("n", "<A-G>", ":0G<CR>", { desc = "Open [G]it fugitive in current pane." })
     end,
   },
   {
@@ -72,7 +72,7 @@ return {
     -- setting the keybinding for LazyGit with 'keys' is recommended in
     -- order to load the plugin when the command is run for the first time
     keys = {
-      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+      { "<leader>lg", "<cmd>LazyGit<CR>", desc = "LazyGit" },
     },
     init = function()
       require("telescope").load_extension("lazygit")
@@ -98,6 +98,7 @@ return {
         neogit.open({ kind = "replace" })
       end, { desc = "Neogit status" })
 
+      Map("n", "<A-g>", ":Neogit<CR>", { desc = "Open [G]it fugitive in current pane." })
       Map("n", "<leader>gc", ":Neogit commit<CR>")
       Map("n", "<leader>gp", ":Neogit pull<CR>")
       Map("n", "<leader>gP", ":Neogit push<CR>")
