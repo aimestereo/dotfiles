@@ -37,6 +37,7 @@
     zoom-us
     arc-browser
     postman
+    telegram-desktop
 
     # terminal: environment
     kitty
