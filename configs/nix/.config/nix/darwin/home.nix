@@ -63,7 +63,10 @@
 
     # Mouse, keyboard, and touchpad
     mos
+
+    # Monitor, Windows
     monitorcontrol
+    aerospace
 
     # terminal: essentials
     eza
