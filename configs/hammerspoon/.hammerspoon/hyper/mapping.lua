@@ -17,6 +17,7 @@ hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
 
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
+hyper.bindKey("t", hyper.appHandler("com.tdesktop.Telegram"))
 -- hyper.bindKey("d", hyper.appHandler("com.hnc.Discord"))
 --
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
