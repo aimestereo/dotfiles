@@ -10,18 +10,18 @@ hyper.bindKey("r", hs.reload)
 hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
 hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
 
-hyper.bindKey("k", hyper.appHandler("net.kovidgoyal.kitty"))
 hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 
 hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
+
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 -- hyper.bindKey("d", hyper.appHandler("com.hnc.Discord"))
 --
 hyper.bindKey("o", hyper.appHandler("md.obsidian"))
 hyper.bindKey("z", hyper.appHandler("us.zoom.xos"))
-hyper.bindKey("v", hyper.appHandler("com.jelleglebbeek.youtube-dl-gui"))
+hyper.bindKey("v", hyper.appHandler("com.apple.Preview"))
 
 hyper.bindKey("\\", hyper.appHandler("com.1password.1password"))
 
