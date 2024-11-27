@@ -28,16 +28,11 @@
 
     brews = [
       "ical-buddy" # for tmux calendar plugin
-
-      # devs
-      "libpq" # postgres client
     ];
 
     casks = [
       "hammerspoon"
       "force-paste"
-      "gitup"
-      "open-video-downloader"
       "alfred"
       "1password"
 
