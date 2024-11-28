@@ -65,6 +65,7 @@
     mos
 
     # Monitor, Windows
+    jankyborders
     monitorcontrol
     aerospace
 
