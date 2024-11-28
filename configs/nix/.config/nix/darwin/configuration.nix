@@ -17,6 +17,7 @@
     };
     finder.ShowPathbar = true;
     NSGlobalDomain."com.apple.keyboard.fnState" = true;
+    NSGlobalDomain._HIHideMenuBar = true;
   };
 
   homebrew = {

@@ -23,7 +23,12 @@
     hello
     nixfmt-rfc-style
 
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (nerdfonts.override {
+      fonts = [
+        "JetBrainsMono"
+        "Hack"
+      ];
+    })
 
     # internet
     git
@@ -87,6 +92,8 @@
     procs
     htop
     btop
+
+    # dev: languages
 
     # dev: tools
     lazygit
