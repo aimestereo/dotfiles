@@ -1,3 +1,5 @@
+#!/usr/bin/env lua
+
 local settings = require("settings")
 local colors = require("colors")
 
@@ -5,48 +7,42 @@ local colors = require("colors")
 Sbar.default({
   updates = "when_shown",
   icon = {
+    color = colors.text,
     font = {
-      family = settings.font.text,
-      style = settings.font.style_map["Bold"],
-      size = 14.0,
+      family = settings.font.nerd_family,
+      style = "Bold",
+      size = 16.0,
     },
-    color = colors.white,
     padding_left = settings.paddings,
     padding_right = settings.paddings,
-    background = { image = { corner_radius = 9 } },
   },
   label = {
+    color = colors.text,
     font = {
-      family = settings.font.text,
-      style = settings.font.style_map["Semibold"],
+      family = settings.font.family,
+      style = "Semibold",
       size = 13.0,
     },
-    color = colors.white,
     padding_left = settings.paddings,
     padding_right = settings.paddings,
   },
   background = {
-    height = 28,
     corner_radius = 9,
-    border_width = 2,
-    border_color = colors.bg2,
-    image = {
-      corner_radius = 9,
-      border_color = colors.grey,
-      border_width = 1,
-    },
+    height = 30,
+    padding_left = settings.paddings,
+    padding_right = settings.paddings,
   },
   popup = {
+    height = 30,
+    horizontal = false,
     background = {
+      border_color = colors.blue,
       border_width = 2,
-      corner_radius = 9,
-      border_color = colors.popup.border,
-      color = colors.popup.bg,
-      shadow = { drawing = true },
+      color = colors.mantle,
+      corner_radius = 11,
+      shadow = {
+        drawing = true,
+      },
     },
-    blur_radius = 50,
   },
-  padding_left = 5,
-  padding_right = 5,
-  scroll_texts = true,
 })

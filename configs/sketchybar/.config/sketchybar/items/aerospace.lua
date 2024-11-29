@@ -32,7 +32,6 @@ local workspaces = parse_string_to_table(result)
 local function create_workspace(i, name)
   local space = Sbar.add("item", "space." .. i, {
     icon = {
-      font = { family = settings.font.numbers },
       string = name,
       padding_left = 15,
       padding_right = 8,

@@ -46,7 +46,7 @@ weather.details = Sbar.add("item", "weather.details", {
       y_offset = -12,
     },
     font = {
-      family = settings.font,
+      family = settings.font.family,
       style = "Bold",
       size = 14.0,
     },

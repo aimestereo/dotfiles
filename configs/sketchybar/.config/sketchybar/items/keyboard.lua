@@ -14,7 +14,6 @@ local keyboard = Sbar.add("item", "keyboard", {
   icon = { drawing = false },
   label = {
     string = "??",
-    font = { family = settings.font.numbers },
   },
 })
 

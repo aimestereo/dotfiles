@@ -10,6 +10,7 @@ Sbar.begin_config()
 require("bar")
 require("default")
 require("items")
+Sbar.hotload(true)
 Sbar.end_config()
 
 -- Run the event loop of the sketchybar module (without this there will be no

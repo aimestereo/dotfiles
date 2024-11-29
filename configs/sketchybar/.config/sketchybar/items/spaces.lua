@@ -9,7 +9,7 @@ for i = 1, 10, 1 do
   local space = Sbar.add("space", "space." .. i, {
     space = i,
     icon = {
-      font = { family = settings.font.numbers },
+      font = { family = settings.font.nerd_family },
       string = i,
       padding_left = 15,
       padding_right = 8,

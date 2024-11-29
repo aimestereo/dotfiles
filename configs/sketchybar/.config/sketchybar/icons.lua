@@ -1,92 +1,125 @@
-local settings = require("settings")
+#!/usr/bin/env lua
 
-local icons = {
-  sf_symbols = {
-    plus = "􀅼",
-    loading = "􀖇",
-    apple = "􀣺",
-    gear = "􀍟",
-    cpu = "􀫥",
-    clipboard = "􀉄",
+return {
+  loading = "􀖇",
+  apple = "􀣺",
+  preferences = "􀺽",
+  activity = "􀒓",
+  lock = "􀒳",
+  logout = "󰍃",
+  power = "",
+  reboot = "",
+  sleep = "⏾",
+  ical = "􀉉",
 
-    switch = {
-      on = "􁏮",
-      off = "􁏯",
-    },
-    volume = {
-      _100="􀊩",
-      _66="􀊧",
-      _33="􀊥",
-      _10="􀊡",
-      _0="􀊣",
-    },
-    battery = {
-      _100 = "􀛨",
-      _75 = "􀺸",
-      _50 = "􀺶",
-      _25 = "􀛩",
-      _0 = "􀛪",
-      charging = "􀢋"
-    },
-    wifi = {
-      upload = "􀄨",
-      download = "􀄩",
-      connected = "􀙇",
-      disconnected = "􀙈",
-      router = "􁓤",
-    },
-    media = {
-      back = "􀊊",
-      forward = "􀊌",
-      play_pause = "􀊈",
-    },
+  switch = {
+    on = "􁏮",
+    off = "􁏯",
   },
 
-  -- Alternative NerdFont icons
-  nerdfont = {
-    plus = "",
-    loading = "",
-    apple = "",
-    gear = "",
-    cpu = "",
-    clipboard = "Missing Icon",
+  volume = {
+    _100 = "􀊩",
+    _66 = "􀊧",
+    _33 = "􀊥",
+    _10 = "􀊡",
+    _0 = "􀊣",
+  },
 
-    switch = {
-      on = "󱨥",
-      off = "󱨦",
+  battery_old = {
+    _100 = "",
+    _75 = "",
+    _50 = "",
+    _25 = "",
+    _0 = "",
+    charging = "",
+  },
+
+  battery = {
+    non_charging = {
+      _100 = "󰁹",
+      _90 = "󰂂",
+      _80 = "󰂁",
+      _70 = "󰂀",
+      _60 = "󰁿",
+      _50 = "󰁾",
+      _40 = "󰁽",
+      _30 = "󰁼",
+      _20 = "󰁻",
+      _10 = "󰁺",
+      _0 = "󰂃",
     },
-    volume = {
-      _100="",
-      _66="",
-      _33="",
-      _10="",
-      _0="",
+    charging = {
+      _100 = "󰂅",
+      _90 = "󰂋",
+      _80 = "󰂊",
+      _70 = "󰢞",
+      _60 = "󰂉",
+      _50 = "󰢝",
+      _40 = "󰂈",
+      _30 = "󰂇",
+      _20 = "󰂆",
+      _10 = "󰢜",
+      _0 = "󰢟",
     },
-    battery = {
-      _100 = "",
-      _75 = "",
-      _50 = "",
-      _25 = "",
-      _0 = "",
-      charging = ""
-    },
-    wifi = {
-      upload = "",
-      download = "",
-      connected = "󰖩",
-      disconnected = "󰖪",
-      router = "Missing Icon"
-    },
-    media = {
-      back = "",
-      forward = "",
-      play_pause = "",
-    },
+  },
+  stats = {
+    cpu = "",
+    disk = "󰋊",
+    memory = "",
+    network = "",
+
+    -- network_down = "",
+    -- network_up = "",
+
+    -- network_up = "􀄨",
+    -- network_down = "􀄩",
+
+    -- network_up = "",
+    -- network_down = "",
+
+    -- network_up = "",
+    -- network_down = "",
+
+    network_up = "",
+    network_down = "",
+  },
+  bell = "􀋚",
+  bell_dot = "􀝗",
+  bluetooth = "󰂯",
+  bluetooth_off = "󰂲",
+  brew = "􀐛",
+  wifi = "󰖩",
+  wifi_off = "󰖪",
+  git = {
+    issue = "􀍷",
+    discussion = "􀒤",
+    pull_request = "􀙡",
+    commit = "􀡚",
+    indicator = "",
+  },
+  media = {
+    back = "􀊎",
+    play_pause = "􀊈",
+    forward = "􀊐",
+    shuffle = "􀊝",
+    -- repeat = "􀊞",
+  },
+  yabai = {
+    stack = "􀏭",
+    fullscreen_zoom = "􀏜",
+    parent_zoom = "􀥃",
+    float = "􀢌",
+    grid = "􀧍",
+  },
+  spaces = {
+    _1 = " ",
+    _2 = " ",
+    _3 = "󰆍",
+    _4 = "",
+    _5 = "",
+    _6 = "",
+    _7 = " ",
+    _8 = " ",
+    default = "",
   },
 }
-
-if not (settings.icons == "NerdFont") then
-  return icons.sf_symbols
-else
-  return icons.nerdfont
-end

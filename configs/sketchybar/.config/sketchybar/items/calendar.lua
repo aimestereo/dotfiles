@@ -18,7 +18,7 @@ local cal = Sbar.add("item", {
     padding_right = 8,
     width = 49,
     align = "right",
-    font = { family = settings.font.numbers },
+    font = { family = settings.font.nerd_family },
   },
   position = "right",
   update_freq = 30,

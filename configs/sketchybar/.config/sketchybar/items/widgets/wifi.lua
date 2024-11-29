@@ -24,7 +24,7 @@ local wifi_up = Sbar.add("item", "widgets.wifi1", {
   },
   label = {
     font = {
-      family = settings.font.numbers,
+      family = settings.font.nerd_family,
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
@@ -47,7 +47,7 @@ local wifi_down = Sbar.add("item", "widgets.wifi2", {
   },
   label = {
     font = {
-      family = settings.font.numbers,
+      family = settings.font.nerd_family,
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
