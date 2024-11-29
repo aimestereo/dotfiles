@@ -9,7 +9,7 @@ local layouts_labels = {
   Russian = "RU",
 }
 
-local keyboard = Sbar.add("item", "widgets.keyboard", {
+local keyboard = Sbar.add("item", "keyboard", {
   position = "right",
   icon = { drawing = false },
   label = {
@@ -18,13 +18,13 @@ local keyboard = Sbar.add("item", "widgets.keyboard", {
   },
 })
 
-Sbar.add("bracket", "widgets.keyboard.bracket", {
+Sbar.add("bracket", "keyboard.bracket", {
   keyboard.name,
 }, {
   background = { color = colors.bg1 },
 })
 
-Sbar.add("item", "widgets.keyboard.padding", {
+Sbar.add("item", "keyboard.padding", {
   position = "right",
   width = settings.group_paddings,
 })
