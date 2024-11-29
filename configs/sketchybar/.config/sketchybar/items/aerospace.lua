@@ -30,7 +30,7 @@ local workspaces = parse_string_to_table(result)
 --
 
 local function create_workspace(i, name)
-  local space = sbar.add("item", "space." .. i, {
+  local space = Sbar.add("item", "space." .. i, {
     icon = {
       font = { family = settings.font.numbers },
       string = name,
@@ -66,7 +66,7 @@ end
 local function updateWindows(idx, name, space)
   local get_windows = string.format(query_workspace_windows, name)
 
-  sbar.exec(get_windows, function(open_windows)
+  Sbar.exec(get_windows, function(open_windows)
     local icon_line = ""
     local no_app = true
 
@@ -82,7 +82,7 @@ local function updateWindows(idx, name, space)
       icon_line = " —"
     end
 
-    sbar.animate("tanh", 10, function()
+    Sbar.animate("tanh", 10, function()
       -- -- Hide from bar
       if no_app then
         if hide_without_apps then
@@ -131,7 +131,7 @@ for idx, name in ipairs(workspaces) do
   local space = create_workspace(idx, name)
 
   space:subscribe("mouse.clicked", function(env)
-    sbar.exec("aerospace workspace " .. name)
+    Sbar.exec("aerospace workspace " .. name)
   end)
 
   space:subscribe("aerospace_workspace_change", function(env)
@@ -151,7 +151,7 @@ end
 -- Support workspaces on/off
 --
 
-local spaces_switcher = sbar.add("item", {
+local spaces_switcher = Sbar.add("item", {
   padding_left = -3,
   padding_right = 0,
   icon = {
@@ -181,7 +181,7 @@ spaces_switcher:subscribe("swap_menus_and_spaces", function(env)
 end)
 
 spaces_switcher:subscribe("mouse.entered", function(env)
-  sbar.animate("tanh", 30, function()
+  Sbar.animate("tanh", 30, function()
     spaces_switcher:set({
       background = {
         color = { alpha = 1.0 },
@@ -194,7 +194,7 @@ spaces_switcher:subscribe("mouse.entered", function(env)
 end)
 
 spaces_switcher:subscribe("mouse.exited", function(env)
-  sbar.animate("tanh", 30, function()
+  Sbar.animate("tanh", 30, function()
     spaces_switcher:set({
       background = {
         color = { alpha = 0.0 },
@@ -207,5 +207,5 @@ spaces_switcher:subscribe("mouse.exited", function(env)
 end)
 
 spaces_switcher:subscribe("mouse.clicked", function(env)
-  sbar.trigger("swap_menus_and_spaces")
+  Sbar.trigger("swap_menus_and_spaces")
 end)

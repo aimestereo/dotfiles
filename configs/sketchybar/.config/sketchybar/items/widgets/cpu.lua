@@ -4,9 +4,9 @@ local settings = require("settings")
 
 -- Execute the event provider binary which provides the event "cpu_update" for
 -- the cpu load data, which is fired every 2.0 seconds.
-sbar.exec("killall cpu_load >/dev/null; $CONFIG_DIR/helpers/event_providers/cpu_load/bin/cpu_load cpu_update 2.0")
+Sbar.exec("killall cpu_load >/dev/null; $CONFIG_DIR/helpers/event_providers/cpu_load/bin/cpu_load cpu_update 2.0")
 
-local cpu = sbar.add("graph", "widgets.cpu" , 42, {
+local cpu = Sbar.add("graph", "widgets.cpu", 42, {
   position = "right",
   graph = { color = colors.blue },
   background = {
@@ -26,9 +26,9 @@ local cpu = sbar.add("graph", "widgets.cpu" , 42, {
     align = "right",
     padding_right = 0,
     width = 0,
-    y_offset = 4
+    y_offset = 4,
   },
-  padding_right = settings.paddings + 6
+  padding_right = settings.paddings + 6,
 })
 
 cpu:subscribe("cpu_update", function(env)
@@ -54,16 +54,16 @@ cpu:subscribe("cpu_update", function(env)
 end)
 
 cpu:subscribe("mouse.clicked", function(env)
-  sbar.exec("open -a 'Activity Monitor'")
+  Sbar.exec("open -a 'Activity Monitor'")
 end)
 
 -- Background around the cpu item
-sbar.add("bracket", "widgets.cpu.bracket", { cpu.name }, {
-  background = { color = colors.bg1 }
+Sbar.add("bracket", "widgets.cpu.bracket", { cpu.name }, {
+  background = { color = colors.bg1 },
 })
 
 -- Background around the cpu item
-sbar.add("item", "widgets.cpu.padding", {
+Sbar.add("item", "widgets.cpu.padding", {
   position = "right",
-  width = settings.group_paddings
+  width = settings.group_paddings,
 })

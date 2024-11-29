@@ -9,7 +9,7 @@ local layouts_labels = {
   Russian = "RU",
 }
 
-local keyboard = sbar.add("item", "widgets.keyboard", {
+local keyboard = Sbar.add("item", "widgets.keyboard", {
   position = "right",
   icon = { drawing = false },
   label = {
@@ -18,21 +18,21 @@ local keyboard = sbar.add("item", "widgets.keyboard", {
   },
 })
 
-sbar.add("bracket", "widgets.keyboard.bracket", {
+Sbar.add("bracket", "widgets.keyboard.bracket", {
   keyboard.name,
 }, {
   background = { color = colors.bg1 },
 })
 
-sbar.add("item", "widgets.keyboard.padding", {
+Sbar.add("item", "widgets.keyboard.padding", {
   position = "right",
   width = settings.group_paddings,
 })
 
-sbar.add("event", "keyboard_change", "AppleSelectedInputSourcesChangedNotification")
+Sbar.add("event", "keyboard_change", "AppleSelectedInputSourcesChangedNotification")
 
 local function update_keyboard_label()
-  sbar.exec(layout_query, function(output)
+  Sbar.exec(layout_query, function(output)
     local layout = string.gsub(output, "%s+", "")
     local label = layouts_labels[layout]
     keyboard:set({ label = label })
