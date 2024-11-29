@@ -36,6 +36,7 @@
     wget
     gnupg
     rsync
+    wttrbar # wheather
 
     # internet apps
     slack
