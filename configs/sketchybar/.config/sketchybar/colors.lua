@@ -69,6 +69,8 @@ colors.with_alpha = function(color, alpha)
   return (color & 0x00ffffff) | (math.floor(alpha * 255.0) << 24)
 end
 
+colors.inactive = colors.grey
+
 colors.random_cat_color = {
   colors.blue,
   colors.lavender,

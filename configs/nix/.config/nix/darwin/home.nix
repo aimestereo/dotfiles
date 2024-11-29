@@ -37,6 +37,7 @@
     gnupg
     rsync
     wttrbar # wheather
+    gh # github cli
 
     # internet apps
     slack
