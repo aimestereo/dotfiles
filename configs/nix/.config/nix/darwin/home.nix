@@ -39,6 +39,9 @@
     wttrbar # wheather
     gh # github cli
 
+    # cli tools
+    blueutil
+
     # internet apps
     slack
     zoom-us
