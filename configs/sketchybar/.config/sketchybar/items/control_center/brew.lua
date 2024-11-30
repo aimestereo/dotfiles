@@ -61,6 +61,11 @@ brew.skipCleanup = false
 brew:subscribe({
   "mouse.clicked",
 }, function(info)
+  local handled = SLIM_CLICK_HANDLER(brew, info)
+  if handled then
+    return
+  end
+
   if info.BUTTON == "left" then
     POPUP_TOGGLE(info.NAME)
   end

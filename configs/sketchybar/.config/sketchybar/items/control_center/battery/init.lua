@@ -16,7 +16,9 @@ local battery = Sbar.add("item", "battery", {
       size = 19.0,
     },
   },
-  label = { drawing = false },
+  label = {
+    drawing = not settings.slim,
+  },
   update_freq = 30,
   popup = { align = "center" },
 })
@@ -93,14 +95,18 @@ battery:subscribe({
   show_battery_popup()
 end)
 
-battery:subscribe("mouse.clicked", function(_)
-  local drawing = battery:query().popup.drawing
-  battery:set({ popup = { drawing = "toggle" } })
+battery:subscribe("mouse.clicked", function(info)
+  SLIM_CLICK_HANDLER(battery, info)
 
-  if drawing == "off" then
-    show_battery_popup()
-  else
-    hide_battery_popup()
+  if info.BUTTON == "left" then
+    local drawing = battery:query().popup.drawing
+    battery:set({ popup = { drawing = "toggle" } })
+
+    if drawing == "off" then
+      show_battery_popup()
+    else
+      hide_battery_popup()
+    end
   end
 end)
 

@@ -26,6 +26,7 @@ local github = Sbar.add("item", "github", {
     padding_left = 0,
   },
   label = {
+    drawing = not settings.slim,
     string = icons.loading,
     color = color_off,
     highlight_color = color_on,
@@ -55,6 +56,11 @@ github.details = Sbar.add("item", "github.details", {
 github:subscribe({
   "mouse.clicked",
 }, function(info)
+  local handled = SLIM_CLICK_HANDLER(github, info)
+  if handled then
+    return
+  end
+
   if info.BUTTON == "left" then
     POPUP_TOGGLE(info.NAME)
   end

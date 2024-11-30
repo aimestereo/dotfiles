@@ -53,3 +53,20 @@ end
 COLOR_TO_HEX = function(color)
   return string.format("0x%x", color)
 end
+
+BOOL_TO_STR = function(v)
+  return v and "on" or "off"
+end
+
+TOGGLE_SLIM = function(item)
+  print("Toggling slim of " .. item.name)
+  item:set({ label = { drawing = "toggle" } })
+end
+
+SLIM_CLICK_HANDLER = function(item, env)
+  if not (env.INFO.modifier == "ctrl") then
+    return false
+  end
+  TOGGLE_SLIM(item)
+  return true
+end

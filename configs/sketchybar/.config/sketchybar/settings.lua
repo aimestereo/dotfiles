@@ -2,6 +2,8 @@ return {
   paddings = 3,
   group_paddings = 5,
 
+  slim = true,
+
   font = {
     family = "SF Pro",
     -- nerd_family = "SF Mono",

@@ -9,7 +9,6 @@ Sbar.exec("launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelpe
 
 local volume = {}
 local popup_width = 250
-local slim = true
 
 volume.icon = Sbar.add("item", "volume.icon", {
   position = "right",
@@ -23,7 +22,7 @@ volume.icon = Sbar.add("item", "volume.icon", {
     },
   },
   label = {
-    drawing = not slim,
+    drawing = not settings.slim,
     width = 30,
     align = "left",
   },
@@ -82,6 +81,11 @@ end
 
 local current_audio_device = "None"
 local function volume_toggle_details(env)
+  local handled = SLIM_CLICK_HANDLER(volume.icon, env)
+  if handled then
+    return
+  end
+
   if env.BUTTON == "right" then
     Sbar.exec("open /System/Library/PreferencePanes/Sound.prefpane")
     return
