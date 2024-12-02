@@ -11,6 +11,7 @@ return {
   reboot = "",
   sleep = "⏾",
   ical = "􀉉",
+  clipboard = "󱉣",
 
   switch = {
     on = "􁏮",
@@ -62,6 +63,7 @@ return {
       _0 = "󰢟",
     },
   },
+
   stats = {
     cpu = "",
     disk = "󰋊",
@@ -83,13 +85,22 @@ return {
     network_up = "",
     network_down = "",
   },
+
+  -- control_center
   bell = "􀋚",
   bell_dot = "􀝗",
   bluetooth = "󰂯",
   bluetooth_off = "󰂲",
   brew = "􀐛",
-  wifi = "󰖩",
-  wifi_off = "󰖪",
+
+  wifi = {
+    on = "󰖩",
+    off = "󰖪",
+    upload = "",
+    download = "",
+    router = "󰑩",
+  },
+
   git = {
     issue = "􀍷",
     discussion = "􀒤",

@@ -11,7 +11,7 @@ local wifi = Sbar.add("item", "wifi", {
   align = "right",
   click_script = "sketchybar --set $NAME popup.drawing=toggle",
   icon = {
-    string = icons.wifi,
+    string = icons.wifi.on,
     font = {
       family = settings.font.nerd_family,
       style = "Regular",
@@ -115,7 +115,7 @@ wifi:subscribe({ "wifi_change", "system_woke" }, function()
     local connected = (ip_address ~= "")
     wifi:set({
       icon = {
-        string = connected and icons.wifi or icons.wifi_off,
+        string = connected and icons.wifi.on or icons.wifi.off,
       },
     })
   end)

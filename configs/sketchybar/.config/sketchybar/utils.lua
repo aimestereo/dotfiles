@@ -1,5 +1,7 @@
 #!/usr/bin/env lua
 
+local colors = require("colors")
+
 POPUP_TOGGLE = function(name)
   print("Toggling " .. name)
   Sbar.exec("sketchybar --set " .. name .. " popup.drawing=toggle")
@@ -58,15 +60,40 @@ BOOL_TO_STR = function(v)
   return v and "on" or "off"
 end
 
-TOGGLE_SLIM = function(item)
+TOGGLE_SLIM = function(item, field)
+  field = field == nil and "label" or "icon"
   print("Toggling slim of " .. item.name)
-  item:set({ label = { drawing = "toggle" } })
+  item:set({ [field] = { drawing = "toggle" } })
 end
 
-SLIM_CLICK_HANDLER = function(item, env)
+SLIM_CLICK_HANDLER = function(item, env, field)
   if not (env.INFO.modifier == "ctrl") then
     return false
   end
-  TOGGLE_SLIM(item)
+  TOGGLE_SLIM(item, field)
   return true
+end
+
+ADD_MEASURE = function(item, prefix, value)
+  value = value:gsub("%%", "")
+  local load = tonumber(value)
+  item:push({ load / 100. })
+
+  local color = colors.blue
+  if load > 30 then
+    if load < 60 then
+      color = colors.yellow
+    elseif load < 80 then
+      color = colors.orange
+    else
+      color = colors.red
+    end
+  end
+
+  local label = prefix or ""
+
+  item:set({
+    graph = { color = color },
+    label = label .. value .. "%",
+  })
 end

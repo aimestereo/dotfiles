@@ -5,7 +5,9 @@ return {
   slim = true,
 
   font = {
-    family = "SF Pro",
+    -- family = "SF Pro",
+    -- family = "SF Mono",
+    family = "JetBrainsMono Nerd Font",
     -- nerd_family = "SF Mono",
     nerd_family = "JetBrainsMono Nerd Font",
     -- nerd_family = "MonaspiceNe Nerd Font",

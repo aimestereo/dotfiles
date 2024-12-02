@@ -3,7 +3,6 @@ require("items.menus")
 require("items.aerospace")
 require("items.front_app")
 
--- require("items.calendar")
 require("items.today")
 require("items.keyboard")
 require("items.control_center")
