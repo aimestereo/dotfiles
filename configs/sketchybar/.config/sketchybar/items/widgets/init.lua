@@ -17,7 +17,7 @@ stats.close = function()
     network:set({ background = { padding_right = -70 } })
   end)
 
-  separator:set({ icon = "" })
+  separator:set({ icon = "" })
 
   SLEEP(0.1)
 
@@ -29,7 +29,7 @@ stats.close = function()
 end
 
 stats.open = function()
-  separator:set({ icon = "" })
+  separator:set({ icon = "" })
 
   Sbar.animate("tanh", 30, function()
     cpu:set({ drawing = true })
@@ -63,9 +63,9 @@ end)
 separator:subscribe("toggle_stats", function()
   local state = separator:query().icon.value
 
-  if state == "" then
+  if state == "" then
     Sbar.trigger("show_stats")
-  elseif state == "" then
+  elseif state == "" then
     Sbar.trigger("hide_stats")
   end
 end)
