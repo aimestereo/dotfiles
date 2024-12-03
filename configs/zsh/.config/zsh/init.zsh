@@ -22,6 +22,7 @@ fpath=(
 )
 
 eval "$(fzf --zsh)"
+eval "$(zoxide init zsh)"
 
 #
 # User configuration

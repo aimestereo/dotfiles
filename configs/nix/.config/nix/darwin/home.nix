@@ -54,6 +54,7 @@
     tmux
     stow
     _1password-cli
+    zoxide
 
     # neovim
     neovim
