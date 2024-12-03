@@ -159,7 +159,7 @@ alias ls='eza'
 
 alias tree='eza --tree'
 alias c='bat'
-alias cat='bat -p'
+alias c='bat -p'
 
 setopt auto_cd
 alias md='mkdir -p'
