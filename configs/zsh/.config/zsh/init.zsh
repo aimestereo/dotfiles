@@ -129,8 +129,14 @@ HISTFILESIZE=1000000
 HISTDUP=erase
 
 setopt extended_history       # record timestamp of command in HISTFILE
-setopt append_history
-setopt share_history          # share command history data
+
+# I don't want to share history between sessions,
+# still in any new session I want to have complete history
+# also, I have autin, that will suggest latest history in any session at any time.
+setopt inc_append_history     # save new commands right away
+# setopt append_history       # save all commands at once on shell exit
+unsetopt share_history        # don't share command history data
+
 setopt hist_ignore_space      # ignore commands that start with space
 setopt hist_ignore_all_dups
 setopt hist_save_no_dups
