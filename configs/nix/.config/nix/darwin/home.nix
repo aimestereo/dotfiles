@@ -55,6 +55,7 @@
     stow
     _1password-cli
     zoxide
+    nushell
 
     # neovim
     neovim
