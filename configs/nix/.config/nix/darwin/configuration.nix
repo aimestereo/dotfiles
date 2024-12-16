@@ -36,6 +36,7 @@
       "force-paste"
       "alfred"
       "1password"
+      "yandex" # browser, nix version is x86 only
 
       "docker"
     ];
