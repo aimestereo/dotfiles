@@ -10,7 +10,8 @@ hyper.bindKey("r", hs.reload)
 hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
 hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
 
-hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
+hyper.bindKey("f", hyper.appHandler("com.mitchellh.ghostty"))
+hyper.bindShiftKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 
 hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 

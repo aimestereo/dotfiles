@@ -46,6 +46,7 @@ path=(
     ${HOME}/.local/bin
     ${HOME}/.cache/npm/global/bin
     ${HOMEBREW_PREFIX}/opt/libpq/bin
+    /Applications/Ghostty.app/Contents/MacOS
     $path
 )
 
