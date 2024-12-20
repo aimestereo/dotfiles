@@ -1,7 +1,11 @@
 local This = {}
 
+local windowLayoutMode = hs.hotkey.modal.new({}, "F16")
+local msgStr = "Window Mode ( Hyper + w )"
+
 hs.window.animationDuration = 0
 local window = hs.getObjectMetatable("hs.window")
+assert(window ~= nil, "hs.window is not found")
 
 -- +-----------------+
 -- |        |        |
@@ -194,52 +198,15 @@ end
 function window.nextScreen(win)
   local currentScreen = win:screen()
   local allScreens = hs.screen.allScreens()
-  currentScreenIndex = hs.fnutils.indexOf(allScreens, currentScreen)
-  nextScreenIndex = currentScreenIndex + 1
+  local currentScreenIndex = hs.fnutils.indexOf(allScreens, currentScreen)
+  local nextScreenIndex = currentScreenIndex + 1
+  assert(allScreens ~= nil, "allScreens is required")
 
   if allScreens[nextScreenIndex] then
     win:moveToScreen(allScreens[nextScreenIndex])
   else
     win:moveToScreen(allScreens[1])
   end
-end
-
-local windowLayoutMode = hs.hotkey.modal.new({}, "F16")
-local modeActive = false
-local showHelp = false
-local msgStr = "Window Layout Mode ( Right ⌘ + w )"
-local shortMsgStr = msgStr .. "\n? => toggle help"
-
-local setMsg = function()
-  local message = require("keyboard.status-message")
-
-  local msg
-  if showHelp then
-    msg = msgStr
-  else
-    msg = shortMsgStr
-  end
-
-  windowLayoutMode.statusMessage = message.new(msg)
-end
-
-windowLayoutMode.entered = function()
-  modeActive = true
-  windowLayoutMode.statusMessage:show()
-end
-windowLayoutMode.exited = function()
-  modeActive = false
-  windowLayoutMode.statusMessage:hide()
-end
-
--- Bind the given key to call the given function and exit WindowLayout mode
-function windowLayoutMode.bindWithAutomaticExit(mode, modifiers, key, fn)
-  mode:bind(modifiers, key, function()
-    local exit = fn()
-    if exit then
-      mode:exit()
-    end
-  end)
 end
 
 local status, windowMappings = pcall(require, "keyboard.windows-bindings")
@@ -249,52 +216,21 @@ if not status then
 end
 
 local mappings = windowMappings.mappings
+local utils = require("keyboard.utils")
 
-function getModifiersStr(modifiers)
-  local modMap = { shift = "⇧", ctrl = "⌃", alt = "⌥", cmd = "⌘" }
-  local retVal = ""
-
-  for i, v in ipairs(modifiers) do
-    retVal = retVal .. modMap[v]
-  end
-
-  return retVal
-end
-
-for i, mapping in ipairs(mappings) do
-  local modifiers, trigger, winFunction = table.unpack(mapping)
-  local hotKeyStr = getModifiersStr(modifiers)
-
-  if string.len(hotKeyStr) > 0 then
-    msgStr = msgStr .. (string.format("\n%10s+%s => %s", hotKeyStr, trigger, winFunction))
-  else
-    msgStr = msgStr .. (string.format("\n%11s => %s", trigger, winFunction))
-  end
-
-  windowLayoutMode:bindWithAutomaticExit(modifiers, trigger, function()
-    if winFunction == "toggle help" then
-      showHelp = not showHelp
-      windowLayoutMode.statusMessage:hide()
-      setMsg()
-      windowLayoutMode.statusMessage:show()
-      return false
-    end
-
-    --example: hs.window.focusedWindow():upRight()
-    local fw = hs.window.focusedWindow()
-    fw[winFunction](fw)
+local function menuCallback(menuOption)
+  --return true to close menu
+  if menuOption == "Cancel" then
     return true
-  end)
-end
-
-setMsg()
-
-This.toggle = function()
-  if modeActive then
-    windowLayoutMode:exit()
-  else
-    windowLayoutMode:enter()
   end
+
+  --example: hs.window.focusedWindow():upRight()
+  local fw = hs.window.focusedWindow()
+  fw[menuOption](fw)
+  return true
 end
+
+local menu = utils.initMenu(windowLayoutMode, msgStr, mappings, menuCallback)
+This.toggle = menu.toggle
 
 return This

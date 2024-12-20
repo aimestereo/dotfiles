@@ -30,7 +30,7 @@ end
 
 -- require("keyboard.control-escape")
 -- require("keyboard.delete-words")
--- require("keyboard.markdown")
+require("keyboard.markdown")
 
 This.windows = require("keyboard.windows")
 
