@@ -79,7 +79,6 @@
     # Monitor, Windows
     jankyborders
     monitorcontrol
-    aerospace
 
     # terminal: essentials
     eza
