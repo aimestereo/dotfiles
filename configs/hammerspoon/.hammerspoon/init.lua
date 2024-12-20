@@ -17,6 +17,10 @@ hyper.bindShiftKey("/", hs.fnutils.partial(sheet.toggle, sheet))
 local menusearch = require("menusearch")
 hyper.bindKey("/", menusearch.toggle)
 
+-- Super Duper mode (hold s and d), Ah Fudge mode (hold a and f). Hold 5 seconds for help.
+local keyboard = require("keyboard") -- Load Hammerspoon bits from https://github.com/jasonrudolph/keyboard
+hyper.bindKey("w", keyboard.windows.toggle)
+
 -- Draw on screen. hyper + i (c/a/t).  (c)lear/(a)nnotate/(t)oggle
 local drawonscreen = require("drawonscreen")
 hyper.bindKey("i", drawonscreen.start)
