@@ -3,8 +3,10 @@ local icons = require("icons")
 local settings = require("settings")
 local app_icons = require("helpers.app_icons")
 
-local hide_without_apps = false
+local hide_without_apps = true
 local query_workspaces = "aerospace list-workspaces --all"
+-- aerospace list-workspaces --monitor 1 --empty no
+
 local query_workspace_windows = "aerospace list-windows --json --workspace %s"
 
 --
