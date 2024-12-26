@@ -7,8 +7,9 @@ hyper.install("F18")
 hyper.bindKey("r", hs.reload)
 
 -- Global Application Keyboard Shortcuts
-hyper.bindKey("m", hyper.appHandler("com.apple.mail"))
-hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
+hyper.bindShiftKey("m", hyper.appHandler("com.apple.mail"))
+hyper.bindKey("m", hyper.appHandler("ru.yandex.desktop.music"))
+-- hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
 
 hyper.bindKey("f", hyper.appHandler("com.mitchellh.ghostty"))
 hyper.bindShiftKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
@@ -16,6 +17,7 @@ hyper.bindShiftKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
+hyper.bindKey("y", hyper.appHandler("ru.yandex.desktop.yandex-browser"))
 
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("t", hyper.appHandler("com.tdesktop.Telegram"))
