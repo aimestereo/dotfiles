@@ -72,22 +72,27 @@ end
 
 local makeBold = function()
   wrapSelectedText("**")
+  return true
 end
 
 local makeItalic = function()
   wrapSelectedText("*")
+  return true
 end
 
 local makeStrikethrough = function()
   wrapSelectedText("~~")
+  return true
 end
 
 local makeLink = function()
   inlineLink()
+  return true
 end
 
 local makeCode = function()
   wrapSelectedText("`")
+  return true
 end
 
 local mappings = {
