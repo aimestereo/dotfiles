@@ -50,8 +50,8 @@ return {
   {
     "tpope/vim-fugitive",
     config = function()
-      Map("n", "<leader>gb", ":Telescope git_branches<CR>")
-      Map("n", "<leader>gB", ":Git blame<CR>")
+      -- Map("n", "<leader>gb", ":Telescope git_branches<CR>")
+      -- Map("n", "<leader>gB", ":Git blame<CR>")
       Map("n", "<A-G>", ":0G<CR>", { desc = "Open [G]it fugitive in current pane." })
     end,
   },

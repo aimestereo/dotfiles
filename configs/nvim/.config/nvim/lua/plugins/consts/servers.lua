@@ -61,6 +61,7 @@ return {
       -- make the language server recognize "vim" global
       diagnostics = {
         globals = {},
+        disable = { "missing-fields" },
       },
       hint = {
         enable = true,
