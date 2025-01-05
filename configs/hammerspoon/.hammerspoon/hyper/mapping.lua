@@ -11,8 +11,8 @@ hyper.bindShiftKey("m", hyper.appHandler("com.apple.mail"))
 hyper.bindKey("m", hyper.appHandler("ru.yandex.desktop.music"))
 -- hyper.bindShiftKey("m", hyper.appHandler("com.apple.Music"))
 
-hyper.bindKey("f", hyper.appHandler("com.mitchellh.ghostty"))
-hyper.bindShiftKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
+hyper.bindShiftKey("f", hyper.appHandler("com.mitchellh.ghostty"))
+hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
 
 hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 
