@@ -67,6 +67,18 @@ Map("n", "<C-u>", "<C-u>zz", { desc = "Scroll [u]p half-page and center cursor" 
 Map("n", "n", "nzzzv", { desc = "Go to a [n]ext match, keep cursor at the center of the screen" })
 Map("n", "N", "Nzzzv", { desc = "Go to a previous match, keep cursor at the center of the screen" })
 
+-- Center the screen after searching for the next/prev occurrence of the word under the cursor
+Map("n", "*", "*zzzv", { desc = "Search the word under the cursor and center the screen" })
+Map("n", "#", "#zzzv", { desc = "Search back the word under the cursor and center the screen" })
+
+-- Center the screen after searching for the next/prev partial match under the cursor
+Map("n", "g*", "g*zzzv", { desc = "Search the partial match under the cursor and center the screen" })
+Map("n", "g#", "g#zzzv", { desc = "Search back the partial match under the cursor and center the screen" })
+
+-- Center the screen after jumping to older/newer cursor positions
+Map("n", "<C-o>", "<C-o>zz", { desc = "Go to the [o]lder cursor position and center the screen" })
+Map("n", "<C-i>", "<C-i>zz", { desc = "Go to the [i]nner cursor position and center the screen" })
+
 Map("i", "<C-c>", "<Esc>", { desc = "Esc" })
 Map("n", "Q", "<nop>", { desc = "Silence Q" })
 
