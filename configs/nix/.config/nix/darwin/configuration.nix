@@ -35,10 +35,11 @@
       "hammerspoon"
       "force-paste"
       "alfred"
-      "1password"
-      "yandex" # browser, nix version is x86 only
-
       "docker"
+      "1password"
+
+      "yandex" # browser, nix version is x86 only
+      "transmission" # torrent client
     ];
   };
 
