@@ -1,7 +1,7 @@
 return {
-  "mfussenegger/nvim-dap",
+  "rcarriga/nvim-dap-ui",
   dependencies = {
-    "rcarriga/nvim-dap-ui",
+    "mfussenegger/nvim-dap",
     "nvim-neotest/nvim-nio",
     "theHamsta/nvim-dap-virtual-text",
 
@@ -42,7 +42,7 @@ return {
     Map("n", "<F5>", dap.step_back, { desc = "Step Back" })
     Map("n", "<F6>", dap.restart, { desc = "Restart" })
     Map("n", "<F7>", dap.terminate, { desc = "Stop" })
-    -- toggle to see last session result. Without this ,you can't see session output in case of unhandled exception.
+    -- toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     Map("n", "<F8>", ui.toggle)
     Map("n", "gb", dap.run_to_cursor)
     Map("n", "<leader>b", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
