@@ -23,12 +23,8 @@
     hello
     nixfmt-rfc-style
 
-    (nerdfonts.override {
-      fonts = [
-        "JetBrainsMono"
-        "Hack"
-      ];
-    })
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.hack
 
     # internet
     git
@@ -108,6 +104,8 @@
     awscli
     # redli # redis-cli alternative
     devenv
+
+    cloc # count lines of code
 
     # dev: build tools
     readline

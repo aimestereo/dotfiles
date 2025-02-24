@@ -13,7 +13,7 @@
     dock = {
       autohide = true;
       mru-spaces = false; # don't rearrange spaces
-      expose-group-by-app = true; # to fix missioncontrol after aerospace
+      expose-group-apps = true; # to fix missioncontrol after aerospace
     };
     finder.ShowPathbar = true;
     NSGlobalDomain."com.apple.keyboard.fnState" = true;
