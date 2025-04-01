@@ -119,12 +119,22 @@ return {
       }
 
       -- Change the Diagnostic symbols in the sign column (gutter)
-      -- (not in youtube nvim video)
-      local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "󰋼",
+            [vim.diagnostic.severity.HINT] = "󰠠",
+          },
+          numhl = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.HINT] = "",
+            [vim.diagnostic.severity.INFO] = "",
+          },
+        },
+      })
 
       --  This function gets run when an LSP connects to a particular buffer.
       mason_lspconfig.setup_handlers({
@@ -169,11 +179,11 @@ return {
 
       -- Command to toggle diagnostics
       vim.api.nvim_create_user_command("DiagnosticsToggle", function()
-        local current_value = vim.diagnostic.is_disabled()
-        if current_value then
-          vim.diagnostic.enable()
+        local is_diagnostic_enabled = vim.diagnostic.is_enabled()
+        if is_diagnostic_enabled then
+          vim.diagnostic.enable(false)
         else
-          vim.diagnostic.disable()
+          vim.diagnostic.enable(true)
         end
       end, {})
     end,
