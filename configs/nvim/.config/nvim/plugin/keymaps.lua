@@ -26,7 +26,7 @@ Map("v", "<A-c>", '"_c', { desc = "[C]hange symbol/selection avoiding yank" })
 Map("v", "<A-d>", '"_d', { desc = "[D]elete symbol/selection avoiding yank" })
 
 Map("x", "<A-p>", '"_dP', { desc = "[P]aste without overwriting register" })
-Map("v", "<leader>p", '"_d"+P', { desc = "[P]aste clipboard without overwriting register" })
+Map("v", "<A-p>", '"_d"+P', { desc = "[P]aste clipboard without overwriting register" })
 
 Map({ "n", "v" }, "<leader>y", '"+y', { desc = "[Y]ank to system clipboard" })
 Map("n", "<leader>Y", '"+Y', { desc = "[Y]ank current line to system clipboard" })
@@ -61,8 +61,9 @@ Map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 -- Concatenate with next line and keep cursor at the same position
 Map("n", "J", "mzJ`z", { desc = "Concatenate with next line and keep cursor at the same position" })
 
-Map("n", "<C-d>", "<C-d>zz", { desc = "Scroll [d]own half-page and center cursor" })
-Map("n", "<C-u>", "<C-u>zz", { desc = "Scroll [u]p half-page and center cursor" })
+-- Scroll stops working with long wrapped lines
+-- Map("n", "<C-d>", "<C-d>zz", { desc = "Scroll [d]own half-page and center cursor" })
+-- Map("n", "<C-u>", "<C-u>zz", { desc = "Scroll [u]p half-page and center cursor" })
 
 Map("n", "n", "nzzzv", { desc = "Go to a [n]ext match, keep cursor at the center of the screen" })
 Map("n", "N", "Nzzzv", { desc = "Go to a previous match, keep cursor at the center of the screen" })

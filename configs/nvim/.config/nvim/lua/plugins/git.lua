@@ -99,9 +99,11 @@ return {
       end, { desc = "Neogit status" })
 
       Map("n", "<A-g>", ":Neogit<CR>", { desc = "Open [G]it fugitive in current pane." })
-      Map("n", "<leader>gc", ":Neogit commit<CR>")
-      Map("n", "<leader>gp", ":Neogit pull<CR>")
-      Map("n", "<leader>gP", ":Neogit push<CR>")
+      -- Map("n", "<leader>gc", ":Neogit commit<CR>")
+      -- Map("n", "<leader>gp", ":Neogit pull<CR>")
+      -- Map("n", "<leader>gP", ":Neogit push<CR>")
+
+      Map("n", "<leader>gc", "<cmd>!gclean<CR>")
     end,
   },
 }
