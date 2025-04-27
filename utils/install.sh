@@ -13,11 +13,9 @@ git config --global http.version HTTP/1.1
 mkdir -p ~/.config/tmux/plugins
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
-echo "Please install Karabiner-DriverKit-VirtualHIDDevice"
-open https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases/tag/v4.3.0
-
 # echo "Please install Kanata"
-# open https://github.com/jtroo/kanata/releases/tag/v1.6.1
+# open https://github.com/jtroo/kanata/releases/tag/v1.8.1
+# downloaded and copied to configs/kanata/.local/bin/kanata_macos_arm64
 
 # Nix
 sh <(curl -L https://nixos.org/nix/install)

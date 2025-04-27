@@ -37,6 +37,7 @@
       "alfred"
       "docker"
       "1password"
+      "karabiner-elements"
 
       "yandex" # browser, nix version is x86 only
       "transmission" # torrent client
