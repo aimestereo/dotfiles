@@ -86,12 +86,12 @@ cmp.setup({
 
 -- Declare only keys that I actually use
 -- Based on https://github.com/hrsh7th/cmp-cmdline/issues/108#issuecomment-2119224327
--- C-n/C-p cycle through completions if a character has been typed and through
+-- C-j/C-k cycle through completions if a character has been typed and through
 -- command history if not (from https://www.reddit.com/r/neovim/comments/v5pfmy/comment/ibb61w3/)
 local cmd_mapping = {
   ["<C-Space>"] = { c = cmp.mapping.complete({}) },
-  ["<C-n>"] = { c = cmp.mapping.select_next_item() },
-  ["<C-p>"] = { c = cmp.mapping.select_prev_item() },
+  ["<C-j>"] = { c = cmp.mapping.select_next_item() },
+  ["<C-k>"] = { c = cmp.mapping.select_prev_item() },
   ["<C-e>"] = { c = cmp.mapping.abort() },
   ["<C-y>"] = {
     c = cmp.mapping.confirm({
