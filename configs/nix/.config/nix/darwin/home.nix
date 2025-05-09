@@ -101,7 +101,7 @@
     lazygit
     lazydocker
     pre-commit
-    awscli
+    awscli2
     # redli # redis-cli alternative
     devenv
 
