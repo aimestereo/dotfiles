@@ -41,6 +41,7 @@
 
       "yandex" # browser, nix version is x86 only
       "transmission" # torrent client
+      "zoom"
     ];
   };
 

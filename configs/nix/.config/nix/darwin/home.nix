@@ -40,7 +40,7 @@
 
     # internet apps
     slack
-    zoom-us
+    # zoom-us
     arc-browser
     postman
     telegram-desktop
