@@ -151,7 +151,7 @@
   programs = {
     zsh = {
       enable = true;
-      initExtra = ''
+      initContent = ''
         . "$HOME/.config/zsh/init.zsh"
       '';
     };
