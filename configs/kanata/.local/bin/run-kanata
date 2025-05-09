@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [ "$EUID" != 0 ]; then
+	sudo "$0" "$@"
+	exit $?
+fi
+
+pkill kanata
+
+kanata --cfg "$HOME"/.config/kanata/config.kbd 2>&1 >/tmp/kanata.log &

@@ -9,8 +9,6 @@ osascript -e 'tell application "System Events" to make login item at end with pr
 launchctl unload -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2 &>/dev/null || true
 launchctl load -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist
 
-/Applications/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
-
 # Nix
 nix run nix-darwin -- switch --flake "$PWD/configs/nix/.config/nix"
 

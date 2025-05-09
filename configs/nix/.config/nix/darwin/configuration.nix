@@ -29,6 +29,7 @@
 
     brews = [
       "ical-buddy" # for tmux calendar plugin
+      "kanata"
     ];
 
     casks = [
