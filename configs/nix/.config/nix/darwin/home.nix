@@ -40,8 +40,8 @@
 
     # internet apps
     slack
-    # zoom-us
-    arc-browser
+    # zoom-us  # contant reinstalls mess with MacOS permissions
+    # arc-browser  # updates ofthen, lets use brew version to avoid overrides
     postman
     telegram-desktop
 

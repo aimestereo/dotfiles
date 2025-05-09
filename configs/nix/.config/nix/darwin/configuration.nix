@@ -39,6 +39,7 @@
       "1password"
       "karabiner-elements"
 
+      "arc" # arc-browser updates often, use brew version to avoid overrides
       "yandex" # browser, nix version is x86 only
       "transmission" # torrent client
       "zoom"
