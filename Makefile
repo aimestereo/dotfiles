@@ -35,4 +35,7 @@ nix-update:
 		--extra-experimental-features 'nix-command flakes' \
 		-- switch --flake $(NIX_CONFIG_DIR)
 
+nix-clean:
+	nix-store --gc
+	sudo nix-collect-garbage -d
 
