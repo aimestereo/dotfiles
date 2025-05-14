@@ -56,27 +56,175 @@ return {
       })
     end,
   },
+
   {
-    "David-Kunz/gen.nvim",
-    config = function()
-      require("gen").setup({
-        model = "mistral", -- The default model to use.
-        host = "127.0.0.1", -- The host running the Ollama service.
-        port = "11434", -- The port on which the Ollama service is listening.
-        display_mode = "split", -- The display mode. Can be "float" or "split".
-        show_prompt = true, -- Shows the Prompt submitted to Ollama.
-        show_model = true, -- Displays which model you are using at the beginning of your chat session.
-        no_auto_close = false, -- Never closes the window automatically.
-        debug = false, -- Prints errors and the command which is run.
-      })
-
-      Map({ "n", "v" }, "<leader>om", require("gen").select_model)
-      Map({ "n", "v" }, "<leader>oo", ":Gen<CR>")
-
-      require("gen").prompts["Devops"] = {
-        prompt = "You are a senior devops engineer, acting as an assistant. You offer help with cloud technologies like: Terraform, AWS, kubernetes, python. You answer with code examples when possible. $input:\n$text",
-        replace = true,
-      }
-    end,
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    version = false, -- Never set this value to "*"! Never!
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "echasnovski/mini.pick", -- for file_selector provider mini.pick
+      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+    behaviour = {
+      auto_suggestions = false, -- Experimental stage
+      auto_set_highlight_group = true,
+      auto_set_keymaps = true,
+      auto_apply_diff_after_generation = false,
+      support_paste_from_clipboard = false,
+      minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
+      enable_token_counting = true, -- Whether to enable token counting. Default to true.
+    },
+    opts = {
+      auto_suggestions_provider = "bedrock",
+      provider = "bedrock",
+      bedrock = {
+        model = "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+        timeout = 30000, -- Timeout in milliseconds
+        temperature = 0,
+        max_tokens = 20480,
+      },
+    },
+    mappings = {
+      --- @class AvanteConflictMappings
+      diff = {
+        ours = "co",
+        theirs = "ct",
+        all_theirs = "ca",
+        both = "cb",
+        cursor = "cc",
+        next = "]x",
+        prev = "[x",
+      },
+      suggestion = {
+        accept = "<M-l>",
+        next = "<M-]>",
+        prev = "<M-[>",
+        dismiss = "<C-]>",
+      },
+      jump = {
+        next = "]]",
+        prev = "[[",
+      },
+      submit = {
+        normal = "<CR>",
+        insert = "<C-s>",
+      },
+      cancel = {
+        normal = { "<C-c>", "<Esc>", "q" },
+        insert = { "<C-c>" },
+      },
+      sidebar = {
+        apply_all = "A",
+        apply_cursor = "a",
+        retry_user_request = "r",
+        edit_user_request = "e",
+        switch_windows = "<Tab>",
+        reverse_switch_windows = "<S-Tab>",
+        remove_file = "d",
+        add_file = "@",
+        close = { "<Esc>", "q" },
+        close_from_input = nil, -- e.g., { normal = "<Esc>", insert = "<C-d>" }
+      },
+    },
+    hints = { enabled = true },
+    windows = {
+      ---@type "right" | "left" | "top" | "bottom"
+      position = "right", -- the position of the sidebar
+      wrap = true, -- similar to vim.o.wrap
+      width = 30, -- default % based on available width
+      sidebar_header = {
+        enabled = true, -- true, false to enable/disable the header
+        align = "center", -- left, center, right for title
+        rounded = true,
+      },
+      input = {
+        prefix = "> ",
+        height = 8, -- Height of the input window in vertical layout
+      },
+      edit = {
+        border = "rounded",
+        start_insert = true, -- Start insert mode when opening the edit window
+      },
+      ask = {
+        floating = false, -- Open the 'AvanteAsk' prompt in a floating window
+        start_insert = true, -- Start insert mode when opening the ask window
+        border = "rounded",
+        ---@type "ours" | "theirs"
+        focus_on_apply = "ours", -- which diff to focus after applying
+      },
+    },
+    highlights = {
+      ---@type AvanteConflictHighlights
+      diff = {
+        current = "DiffText",
+        incoming = "DiffAdd",
+      },
+    },
+    --- @class AvanteConflictUserConfig
+    diff = {
+      autojump = true,
+      ---@type string | fun(): any
+      list_opener = "copen",
+      --- Override the 'timeoutlen' setting while hovering over a diff (see :help timeoutlen).
+      --- Helps to avoid entering operator-pending mode with diff mappings starting with `c`.
+      --- Disable by setting to -1.
+      override_timeoutlen = 500,
+    },
+    suggestion = {
+      debounce = 600,
+      throttle = 600,
+    },
   },
+
+  -- {
+  --   "olimorris/codecompanion.nvim",
+  --   opts = {},
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --     -- Optional:
+  --     "ravitemer/codecompanion-history.nvim",
+  --     -- "ravitemer/mcphub.nvim",
+  --     { "Davidyz/VectorCode", version = "*", build = "pipx upgrade vectorcode" },
+  --   },
+  --   config = function()
+  --     require("plugins.scripts.codecompanion")
+  --   end,
+  -- },
 }
