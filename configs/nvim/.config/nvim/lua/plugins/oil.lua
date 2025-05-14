@@ -7,7 +7,7 @@ return {
         columns = { "icon" },
         keymaps = {
           ["<C-h>"] = false,
-          ["<M-h>"] = "actions.select_split",
+          ["<C-l>"] = false,
         },
         default_file_explorer = true,
         delete_to_trash = true,
