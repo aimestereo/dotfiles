@@ -157,12 +157,12 @@ alias cl='clear'
 
 alias l='eza -lah'
 alias ll='eza -lh'
+alias ls='eza'
 alias lt='eza -lh --tree'
 alias lat='eza -lah --tree'
-alias ls='eza'
-
 alias tree='eza --tree'
-alias c='bat'
+
+alias cat='bat'
 alias c='bat -p'
 
 setopt auto_cd
