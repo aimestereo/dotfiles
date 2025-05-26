@@ -8,6 +8,8 @@ local previousApp = ""
 
 local log = hs.logger.new("app-management", "debug")
 
+local ENABLE_SWITCH_BACK = false
+
 function This.switchToAndFromApp(bundleID)
   local focusedWindow = hs.window.focusedWindow()
 
@@ -16,9 +18,9 @@ function This.switchToAndFromApp(bundleID)
   if focusedWindow == nil then
     hs.application.launchOrFocusByBundleID(bundleID)
   elseif focusedWindow:application():bundleID() == bundleID then
-    if previousApp == nil then
+    if ENABLE_SWITCH_BACK and previousApp == nil then
       hs.window.switcher.nextWindow()
-    else
+    elseif ENABLE_SWITCH_BACK then
       previousApp:activate()
     end
   else
