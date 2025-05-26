@@ -21,6 +21,7 @@ return {
         typescript = { "prettier" },
         javascriptreact = { "prettier" },
         typescriptreact = { "prettier" },
+        terraform = { "tofu_fmt" },
         svelte = { "prettier" },
         css = { "prettier" },
         html = { "prettier" },
