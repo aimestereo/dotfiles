@@ -1,5 +1,7 @@
 return {
 
+  "towolf/vim-helm",
+
   {
     "folke/lazydev.nvim",
     ft = "lua", -- only load on lua files

@@ -7,6 +7,16 @@
 return {
   -- clangd = {},
   gopls = {},
+  -- yamlls = {},
+  helm_ls = {
+    helm_ls = {
+      ["helm-ls"] = {
+        -- yamlls = {
+        --   path = "yaml-language-server",
+        -- },
+      },
+    },
+  },
 
   ruff = {},
 
