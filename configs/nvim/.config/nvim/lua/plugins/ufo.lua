@@ -24,7 +24,7 @@ return {
       end,
 
       open_fold_hl_timeout = 400,
-      close_fold_kinds = { "imports", "comment" },
+      -- close_fold_kinds_for_ft = { "imports", "comment" },
 
       preview = {
         win_config = {
@@ -84,8 +84,7 @@ return {
       vim.keymap.set("n", "K", function()
         local winid = require("ufo").peekFoldedLinesUnderCursor()
         if not winid then
-          -- vim.lsp.buf.hover()
-          vim.cmd([[ Lspsaga hover_doc ]])
+          vim.lsp.buf.hover()
         end
       end)
     end,

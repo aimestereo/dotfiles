@@ -8,7 +8,7 @@ return {
   -- clangd = {},
   gopls = {},
 
-  ruff_lsp = {},
+  ruff = {},
 
   pyright = {
     pyright = {
@@ -23,7 +23,7 @@ return {
     },
   },
 
-  tsserver = {
+  ts_ls = {
     javascript = {
       inlayHints = {
         includeInlayEnumMemberValueHints = true,
