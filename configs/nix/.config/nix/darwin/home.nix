@@ -104,6 +104,7 @@
     awscli2
     # redli # redis-cli alternative
     devenv
+    k9s
 
     cloc # count lines of code
 
