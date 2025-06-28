@@ -22,6 +22,9 @@ fpath=(
   ${HOMEBREW_PREFIX}/share/zsh/site-functions
   "${fpath[@]}"
 )
+export CARAPACE_BRIDGES='zsh' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
 
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
@@ -71,7 +74,6 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # Add in zsh plugins
 zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light atuinsh/atuin
 
