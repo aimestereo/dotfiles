@@ -89,6 +89,7 @@
     atuin # command history manager
     yazi # terminal file manager
     carapace # shell completion framework
+    jujutsu # git cli alternative
 
     # processes
     mprocs
