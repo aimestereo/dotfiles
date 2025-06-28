@@ -81,13 +81,6 @@ export DIRENV_HOME="${HOME}/.config/direnv"
 zinit light ptavares/zsh-direnv
 
 # Add in snippets
-zinit snippet OMZP::git
-zinit snippet OMZP::sudo
-zinit snippet OMZP::aws
-# zinit snippet OMZP::docker/completions/_docker
-# zinit snippet OMZP::docker-compose/_docker-compose
-# zinit snippet OMZP::kubectl
-# zinit snippet OMZP::kubectx
 zinit snippet OMZP::command-not-found
 
 # Load completions
