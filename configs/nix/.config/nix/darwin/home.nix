@@ -86,8 +86,8 @@
     fd
     diff-so-fancy
     tldr
-    atuin
-    yazi
+    atuin # command history manager
+    yazi # terminal file manager
 
     # processes
     mprocs

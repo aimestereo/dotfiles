@@ -29,9 +29,9 @@ nix-rebuild:
 
 nix-upgrade: nix-update-lockfile nix-update
 nix-update-lockfile:
-	nix flake update --flake $(NIX_CONFIG_DIR)
+	sudo nix flake update --flake $(NIX_CONFIG_DIR)
 nix-update:
-	nix run nix-darwin \
+	sudo nix run nix-darwin \
 		--extra-experimental-features 'nix-command flakes' \
 		-- switch --flake $(NIX_CONFIG_DIR)
 
