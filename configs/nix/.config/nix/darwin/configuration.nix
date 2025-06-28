@@ -9,6 +9,7 @@
   # Use Touch ID for sudo authentication.
   security.pam.services.sudo_local.touchIdAuth = true;
 
+  system.primaryUser = user.name;
   system.defaults = {
     dock = {
       autohide = true;
