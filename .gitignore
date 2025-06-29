@@ -3,7 +3,6 @@
 tags
 test.sh
 .luarc.json
-lazy-lock.json
 
 # downloaded git submodules of plugins
 configs/tmux/.config/tmux/plugins/
