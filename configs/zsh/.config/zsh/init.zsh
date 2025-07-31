@@ -88,9 +88,6 @@ autoload -Uz compinit && compinit
 
 zinit cdreplay -q
 
-# fixes after zinit
-unalias gclean
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
@@ -146,6 +143,9 @@ setopt hist_find_no_dups
 #
 # Aliases
 #
+
+alias g='git'
+alias wt='git worktree'
 
 alias v='nvim'
 alias cl='clear'
