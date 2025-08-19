@@ -9,7 +9,7 @@ DEBUG_SESSIONIZER=0
 # space separated list of directories
 # sessionizer will treat all children of these directories as projects
 # to start a new tmux session in
-WORKPLACE_ROOTS="~/projects/nw ~/projects/aimestereo ~/projects/sm ~/projects/ablt"
+WORKPLACE_ROOTS="~/projects"
 
 debug() {
 	if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
@@ -54,7 +54,7 @@ else
 	# First, expand any tildes in WORKPLACE_ROOTS, then turn into an array
 	WORKPLACE_ROOTS_EXPANDED=$(eval echo "$WORKPLACE_ROOTS")
 	IFS=' ' read -ra WORKPLACE_ROOTS_ARRAY <<<"$WORKPLACE_ROOTS_EXPANDED"
-	selected_path=$(find "${WORKPLACE_ROOTS_ARRAY[@]}" -mindepth 1 -maxdepth 1 -type l -o -type d | fzf)
+	selected_path=$(find "${WORKPLACE_ROOTS_ARRAY[@]}" -mindepth 2 -maxdepth 2 -type d | fzf)
 fi
 
 debug "selected_path: ${selected_path}"
@@ -63,7 +63,10 @@ if [[ -z $selected_path ]]; then
 	exit 0
 fi
 
-selected_name=$(basename "$selected_path" | tr . _)
+# Get both group name and project name for better context
+group_name=$(basename "$(dirname "$selected_path")")
+project_name=$(basename "$selected_path")
+selected_name=$(echo "${project_name}[${group_name}]" | tr . _)
 has_session=$(tmux has-session -t="$selected_name" 2>/dev/null && echo "true" || echo "false")
 
 debug "selected_name: ${selected_name}"
