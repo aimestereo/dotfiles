@@ -87,7 +87,6 @@
     diff-so-fancy
     tldr
     atuin # command history manager
-    yazi # terminal file manager
     carapace # shell completion framework
     jujutsu # git cli alternative
 
@@ -155,7 +154,7 @@
     zsh = {
       enable = true;
       initContent = ''
-        . "$HOME/.config/zsh/init.zsh"
+        . "$HOME/.config/zsh/zshrc-darwin
       '';
     };
 

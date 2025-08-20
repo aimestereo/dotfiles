@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "extra-experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
+
+# Extract trusted-users from the built NixOS configuration
+TRUSTED_USERS=$(nix eval --json .#nixosConfigurations.aimestereo-arch.config.nix.settings.trusted-users)
+
+# Apply to /etc/nix/nix.conf
+sudo mkdir -p /etc/nix
+echo "trusted-users = $TRUSTED_USERS" | sudo tee -a /etc/nix/nix.conf
+sudo systemctl restart nix-daemon.service

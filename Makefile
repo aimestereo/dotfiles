@@ -22,20 +22,19 @@ symlinks:
 #
 # Nix
 #
-
-nix: nix-rebuild
-nix-rebuild:
-	darwin-rebuild switch --flake $(NIX_CONFIG_DIR) 
-
-nix-upgrade: nix-update-lockfile nix-update
 nix-update-lockfile:
-	sudo nix flake update --flake $(NIX_CONFIG_DIR)
-nix-update:
-	sudo nix run nix-darwin \
-		--extra-experimental-features 'nix-command flakes' \
-		-- switch --flake $(NIX_CONFIG_DIR)
+	(MAKE) -C $(NIX_CONFIG_DIR) update-lockfile
+
+nix-darwin:
+	(MAKE) -C $(NIX_CONFIG_DIR) darwin
+nix-darwin-run:
+	(MAKE) -C $(NIX_CONFIG_DIR) darwin-run
+
+nix-arch:
+	(MAKE) -C $(NIX_CONFIG_DIR) arch
+nix-arch-home:
+	(MAKE) -C $(NIX_CONFIG_DIR) arch-home
 
 nix-clean:
-	nix-store --gc
-	sudo nix-collect-garbage -d
+	(MAKE) -C $(NIX_CONFIG_DIR) clean
 

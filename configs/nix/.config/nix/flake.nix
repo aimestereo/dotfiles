@@ -1,15 +1,17 @@
 {
-  description = "Darwin configuration";
+  description = "NixOS and Darwin configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    # Darwin (macOS) specific inputs
     darwin.url = "github:lnl7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
+    mac-app-util.url = "github:hraban/mac-app-util";
+
+    # Common inputs
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # To properly link installed applications to the Applications folder
-    mac-app-util.url = "github:hraban/mac-app-util";
   };
 
   outputs =
@@ -22,30 +24,43 @@
       ...
     }:
     let
-      system = "aarch64-darwin";
-      user = import ./user.nix;
+      # Import user configuration
+      user = import ./user.nix {};
 
-      pkgs = import nixpkgs {
+      # Function to create a package set for a specific system
+      pkgsFor = system: import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
         };
       };
+
+      # Systems supported
+      supportedSystems = [ "aarch64-darwin" "x86_64-linux" ];
+
+      # Helper function to generate attributes for each system
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      devShells.${system}.default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          cowsay
-          neovim
-        ];
-      };
+      # Development shells for each system
+      devShells = forAllSystems (system: {
+        default = (pkgsFor system).mkShell {
+          buildInputs = with (pkgsFor system); [
+            cowsay
+            neovim
+          ];
+        };
+      });
 
+      # Darwin configurations (for macOS)
       darwinConfigurations = {
-        ${user.hostname} = darwin.lib.darwinSystem {
-          system = system;
+        "aimestereo-Air" = let
+          system = "aarch64-darwin";
+        in darwin.lib.darwinSystem {
+          inherit system;
           specialArgs = {
-            inherit pkgs;
-            inherit user;
+            pkgs = pkgsFor system;
+            user = import ./user.nix { hostname = "aimestereo-Air"; };
           };
           modules = [
             ./configuration.nix
@@ -65,11 +80,50 @@
               ];
 
               home-manager.extraSpecialArgs = {
-                inherit pkgs;
-                inherit user;
+                pkgs = pkgsFor system;
+                user = import ./user.nix { hostname = "aimestereo-Air"; };
               };
-
             }
+          ];
+        };
+      };
+
+      # NixOS configurations (for Linux)
+      nixosConfigurations = {
+        "aimestereo-arch" = nixpkgs.lib.nixosSystem {
+          pkgs = pkgsFor "x86_64-linux";
+          specialArgs = {
+            user = import ./user.nix { hostname = "aimestereo-arch"; };
+          };
+          modules = [
+            ./configuration.nix
+            ./linux/configuration.nix
+
+            # Include home-manager as a NixOS module
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.users.aimestereo = import ./linux/home.nix;
+
+              home-manager.extraSpecialArgs = {
+                user = import ./user.nix { hostname = "aimestereo-arch"; };
+              };
+            }
+          ];
+        };
+      };
+
+      # Home Manager configurations (for standalone use on Linux)
+      homeConfigurations = {
+        "aimestereo-arch" = home-manager.lib.homeManagerConfiguration {
+          pkgs = pkgsFor "x86_64-linux";
+          extraSpecialArgs = {
+            user = import ./user.nix { hostname = "aimestereo-arch"; };
+          };
+          modules = [
+            ./linux/home.nix
           ];
         };
       };
