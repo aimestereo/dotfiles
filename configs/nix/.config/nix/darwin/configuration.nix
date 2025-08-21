@@ -37,7 +37,6 @@
       "hammerspoon"
       "force-paste"
       "alfred"
-      "docker"
       "1password"
       "karabiner-elements"
 
