@@ -12,10 +12,6 @@ darwin-run:
 
 .PHONY: arch
 arch:
-	nix build .#nixosConfigurations.aimestereo-arch.config.system.build.toplevel
-
-.PHONY: arch-home
-arch-home:
 	home-manager switch --flake .#aimestereo-arch
 
 .PHONY: clean

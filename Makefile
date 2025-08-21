@@ -32,8 +32,6 @@ nix-darwin-run:
 
 nix-arch:
 	(MAKE) -C $(NIX_CONFIG_DIR) arch
-nix-arch-home:
-	(MAKE) -C $(NIX_CONFIG_DIR) arch-home
 
 nix-clean:
 	(MAKE) -C $(NIX_CONFIG_DIR) clean

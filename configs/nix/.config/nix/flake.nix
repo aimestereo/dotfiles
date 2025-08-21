@@ -25,18 +25,23 @@
     }:
     let
       # Import user configuration
-      user = import ./user.nix {};
+      user = import ./user.nix { };
 
       # Function to create a package set for a specific system
-      pkgsFor = system: import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
+      pkgsFor =
+        system:
+        import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+          };
         };
-      };
 
       # Systems supported
-      supportedSystems = [ "aarch64-darwin" "x86_64-linux" ];
+      supportedSystems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+      ];
 
       # Helper function to generate attributes for each system
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -54,65 +59,40 @@
 
       # Darwin configurations (for macOS)
       darwinConfigurations = {
-        "aimestereo-Air" = let
-          system = "aarch64-darwin";
-        in darwin.lib.darwinSystem {
-          inherit system;
-          specialArgs = {
-            pkgs = pkgsFor system;
-            user = import ./user.nix { hostname = "aimestereo-Air"; };
+        "aimestereo-Air" =
+          let
+            system = "aarch64-darwin";
+          in
+          darwin.lib.darwinSystem {
+            inherit system;
+            specialArgs = {
+              pkgs = pkgsFor system;
+              user = import ./user.nix { hostname = "aimestereo-Air"; };
+            };
+            modules = [
+              ./configuration.nix
+              ./darwin/configuration.nix
+              mac-app-util.darwinModules.default
+
+              home-manager.darwinModules.home-manager
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.backupFileExtension = "backup";
+                home-manager.users.aimestereo = import ./darwin/home.nix;
+
+                # To enable it for all users:
+                home-manager.sharedModules = [
+                  mac-app-util.homeManagerModules.default
+                ];
+
+                home-manager.extraSpecialArgs = {
+                  pkgs = pkgsFor system;
+                  user = import ./user.nix { hostname = "aimestereo-Air"; };
+                };
+              }
+            ];
           };
-          modules = [
-            ./configuration.nix
-            ./darwin/configuration.nix
-            mac-app-util.darwinModules.default
-
-            home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.aimestereo = import ./darwin/home.nix;
-
-              # To enable it for all users:
-              home-manager.sharedModules = [
-                mac-app-util.homeManagerModules.default
-              ];
-
-              home-manager.extraSpecialArgs = {
-                pkgs = pkgsFor system;
-                user = import ./user.nix { hostname = "aimestereo-Air"; };
-              };
-            }
-          ];
-        };
-      };
-
-      # NixOS configurations (for Linux)
-      nixosConfigurations = {
-        "aimestereo-arch" = nixpkgs.lib.nixosSystem {
-          pkgs = pkgsFor "x86_64-linux";
-          specialArgs = {
-            user = import ./user.nix { hostname = "aimestereo-arch"; };
-          };
-          modules = [
-            ./configuration.nix
-            ./linux/configuration.nix
-
-            # Include home-manager as a NixOS module
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.aimestereo = import ./linux/home.nix;
-
-              home-manager.extraSpecialArgs = {
-                user = import ./user.nix { hostname = "aimestereo-arch"; };
-              };
-            }
-          ];
-        };
       };
 
       # Home Manager configurations (for standalone use on Linux)
