@@ -154,7 +154,7 @@
     zsh = {
       enable = true;
       initContent = ''
-        . "$HOME/.config/zsh/zshrc-darwin
+        . "$HOME/.config/zsh/zshrc-darwin"
       '';
     };
 
