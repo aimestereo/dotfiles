@@ -1,0 +1,14 @@
+# Don't run this file, only source to update current ENV
+
+export_bedrock() {
+    local profile="${1:-default}"
+    local credentials="$(aws configure export-credentials --profile "$profile")"
+    local access_key=$(jq -r '.AccessKeyId' <<<"$credentials")
+    local secret_key=$(jq -r '.SecretAccessKey' <<<"$credentials")
+    local session_token=$(jq -r '.SessionToken // ""' <<<"$credentials")
+    local region=$(aws configure get region --profile "$profile")
+    
+    export BEDROCK_KEYS="$access_key,$secret_key,$region${session_token:+,$session_token}"
+}
+
+export_bedrock bedrock
