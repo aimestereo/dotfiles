@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ROOT_DIR=~/projects/my
+
+# ~/.local/share/omarchy/install.sh
+
+# Clone private dotfiles repository
+ssh-keygen -t ed25519 -C "aimestereo@gmail.com Arch"
+echo "Register the following SSH public key with GitHub:"
+cat ~/.ssh/id_ed25519.pub
+read -p "Press [Enter] key after registering the SSH key with GitHub..."
+
+cd "$ROOT_DIR"
+git clone git@github.com:aimestereo/dotfiles-private.git
+cd dotfiles-private
+make symlinks

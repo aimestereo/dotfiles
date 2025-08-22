@@ -1,4 +1,9 @@
-{ config, pkgs, user, ... }:
+{
+  config,
+  pkgs,
+  user,
+  ...
+}:
 
 {
   # Home Manager needs a bit of information about you and the paths it should manage
@@ -11,12 +16,15 @@
     nixfmt-rfc-style
 
     nerd-fonts.jetbrains-mono
+    nerd-fonts.caskaydia-mono
     nerd-fonts.hack
 
     # Development
     git
     tmux
     neovim
+    kitty
+    stow
     lazygit
     lazydocker
     pre-commit
@@ -25,20 +33,29 @@
     devenv
     k9s
     cloc # count lines of code
+    imagemagick
 
     # Build tools
     readline
+    cargo 
+    clang 
+    llvm
 
     # Terminal utilities
     eza # Modern replacement for exa, ls
     bat
+    gum
     coreutils
     jq
     ripgrep
     fzf
     fd
     diff-so-fancy
+    man
     tldr
+    less
+    whois
+    plocate
     atuin # command history manager
     carapace # shell completion framework
     jujutsu # git cli alternative
@@ -53,12 +70,18 @@
     unzip
     wget
     curl
+    inetutils
     gnupg
     rsync
+    impala # TUI for managing wifi
+    zoxide
+    xmlstarlet  # XML command line toolkit
+    wl-clipboard 
+    fastfetch
 
     # Apps
     slack
-    zoom-us  # contant reinstalls mess with MacOS permissions
+    zoom-us # contant reinstalls mess with MacOS permissions
     # zen-browser  # updates ofthen, lets use brew version to avoid overrides
     postman
     telegram-desktop
@@ -87,7 +110,7 @@
     };
     initContent = ''
       . ~/.config/zsh/zshrc-arch
-      '';
+    '';
   };
 
   programs.direnv.enable = true;
@@ -100,4 +123,3 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
-

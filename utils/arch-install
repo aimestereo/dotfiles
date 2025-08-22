@@ -5,6 +5,10 @@
 
 # wget -qO- https://raw.githubusercontent.com/aimestereo/dotfiles/refs/heads/main/utils/arch-install | bash
 
+ROOT_DIR=~/projects/my
+mkdir -p "$ROOT_DIR"
+cd "$ROOT_DIR"
+
 # Install Nix package manager
 sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
 
@@ -18,10 +22,13 @@ nix-shell '<home-manager>' -A install
 nix-env -iA nixpkgs.git
 
 # Clone public dotfiles repository
+cd "$ROOT_DIR"
 git clone git@github.com:aimestereo/dotfiles.git
 cd dotfiles
-make symlinks
 make nix-arch
+make symlinks
+
+~/.local/share/omarchy/install.sh
 
 # Clone private dotfiles repository
 ssh-keygen -t ed25519 -C "aimestereo@gmail.com Arch"
@@ -29,6 +36,7 @@ echo "Register the following SSH public key with GitHub:"
 cat ~/.ssh/id_ed25519.pub
 read -p "Press [Enter] key after registering the SSH key with GitHub..."
 
+cd "$ROOT_DIR"
 git clone git@github.com:aimestereo/dotfiles-private.git
 cd dotfiles-private
 make symlinks
