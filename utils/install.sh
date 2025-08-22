@@ -18,6 +18,11 @@ git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 # downloaded and copied to configs/kanata/.local/bin/kanata_macos_arm64
 
 # Nix
-sh <(curl -L https://nixos.org/nix/install)
+sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install)
 echo "Restart shell to enable Nix"
 exit 0
+
+# Nix: add Home Manager [darwin]
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
