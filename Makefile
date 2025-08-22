@@ -6,18 +6,23 @@ CONFIG_DIR := $(HOME)/.config
 current_dir := $(shell pwd)
 NIX_CONFIG_DIR := $(current_dir)/configs/nix/.config/nix
 
+.PHONY: mac
+mac: mac-install mac-after-install nix-darwin
 
-install:
-	utils/install.sh
+.PHONY: after-install
+mac-install:
+	utils/mac-install
 	@echo "Restart shell and run 'make after-install'"
-after-install: symlinks
-	utils/after-install.sh
 
-update: nix-rebuild symlinks after-install
+.PHONY: mac-after-install
+mac-after-install: symlinks 
+	utils/mac-after-install
+
+update: nix-rebuild symlinks
 upgrade: nix-upgrade symlinks after-install
 
 symlinks:
-	utils/symlinks.sh
+	utils/symlinks
 
 #
 # Nix

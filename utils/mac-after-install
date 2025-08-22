@@ -9,9 +9,6 @@ osascript -e 'tell application "System Events" to make login item at end with pr
 launchctl unload -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2 &>/dev/null || true
 launchctl load -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist
 
-# Nix
-nix run nix-darwin -- switch --flake "$PWD/configs/nix/.config/nix"
-
 npm config set prefix "${HOME}/.cache/npm/global" &&
 	mkdir -p "${HOME}/.cache/npm/global" &&
-	npm install -g -U pnpm neovim
+	npm install -g -U pnpm
