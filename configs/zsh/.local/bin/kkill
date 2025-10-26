@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+search_string="$@" 
+echo "Killing process that matches: '$search_string':"
+ps aux | grep "$search_string" | grep -v grep | awk '{print $12}'
+
+ps aux | grep "$search_string" | grep -v grep | grep -v kkill | awk '{print $2}' | xargs kill -9
