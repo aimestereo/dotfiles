@@ -28,7 +28,11 @@ return {
       vim.g.db_ui_save_location = "~/.local/share/db_ui"
       vim.g.db_url = os.getenv("DBUI_URL")
 
+      vim.g.db_ui_bind_param_pattern = ":\\w\\+"
+      -- vim.g.db_ui_bind_param_pattern = "\\$\\d\\+"
+
       Map("n", "<leader>\\", "<CMD>DBUIToggle<CR>", { desc = "Toggle DBUI" })
+      -- Save <leader>w in sql file
     end,
   },
 }
