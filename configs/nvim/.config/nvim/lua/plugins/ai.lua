@@ -103,15 +103,47 @@ return {
       },
     },
     opts = {
-      auto_suggestions_provider = "bedrock",
-      provider = "bedrock",
+      provider = "openai",
       providers = {
-        bedrock = {
-          model = "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
-          timeout = 30000, -- Timeout in milliseconds
+        openai = {
+          endpoint = "https://api.openai.com/v1",
+          model = "gpt-5", -- your desired model (or use gpt-4o, etc.)
+          timeout = 60000, -- Timeout in milliseconds, increase this for reasoning models
           extra_request_body = {
-            temperature = 0,
-            max_tokens = 100480,
+            temperature = 1,
+            max_completion_tokens = 20000, -- Increase this to include reasoning tokens (for reasoning models)
+            reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+          },
+        },
+        bedrock = {
+          is_env_set = function()
+            return true
+          end,
+          parse_api_key = function()
+            return nil
+          end,
+          aws_profile = "bedrock",
+          -- US: claude 3.7-sonnet
+          -- aws_region = "us-east-1",
+          -- model = "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+          --
+          -- US: Deepseek r1
+          aws_region = "us-east-1",
+          model = "us.deepseek.r1-v1:0",
+          --
+          -- US: claude-opus-4
+          -- aws_region = "us-east-1",
+          -- model = "us.anthropic.claude-opus-4-1-20250805-v1:0",
+          --
+          -- EU: claude 3.7-sonnet
+          -- aws_region = "eu-central-1",
+          -- model = "eu.anthropic.claude-3-7-sonnet-20250219-v1:0",
+          --
+          timeout = 60000, -- Timeout in milliseconds
+          extra_request_body = {
+            temperature = 0.75,
+            -- max_tokens = 100480,
+            max_tokens = 60000,
           },
         },
       },
