@@ -103,7 +103,7 @@ return {
       },
     },
     opts = {
-      provider = "openai",
+      provider = "bedrock_eu_sonnet", -- default provider to use
       providers = {
         openai = {
           endpoint = "https://api.openai.com/v1",
@@ -115,7 +115,9 @@ return {
             reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
           },
         },
-        bedrock = {
+        -- EU: claude 4.5-sonnet
+        bedrock_eu_sonnet = {
+          __inherited_from = "bedrock",
           is_env_set = function()
             return true
           end,
@@ -123,29 +125,47 @@ return {
             return nil
           end,
           aws_profile = "bedrock",
-          -- US: claude 3.7-sonnet
-          -- aws_region = "us-east-1",
-          -- model = "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
-          --
-          -- US: Deepseek r1
-          aws_region = "us-east-1",
-          model = "us.deepseek.r1-v1:0",
-          --
-          -- US: claude-opus-4
-          -- aws_region = "us-east-1",
-          -- model = "us.anthropic.claude-opus-4-1-20250805-v1:0",
-          --
-          -- EU: claude 3.7-sonnet
-          -- aws_region = "eu-central-1",
-          -- model = "eu.anthropic.claude-3-7-sonnet-20250219-v1:0",
-          --
+          aws_region = "eu-central-1",
+          model = "eu.anthropic.claude-sonnet-4-5-20250929-v1:0",
+
           timeout = 60000, -- Timeout in milliseconds
           extra_request_body = {
             temperature = 0.75,
             -- max_tokens = 100480,
-            max_tokens = 60000,
+            max_tokens = 40000,
           },
         },
+        -- EU: claude 4.5-haiku
+        bedrock_eu_haiku = {
+          __inherited_from = "bedrock",
+          is_env_set = function()
+            return true
+          end,
+          parse_api_key = function()
+            return nil
+          end,
+          aws_profile = "bedrock",
+          aws_region = "eu-central-1",
+          model = "eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+
+          timeout = 60000, -- Timeout in milliseconds
+          extra_request_body = {
+            temperature = 0.75,
+            -- max_tokens = 100480,
+            max_tokens = 40000,
+          },
+        },
+        -- US: claude 3.7-sonnet
+        -- aws_region = "us-east-1",
+        -- model = "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+        --
+        -- US: Deepseek r1
+        -- aws_region = "us-east-1",
+        -- model = "us.deepseek.r1-v1:0",
+        --
+        -- US: claude-opus-4
+        -- aws_region = "us-east-1",
+        -- model = "us.anthropic.claude-opus-4-1-20250805-v1:0",
       },
       behaviour = {
         auto_suggestions = false, -- Experimental stage
