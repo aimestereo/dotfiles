@@ -3,7 +3,7 @@
 CONFIG_DIR := $(HOME)/.config
 
 current_dir := $(shell pwd)
-NIX_CONFIG_DIR := $(current_dir)/configs/nix/.config/nix
+NIX_CONFIG_DIR := nix
 
 .PHONY: mac
 mac: mac-install mac-after-install nix-darwin

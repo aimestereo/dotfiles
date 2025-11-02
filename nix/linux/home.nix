@@ -90,14 +90,14 @@
   ];
 
   # Git configuration
-  programs.git = {
-    enable = true;
-    userName = "aimestereo";
-    userEmail = "aimestereo@gmail.com";
-    extraConfig = {
-      init.defaultBranch = "main";
-    };
-  };
+  # programs.git = {
+  #   enable = true;
+  #   userName = "Valentin Kuznetsov";
+  #   userEmail = "aimestereo@gmail.com";
+  #   extraConfig = {
+  #     init.defaultBranch = "main";
+  #   };
+  # };
 
   # ZSH configuration
   programs.zsh = {
