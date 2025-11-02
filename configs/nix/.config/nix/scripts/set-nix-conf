@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 echo "extra-experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
 
 # Extract trusted-users from the built NixOS configuration

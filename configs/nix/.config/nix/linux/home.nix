@@ -20,72 +20,72 @@
     nerd-fonts.hack
 
     # Development
-    git
+    # git
     tmux
-    neovim
+    # neovim
     kitty
     stow
-    lazygit
-    lazydocker
-    pre-commit
+    # lazygit
+    # lazydocker
+    # pre-commit
     awscli2
     # redli # redis-cli alternative
     devenv
     k9s
     cloc # count lines of code
-    imagemagick
+    # imagemagick
 
-    # Build tools
-    readline
-    cargo 
-    clang 
-    llvm
+    # # Build tools
+    # readline
+    # cargo 
+    # clang 
+    # llvm
 
     # Terminal utilities
-    eza # Modern replacement for exa, ls
-    bat
-    gum
-    coreutils
-    jq
-    ripgrep
-    fzf
-    fd
-    diff-so-fancy
-    man
-    tldr
-    less
-    whois
-    plocate
-    atuin # command history manager
-    carapace # shell completion framework
-    jujutsu # git cli alternative
+    # eza # Modern replacement for exa, ls
+    # bat
+    # gum
+    # coreutils
+    # jq
+    # ripgrep
+    # fzf
+    # fd
+    # diff-so-fancy
+    # man
+    # tldr
+    # less
+    # whois
+    # plocate
+    # atuin # command history manager
+    # carapace # shell completion framework
+    # jujutsu # git cli alternative
 
     # System tools
-    mprocs
-    procs
-    htop
-    btop
+    # mprocs
+    # procs
+    # htop
+    # btop
 
     # Other utilities
-    unzip
-    wget
-    curl
-    inetutils
-    gnupg
-    rsync
-    impala # TUI for managing wifi
-    zoxide
-    xmlstarlet  # XML command line toolkit
-    wl-clipboard 
-    fastfetch
+    # unzip
+    # wget
+    # curl
+    # inetutils
+    # gnupg
+    # rsync
+    # impala # TUI for managing wifi
+    # zoxide
+    # xmlstarlet  # XML command line toolkit
+    # wl-clipboard 
+    # fastfetch
 
     # Apps
-    slack
-    zoom-us # contant reinstalls mess with MacOS permissions
-    # zen-browser  # updates ofthen, lets use brew version to avoid overrides
-    postman
-    telegram-desktop
-    obsidian
+    # slack
+    # zoom-us # contant reinstalls mess with MacOS permissions
+    # # zen-browser  # updates ofthen, lets use brew version to avoid overrides
+    # postman
+    # telegram-desktop
+    # obsidian
 
   ];
 
