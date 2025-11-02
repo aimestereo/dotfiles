@@ -5,11 +5,14 @@ set -o pipefail
 set -o nounset
 
 DEBUG_SESSIONIZER=0
+if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
+  echo "" > /tmp/sessionizer.log
+fi
 
 # space separated list of directories
 # sessionizer will treat all children of these directories as projects
 # to start a new tmux session in
-WORKPLACE_ROOTS="~/projects"
+WORKPLACE_ROOTS=(~/projects ~/Work)
 
 debug() {
 	if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
@@ -51,10 +54,22 @@ debug "started"
 if [[ $# -eq 1 ]]; then
 	selected_path=$1
 else
-	# First, expand any tildes in WORKPLACE_ROOTS, then turn into an array
-	WORKPLACE_ROOTS_EXPANDED=$(eval echo "$WORKPLACE_ROOTS")
-	IFS=' ' read -ra WORKPLACE_ROOTS_ARRAY <<<"$WORKPLACE_ROOTS_EXPANDED"
-	selected_path=$(find "${WORKPLACE_ROOTS_ARRAY[@]}" -mindepth 2 -maxdepth 2 -type d | fzf)
+  # Filter paths array too keep only existing directories
+	EXISTING_ROOTS=()
+  debug "WORKPLACE_ROOTS:" 
+	for raw_path in "${WORKPLACE_ROOTS[@]}"; do
+    # Expand any tildes
+		expanded_path=$(eval echo "$raw_path")
+		if [[ -d "$expanded_path" ]]; then
+			EXISTING_ROOTS+=("$expanded_path")
+      debug "[+] $raw_path -> $expanded_path"
+    else
+      debug "[-] $raw_path -> $expanded_path"
+		fi
+	done
+	
+	# Use only existing directories with find
+	selected_path=$(find "${EXISTING_ROOTS[@]}" -mindepth 2 -maxdepth 2 -type d | fzf)
 fi
 
 debug "selected_path: ${selected_path}"

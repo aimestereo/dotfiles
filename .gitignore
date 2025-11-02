@@ -7,3 +7,13 @@ test.sh
 # downloaded git submodules of plugins
 configs/tmux/.config/tmux/plugins/
 
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
