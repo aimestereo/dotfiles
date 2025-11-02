@@ -17,9 +17,14 @@ mac-install:
 mac-after-install: symlinks 
 	utils/mac-after-install
 
-.PHONY: symlinks
-symlinks:
+.PHONY: mac-symlinks
+mac-symlinks:
 	utils/symlinks
+
+.PHONY: arch-symlinks
+arch-symlinks:
+	utils/symlinks-arch
+
 
 #
 # Nix
