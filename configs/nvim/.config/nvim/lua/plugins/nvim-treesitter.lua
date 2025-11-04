@@ -1,90 +1,160 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "main",
   event = { "BufReadPre", "BufNewFile" },
   build = ":TSUpdate",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-textobjects",
     --"windwp/nvim-ts-autotag",
   },
-  config = function()
-    -- import nvim-treesitter plugin
-    local treesitter = require("nvim-treesitter.configs")
+  ---@class TSConfig
+  opts = {
+    highlight = {
+      enable = true,
+    },
+    -- enable indentation
+    indent = { enable = true },
+    -- enable autotagging (w/ nvim-ts-autotag plugin)
+    autotag = {
+      enable = true,
+    },
 
-    -- configure treesitter
-    treesitter.setup({ -- enable syntax highlighting
-      highlight = {
-        enable = true,
-      },
-      -- enable indentation
-      indent = { enable = true },
-      -- enable autotagging (w/ nvim-ts-autotag plugin)
-      autotag = {
-        enable = true,
-      },
+    -- ensure these language parsers are installed
+    -- requires manual handling
+    ensure_installed = {
+      "prisma",
+      "query",
+      "go",
+      "python",
+      "rust",
+      "sql",
+      "zig",
+      "lua",
+      "regex",
+      "bash",
+      "cmake",
+      "ini",
+      "jq",
+      "toml",
+      "yaml",
+      "diff",
+      "git_config",
+      "git_rebase",
+      "gitattributes",
+      "gitcommit",
+      "gitignore",
+      "dockerfile",
+      "terraform",
+      "hcl",
+      "javascript",
+      "tsx",
+      "typescript",
+      "graphql",
+      "html",
+      "htmldjango",
+      "json",
+      "svelte",
+      "css",
+      "vimdoc",
+      "vim",
+      "markdown",
+      "markdown_inline",
+      "commonlisp",
+    },
 
-      -- Automatically install missing parsers when entering buffer
-      -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-      auto_install = true,
+    -- no longer supported by treesitter
+    -- incremental_selection = {
+    --   enable = true,
+    --   keymaps = {
+    --     init_selection = "<C-space>",
+    --     node_incremental = "<C-space>",
+    --     scope_incremental = false,
+    --     node_decremental = "<bs>",
+    --   },
+    -- },
 
-      -- Install parsers synchronously (only applied to `ensure_installed`)
-      sync_install = false,
+    -- enable nvim-ts-context-commentstring plugin for commenting tsx and jsx
+    context_commentstring = {
+      enable = true,
+      enable_autocmd = false,
+    },
+  },
+  config = function(_, opts)
+    -- local alreadyInstalled = require("nvim-treesitter.config").get_installed()
+    -- local parsersToInstall = vim
+    --   .iter(ensureInstalled)
+    --   :filter(function(parser)
+    --     return not vim.tbl_contains(alreadyInstalled, parser)
+    --   end)
+    --   :totable()
+    -- require("nvim-treesitter").install(parsersToInstall)
 
-      -- ensure these language parsers are installed
-      ensure_installed = {
-        "prisma",
-        "query",
-        "go",
-        "python",
-        "rust",
-        "sql",
-        "zig",
-        "lua",
-        "regex",
-        "bash",
-        "cmake",
-        "ini",
-        "jq",
-        "toml",
-        "yaml",
-        "diff",
-        "git_config",
-        "git_rebase",
-        "gitattributes",
-        "gitcommit",
-        "gitignore",
-        "dockerfile",
-        "terraform",
-        "hcl",
-        "javascript",
-        "tsx",
-        "typescript",
-        "graphql",
-        "html",
-        "htmldjango",
-        "json",
-        "svelte",
-        "css",
-        "vimdoc",
-        "vim",
-        "markdown",
-        "markdown_inline",
-        "commonlisp",
-      },
+    -- install parsers from custom opts.ensure_installed
+    if opts.ensure_installed and #opts.ensure_installed > 0 then
+      require("nvim-treesitter").install(opts.ensure_installed)
+      -- register and start parsers for filetypes
+      for _, parser in ipairs(opts.ensure_installed) do
+        local filetypes = parser -- In this case, parser is the filetype/language name
+        vim.treesitter.language.register(parser, filetypes)
 
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<C-space>",
-          node_incremental = "<C-space>",
-          scope_incremental = false,
-          node_decremental = "<bs>",
-        },
-      },
-      -- enable nvim-ts-context-commentstring plugin for commenting tsx and jsx
-      context_commentstring = {
-        enable = true,
-        enable_autocmd = false,
-      },
+        vim.api.nvim_create_autocmd({ "FileType" }, {
+          pattern = filetypes,
+          callback = function(event)
+            vim.treesitter.start(event.buf, parser)
+          end,
+        })
+      end
+    end
+
+    -- Auto-install and start parsers for any buffer
+    vim.api.nvim_create_autocmd({ "BufRead" }, {
+      callback = function(event)
+        local bufnr = event.buf
+        local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
+
+        -- Skip if no filetype
+        if filetype == "" then
+          return
+        end
+
+        -- Check if this filetype is already handled by explicit opts.ensure_installed config
+        for _, filetypes in pairs(opts.ensure_installed) do
+          local ft_table = type(filetypes) == "table" and filetypes or { filetypes }
+          if vim.tbl_contains(ft_table, filetype) then
+            return -- Already handled above
+          end
+        end
+
+        -- Get parser name based on filetype
+        local parser_name = vim.treesitter.language.get_lang(filetype) -- might return filetype (not helpful)
+        if not parser_name then
+          return
+        end
+        -- Try to get existing parser (helpful check if filetype was returned above)
+        local parser_configs = require("nvim-treesitter.parsers")
+        if not parser_configs[parser_name] then
+          return -- Parser not available, skip silently
+        end
+
+        local parser_installed = pcall(vim.treesitter.get_parser, bufnr, parser_name)
+
+        if not parser_installed then
+          -- If not installed, install parser synchronously
+          require("nvim-treesitter").install({ parser_name }):wait(30000)
+        end
+
+        -- let's check again
+        parser_installed = pcall(vim.treesitter.get_parser, bufnr, parser_name)
+
+        if parser_installed then
+          -- Start treesitter for this buffer
+          vim.treesitter.start(bufnr, parser_name)
+        end
+      end,
     })
+
+    -- -- configure treesitter
+    -- treesitter.setup({ -- enable syntax highlighting
+    -- })
   end,
 }

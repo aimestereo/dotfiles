@@ -6,6 +6,6 @@ ignored_line='BUG in find_stowed_path? Absolute/relative mismatch'
 
 cd configs/
 
-ls -d */ | grep -e direnv -e git -e tmux -e zsh |
-	xargs -I{} bash -c \
-		"stow --restow -t $HOME -v {} 2> >(grep -v '${ignored_line}' 1>&2)"
+ls -d */ | grep -e direnv -e git -e nvim -e tmux -e zsh |
+  xargs -I{} bash -c \
+    "stow --restow -t $HOME -v {} 2> >(grep -v '${ignored_line}' 1>&2)"

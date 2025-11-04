@@ -1,7 +1,7 @@
 return {
   -- Fuzzy Finder (files, lsp, etc)
   "nvim-telescope/telescope.nvim",
-  version = "*",
+  branch = "master",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",

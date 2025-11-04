@@ -7,10 +7,6 @@ local d = ls.dynamic_node
 local c = ls.choice_node
 local snippet_from_nodes = ls.sn
 
-local ts_locals = require("nvim-treesitter.locals")
-local ts_utils = require("nvim-treesitter.ts_utils")
-local get_node_text = vim.treesitter.get_node_text
-
 -- Adapted from https://github.com/tjdevries/config_manager/blob/1a93f03dfe254b5332b176ae8ec926e69a5d9805/xdg_config/nvim/lua/tj/snips/ft/go.lua
 local function same(index)
   return f(function(args)
@@ -28,6 +24,11 @@ vim.treesitter.query.set(
     (func_literal result: (_) @id)
   ] ]]
 )
+
+-- Helper function to get node text
+local function get_node_text(node, bufnr)
+  return vim.treesitter.get_node_text(node, bufnr or 0)
+end
 
 -- Adapted from https://github.com/tjdevries/config_manager/blob/1a93f03dfe254b5332b176ae8ec926e69a5d9805/xdg_config/nvim/lua/tj/snips/ft/go.lua
 local transform = function(text, info)
@@ -84,18 +85,31 @@ local handlers = {
 
 -- Adapted from https://github.com/tjdevries/config_manager/blob/1a93f03dfe254b5332b176ae8ec926e69a5d9805/xdg_config/nvim/lua/tj/snips/ft/go.lua
 local function go_result_type(info)
-  local cursor_node = ts_utils.get_node_at_cursor()
-  local scope = ts_locals.get_scope_tree(cursor_node, 0)
+  -- Get the node at cursor using modern API
+  local cursor_node = vim.treesitter.get_node()
+  if not cursor_node then
+    return { t("nil") }
+  end
 
-  local function_node
-  for _, v in ipairs(scope) do
-    if v:type() == "function_declaration" or v:type() == "method_declaration" or v:type() == "func_literal" then
-      function_node = v
+  -- Find the enclosing function node
+  local function_node = cursor_node
+  while function_node do
+    local node_type = function_node:type()
+    if node_type == "function_declaration" or node_type == "method_declaration" or node_type == "func_literal" then
       break
     end
+    function_node = function_node:parent()
+  end
+
+  if not function_node then
+    return { t("nil") }
   end
 
   local query = vim.treesitter.query.get("go", "LuaSnip_Result")
+  if not query then
+    return { t("nil") }
+  end
+
   for _, node in query:iter_captures(function_node, 0) do
     if handlers[node:type()] then
       return handlers[node:type()](node, info)

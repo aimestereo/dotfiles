@@ -94,6 +94,7 @@ mason_tool_installer.setup({
     "ruff",
     "sql-formatter",
     "typescript-language-server",
+    "tree-sitter-cli",
   },
 })
 

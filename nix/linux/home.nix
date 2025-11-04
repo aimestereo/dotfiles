@@ -22,8 +22,7 @@
     # Development
     # git
     tmux
-    # neovim
-    kitty
+    # kitty
     stow
     # lazygit
     # lazydocker
@@ -35,10 +34,25 @@
     cloc # count lines of code
     # imagemagick
 
+    # neovim
+    go
+    nodejs_22 # provides: corepack node npm npx
+    luarocks
+    rustc
+    cargo
+    shfmt
+    shellharden
+    hadolint
+    pgformatter
+    # neovim: fzf
+    perl
+    silver-searcher
+    universal-ctags
+
     # # Build tools
     # readline
-    # cargo 
-    # clang 
+    # cargo
+    # clang
     # llvm
 
     # Terminal utilities
@@ -50,14 +64,14 @@
     # ripgrep
     # fzf
     # fd
-    # diff-so-fancy
+    diff-so-fancy
     # man
     # tldr
     # less
     # whois
     # plocate
     # atuin # command history manager
-    # carapace # shell completion framework
+    carapace # shell completion framework
     # jujutsu # git cli alternative
 
     # System tools
@@ -76,7 +90,7 @@
     # impala # TUI for managing wifi
     # zoxide
     # xmlstarlet  # XML command line toolkit
-    # wl-clipboard 
+    # wl-clipboard
     # fastfetch
 
     # Apps
