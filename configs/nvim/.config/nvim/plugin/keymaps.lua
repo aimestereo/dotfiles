@@ -128,3 +128,29 @@ Map("n", "<M-k>", function()
     vim.cmd([[m .-2<CR>==]])
   end
 end, { desc = "Move current line up" })
+
+--
+-- Avante
+--
+-- press `D` to remove all todos
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "AvanteTodos",
+  callback = function(ctx)
+    vim.keymap.set("n", "D", function()
+      require("avante").get():update_todos({})
+    end, { buffer = ctx.buf })
+  end,
+})
+
+-- press `D` to remove selected code
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "AvanteSelectedCode",
+  callback = function(ctx)
+    vim.keymap.set("n", "D", function()
+      local sidebar = require("avante").get()
+      sidebar.code.selection = nil
+      sidebar.containers.selected_code:unmount()
+      sidebar.containers.selected_code = nil
+    end, { buffer = ctx.buf })
+  end,
+})
