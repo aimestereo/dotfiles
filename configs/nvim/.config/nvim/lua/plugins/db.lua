@@ -4,6 +4,11 @@ return {
     "tpope/vim-dadbod",
     -- load this plugin eagerly to avoid issues during session restoration
     lazy = false,
+    ft = {
+      "sql",
+      -- "mysql",
+      -- "plsql",
+    },
   },
   {
     "kristijanhusak/vim-dadbod-ui",
