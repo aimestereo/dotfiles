@@ -1,0 +1,8 @@
+#!/bin/bash
+
+notify-send "run-scratch-apps" "Start"
+
+uwsm-app -- slack
+omarchy-launch-webapp "https://music.yandex.com"
+
+notify-send "run-scratch-apps" "End"
