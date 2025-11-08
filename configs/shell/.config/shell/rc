@@ -1,0 +1,69 @@
+export XDG_CONFIG_HOME="${HOME}/.config"
+
+export PATH="${HOME}/.local/bin${HOME}/.cache/npm/global/bin:${PATH}"
+
+export ALTERNATE_EDITOR=""
+export EDITOR="nvim"       # $EDITOR usualy opens in terminal, but no
+export VISUAL="nvim"       # $VISUAL opens in GUI mode
+
+export FZF_DEFAULT_OPTS='--bind ctrl-y:accept'
+
+# Carapace suggestions
+export CARAPACE_BRIDGES='bash,zsh' # optional
+source <(carapace _carapace)
+
+#
+# Aliases
+#
+
+alias g='git'
+alias wt='git worktree'
+
+alias v='nvim'
+alias lazyvim="NVIM_APPNAME=lazyvim nvim"
+alias cl='clear'
+
+alias l='eza -lah'
+alias ll='eza -lh'
+alias ls='eza'
+alias lt='eza -lh --tree'
+alias lat='eza -lah --tree'
+alias tree='eza --tree'
+
+alias cat='bat'
+alias c='bat -p'
+
+alias md='mkdir -p'
+alias rd=rmdir
+
+alias tf=terraform
+alias tg=terragrunt
+alias k=kubectl
+
+# It will automatically copy over the terminfo files and also magically enable shell integration on the remote machine.
+alias s="kitten ssh"
+
+#
+# Helpers
+#
+
+alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
+alias whatismyip='curl ipinfo.io/ip'
+
+export DOCKER_USER="$(id -u):$(id -g)"
+
+function pyclean() {
+    find . -type f -name "*.py[co]" -delete
+    find . -type d -name "__pycache__" -delete
+}
+
+function listening() {
+    if [ $# -eq 0 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P
+    elif [ $# -eq 1 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+    else
+        echo "Usage: listening [pattern]"
+    fi
+}
+

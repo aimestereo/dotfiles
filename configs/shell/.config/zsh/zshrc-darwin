@@ -1,4 +1,4 @@
-export XDG_CONFIG_HOME="${HOME}/.config"
+source ~/.config/shell/rc
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -22,12 +22,16 @@ fpath=(
   ${HOMEBREW_PREFIX}/share/zsh/site-functions
   "${fpath[@]}"
 )
-export CARAPACE_BRIDGES='zsh' # optional
-zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-source <(carapace _carapace)
 
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
+
+export DIRENV_HOME="${HOME}/.config/direnv"
+eval "$(direnv hook zsh)"
+
+setopt auto_cd
+alias -g ...='../..'
+alias -g ....='../../..'
 
 #
 # User configuration
@@ -39,15 +43,7 @@ eval "$(zoxide init zsh)"
 ulimit -n 200000
 ulimit -u 2048
 
-export ALTERNATE_EDITOR=""
-export EDITOR="nvim"       # $EDITOR usualy opens in terminal, but no
-export VISUAL="nvim"       # $VISUAL opens in GUI mode
-
-export FZF_DEFAULT_OPTS='--bind ctrl-y:accept'
-
 path=(
-    ${HOME}/.local/bin
-    ${HOME}/.cache/npm/global/bin
     ${HOMEBREW_PREFIX}/opt/libpq/bin
     /Applications/Ghostty.app/Contents/MacOS
     $path
@@ -76,9 +72,6 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light atuinsh/atuin
-
-export DIRENV_HOME="${HOME}/.config/direnv"
-zinit light ptavares/zsh-direnv
 
 # Add in snippets
 zinit snippet OMZP::command-not-found
@@ -139,61 +132,5 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups       # ignore duplicated commands history list
 setopt hist_find_no_dups
 
-
-#
-# Aliases
-#
-
-alias g='git'
-alias wt='git worktree'
-
-alias v='nvim'
-alias cl='clear'
-
-alias l='eza -lah'
-alias ll='eza -lh'
-alias ls='eza'
-alias lt='eza -lh --tree'
-alias lat='eza -lah --tree'
-alias tree='eza --tree'
-
-alias cat='bat'
-alias c='bat -p'
-
-setopt auto_cd
-alias md='mkdir -p'
-alias rd=rmdir
-alias -g ...='../..'
-alias -g ....='../../..'
-
-alias tf=terraform
-alias tg=terragrunt
-alias k=kubectl
-
-# It will automatically copy over the terminfo files and also magically enable shell integration on the remote machine.
-alias s="kitten ssh"
-
-#
-# Helpers
-#
-
-alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
-alias whatismyip='curl ipinfo.io/ip'
-
-export DOCKER_USER="$(id -u):$(id -g)"
-
-function pyclean() {
-    find . -type f -name "*.py[co]" -delete
-    find . -type d -name "__pycache__" -delete
-}
-
-function listening() {
-    if [ $# -eq 0 ]; then
-        sudo lsof -iTCP -sTCP:LISTEN -n -P
-    elif [ $# -eq 1 ]; then
-        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
-    else
-        echo "Usage: listening [pattern]"
-    fi
-}
-
+# Carapace suggestions
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
