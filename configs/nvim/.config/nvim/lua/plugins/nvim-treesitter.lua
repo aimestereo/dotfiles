@@ -60,6 +60,7 @@ return {
       "markdown",
       "markdown_inline",
       "commonlisp",
+      "nix",
     },
 
     -- no longer supported by treesitter
@@ -80,15 +81,6 @@ return {
     },
   },
   config = function(_, opts)
-    -- local alreadyInstalled = require("nvim-treesitter.config").get_installed()
-    -- local parsersToInstall = vim
-    --   .iter(ensureInstalled)
-    --   :filter(function(parser)
-    --     return not vim.tbl_contains(alreadyInstalled, parser)
-    --   end)
-    --   :totable()
-    -- require("nvim-treesitter").install(parsersToInstall)
-
     -- install parsers from custom opts.ensure_installed
     if opts.ensure_installed and #opts.ensure_installed > 0 then
       require("nvim-treesitter").install(opts.ensure_installed)
@@ -114,6 +106,7 @@ return {
 
         -- Skip if no filetype
         if filetype == "" then
+          vim.notify("Buffer has no Filetype ", vim.log.levels.WARN, { title = "core/treesitter" })
           return
         end
 
@@ -121,6 +114,11 @@ return {
         for _, filetypes in pairs(opts.ensure_installed) do
           local ft_table = type(filetypes) == "table" and filetypes or { filetypes }
           if vim.tbl_contains(ft_table, filetype) then
+            -- vim.notify(
+            --   "Filetype " .. vim.inspect(filetype) .. " already handled by explicit config",
+            --   vim.log.levels.WARN,
+            --   { title = "core/treesitter" }
+            -- )
             return -- Already handled above
           end
         end
@@ -128,33 +126,55 @@ return {
         -- Get parser name based on filetype
         local parser_name = vim.treesitter.language.get_lang(filetype) -- might return filetype (not helpful)
         if not parser_name then
+          -- vim.notify(
+          --   "No parser name found for filetype " .. vim.inspect(filetype),
+          --   vim.log.levels.WARN,
+          --   { title = "core/treesitter" }
+          -- )
           return
         end
+
         -- Try to get existing parser (helpful check if filetype was returned above)
         local parser_configs = require("nvim-treesitter.parsers")
         if not parser_configs[parser_name] then
+          -- vim.notify(
+          --   "No parser config found for parser name " .. vim.inspect(parser_name),
+          --   vim.log.levels.WARN,
+          --   { title = "core/treesitter" }
+          -- )
           return -- Parser not available, skip silently
         end
 
         local parser_installed = pcall(vim.treesitter.get_parser, bufnr, parser_name)
-
         if not parser_installed then
           -- If not installed, install parser synchronously
+          -- vim.notify(
+          --   "Parser " .. parser_name .. " not installed. Installing...",
+          --   vim.log.levels.WARN,
+          --   { title = "core/treesitter" }
+          -- )
           require("nvim-treesitter").install({ parser_name }):wait(30000)
         end
 
         -- let's check again
         parser_installed = pcall(vim.treesitter.get_parser, bufnr, parser_name)
-
-        if parser_installed then
-          -- Start treesitter for this buffer
-          vim.treesitter.start(bufnr, parser_name)
+        if not parser_installed then
+          -- vim.notify(
+          --   "Failed to get parser for " .. parser_name .. " after installation",
+          --   vim.log.levels.WARN,
+          --   { title = "core/treesitter" }
+          -- )
+          return
         end
+
+        -- Start treesitter for this buffer
+        vim.notify(
+          "Starting treesitter for filetype " .. filetype .. " with parser " .. parser_name,
+          vim.log.levels.INFO,
+          { title = "core/treesitter" }
+        )
+        vim.treesitter.start(bufnr, parser_name)
       end,
     })
-
-    -- -- configure treesitter
-    -- treesitter.setup({ -- enable syntax highlighting
-    -- })
   end,
 }
