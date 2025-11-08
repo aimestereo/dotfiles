@@ -71,7 +71,7 @@
     # less
     # whois
     # plocate
-    # atuin # command history manager
+    atuin # command history manager
     carapace # shell completion framework
     # jujutsu # git cli alternative
 

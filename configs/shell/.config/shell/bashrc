@@ -1,1 +1,4 @@
 source ~/.config/shell/rc
+
+# Initialize Atuin (a shell history manager)
+eval "$(atuin init bash)"

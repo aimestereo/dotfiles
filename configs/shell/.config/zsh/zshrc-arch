@@ -9,12 +9,16 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# eval "$(starship init zsh)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
+# eval "$(starship init zsh)"
 
+# Initialize direnv (a directory-based environment variable manager)
 export DIRENV_HOME="${HOME}/.config/direnv"
 eval "$(direnv hook zsh)"
+
+# Initialize Atuin (a shell history manager)
+eval "$(atuin init zsh)"
 
 setopt auto_cd
 alias -g ...='../..'
@@ -42,7 +46,6 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Add in zsh plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
-zinit light atuinsh/atuin
 
 # Add in snippets
 zinit snippet OMZP::command-not-found

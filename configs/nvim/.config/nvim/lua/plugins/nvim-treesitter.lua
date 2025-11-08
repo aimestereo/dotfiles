@@ -23,9 +23,7 @@ return {
     -- requires manual handling
     ensure_installed = {
       -- terminal
-      "sh",
       "bash",
-      "zsh",
       "tmux",
       "cmake",
       "jq",
