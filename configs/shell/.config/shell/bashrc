@@ -1,4 +1,8 @@
 source ~/.config/shell/rc
 
+# Initialize direnv (a directory-based environment variable manager)
+export DIRENV_HOME="${HOME}/.config/direnv"
+eval "$(direnv hook bash)"
+
 # Initialize Atuin (a shell history manager)
 eval "$(atuin init bash)"
