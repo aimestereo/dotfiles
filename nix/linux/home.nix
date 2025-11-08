@@ -50,10 +50,11 @@
     universal-ctags
 
     # # Build tools
-    # readline
-    # cargo
-    # clang
-    # llvm
+    readline
+    cargo
+    clang
+    llvm
+    cmake
 
     # Terminal utilities
     # eza # Modern replacement for exa, ls
@@ -92,6 +93,7 @@
     # xmlstarlet  # XML command line toolkit
     # wl-clipboard
     # fastfetch
+    # ddcutil # monitor control - requires /dev/i2c devices
 
     # Apps
     # slack
