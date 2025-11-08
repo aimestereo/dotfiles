@@ -22,30 +22,31 @@ return {
     -- ensure these language parsers are installed
     -- requires manual handling
     ensure_installed = {
-      "prisma",
-      "query",
-      "go",
-      "python",
-      "rust",
-      "sql",
-      "zig",
-      "lua",
-      "regex",
+      -- terminal
+      "sh",
       "bash",
+      "zsh",
+      "tmux",
       "cmake",
-      "ini",
       "jq",
+      -- configs
+      "ini",
+      "xml",
       "toml",
       "yaml",
+      "hyprlang",
+      -- git
       "diff",
       "git_config",
       "git_rebase",
       "gitattributes",
       "gitcommit",
       "gitignore",
+      -- devops
       "dockerfile",
       "terraform",
       "hcl",
+      -- webdev
       "javascript",
       "tsx",
       "typescript",
@@ -55,12 +56,24 @@ return {
       "json",
       "svelte",
       "css",
+      "prisma",
+      "query",
+      -- vim
       "vimdoc",
       "vim",
+      -- others
       "markdown",
       "markdown_inline",
+      -- languages
       "commonlisp",
       "nix",
+      "go",
+      "python",
+      "rust",
+      "sql",
+      "zig",
+      "lua",
+      "regex",
     },
 
     -- no longer supported by treesitter
