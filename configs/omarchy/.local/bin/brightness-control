@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Configuration: Adjust if your display number is different
+# > You can find your display number using `ddcutil detect`
+DISPLAY_NUM=1
+# Amount to increase/decrease by default (for raise/lower)
+STEP=5
+
+# Ensure ddcutil is installed and working
+if ! command -v ddcutil &>/dev/null; then
+    echo "Error: ddcutil is not installed or not found in PATH."
+    exit 1
+fi
+
+# Function to get the current brightness value numerically and trim whitespace
+get_current_brightness_value() {
+    # Use awk to reliably extract the number and trim leading/trailing whitespace
+    local value_str=$(ddcutil --display "$DISPLAY_NUM" getvcp 10)
+    echo "$value_str" | awk -F'current value = ' '{print $2}' | cut -d',' -f1 | xargs
+}
+
+# Function to set the brightness
+set_brightness() {
+    local new_value=$1
+
+    # Cap value between 0 and 100
+    if [ "$new_value" -gt 100 ]; then
+        new_value=100
+    elif [ "$new_value" -lt 0 ]; then
+        new_value=0
+    fi
+
+    # Set the new brightness
+    ddcutil --display "$DISPLAY_NUM" setvcp 10 "$new_value" --noverify
+}
+
+# Main logic to parse arguments
+if [ "$1" != "--brightness" ]; then
+    echo "Usage: $0 --brightness [raise|lower|+N|-N|get]"
+    exit 1
+fi
+
+ACTION=$2
+
+case "$ACTION" in
+get)
+    # Add option to get the current value (now without spaces)
+    CURRENT=$(get_current_brightness_value)
+    echo "$CURRENT"
+    ;;
+raise | lower | +* | -[0-9]*)
+    # Get current brightness value
+    CURRENT=$(get_current_brightness_value)
+
+    # Handle 'raise', 'lower', and relative changes
+    if [ "$ACTION" == "raise" ]; then
+        NEW_BRIGHTNESS=$((CURRENT + STEP))
+    elif [ "$ACTION" == "lower" ]; then
+        NEW_BRIGHTNESS=$((CURRENT - STEP))
+    else
+        # Fix: Use explicit calculation for +/-N instead of CURRENT ACTION
+        # This avoids the "arithmetic syntax error"
+        NEW_BRIGHTNESS=$((CURRENT + ACTION))
+    fi
+    set_brightness "$NEW_BRIGHTNESS"
+    notify-send "brightness-control" "Brightness set to $NEW_BRIGHTNESS%"
+    ;;
+*)
+    echo "Invalid action: $ACTION. Use raise, lower, +N, -N, or get."
+    exit 1
+    ;;
+esac
