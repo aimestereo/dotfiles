@@ -5,10 +5,6 @@
 
 # wget -qO- https://raw.githubusercontent.com/aimestereo/dotfiles/refs/heads/main/utils/arch-install | bash
 
-ROOT_DIR=~/Work/my
-mkdir -p "$ROOT_DIR"
-cd "$ROOT_DIR"
-
 # Generate SSH key for GitHub
 ssh-keygen -t ed25519 -C "aimestereo@gmail.com Arch"
 echo "Register the following SSH public key with GitHub:"
@@ -17,28 +13,24 @@ read -p "Press [Enter] key after registering the SSH key with GitHub..."
 
 # Install Nix package manager
 sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
-
-# Install Home Manager
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-. "$HOME"/.nix-profile/etc/profile.d/hm-session-vars.sh
+source ~/.bashrc
+nix --version
 
 # Install temporary packages
 nix-env -iA nixpkgs.git
 
-# Clone required public repositories
+ROOT_DIR=~/Work/my
+mkdir -p "$ROOT_DIR"
 cd "$ROOT_DIR"
+
+# Clone required repositories
+git clone git@github.com:aimestereo/obsidian.git
 git clone git@github.com:aimestereo/dotfiles.git
+git clone git@github.com:aimestereo/dotfiles-private.git
 
 cd "$ROOT_DIR/dotfiles"
-
 make nix-arch
 make symlinks
-
-# Clone private repository
-git clone git@github.com:aimestereo/obsidian.git
-git clone git@github.com:aimestereo/dotfiles-private.git
 
 cd "$ROOT_DIR/dotfiles-private"
 make symlinks
