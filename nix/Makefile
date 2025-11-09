@@ -26,6 +26,7 @@ update:
 
 .PHONY: rollback
 	home-manager rollback
+	# home-manager switch-generation <number>
 
 .PHONY: clean
 clean:
