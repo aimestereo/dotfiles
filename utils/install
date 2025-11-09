@@ -17,7 +17,7 @@ source ~/.bashrc
 nix --version
 
 # Install temporary packages
-nix-env -iA nixpkgs.git
+nix-env -iA nixpkgs.git nixpkgs.stow
 
 ROOT_DIR=~/Work/my
 mkdir -p "$ROOT_DIR"
@@ -29,8 +29,9 @@ git clone git@github.com:aimestereo/dotfiles.git
 git clone git@github.com:aimestereo/dotfiles-private.git
 
 cd "$ROOT_DIR/dotfiles"
-make nix-arch
 make symlinks
+source ~/.bashrc
+make nix-arch
 
 cd "$ROOT_DIR/dotfiles-private"
 make symlinks

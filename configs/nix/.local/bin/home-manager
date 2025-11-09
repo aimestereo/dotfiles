@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Home Manager wrapper for flake-based installations
+# This makes 'home-manager' available as a direct command
+
+exec nix run home-manager -- "$@"

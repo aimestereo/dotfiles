@@ -12,7 +12,7 @@ darwin-run:
 
 .PHONY: arch
 arch:
-	home-manager switch --flake .#aimestereo-arch
+	home-manager switch --flake .#main
 
 .PHONY: clean
 clean:
