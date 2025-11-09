@@ -42,21 +42,8 @@
         "aarch64-darwin"
         "x86_64-linux"
       ];
-
-      # Helper function to generate attributes for each system
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      # Development shells for each system
-      devShells = forAllSystems (system: {
-        default = (pkgsFor system).mkShell {
-          buildInputs = with (pkgsFor system); [
-            cowsay
-            neovim
-          ];
-        };
-      });
-
       # Darwin configurations (for macOS)
       darwinConfigurations = {
         "aimestereo-Air" =
