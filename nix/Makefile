@@ -1,18 +1,31 @@
-.PHONY: update-lockfile
-update-lockfile:
-	sudo nix flake update --flake .
-
 .PHONY: darwin
 darwin:
-	sudo darwin-rebuild switch --flake .#aimestereo-Air
+	sudo darwin-rebuild switch --flake .#macOS
 
 .PHONY: darwin-run
 darwin-run:
-	sudo nix run nix-darwin -- switch --flake .#aimestereo-Air
+	sudo nix run nix-darwin -- switch --flake .#macOS
 
 .PHONY: arch
 arch:
 	home-manager switch --flake .#main
+
+#
+# Common commands
+#
+
+.PHONY: help
+	home-manager --help
+
+.PHONY: update
+update:
+	nix flake update
+
+.PHONY: generations
+	home-manager generations
+
+.PHONY: rollback
+	home-manager rollback
 
 .PHONY: clean
 clean:

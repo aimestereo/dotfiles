@@ -45,7 +45,7 @@
         home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor config.system;
           modules = [
-            ./home.nix
+            ./linux/home.nix
             {
               home = {
                 inherit (config) username homeDirectory;
@@ -68,7 +68,7 @@
 
       # Darwin configurations (for macOS)
       darwinConfigurations = {
-        "aimestereo-Air" =
+        "macOS" =
           let
             config = userConfigs.macOS;
             system = config.system;
