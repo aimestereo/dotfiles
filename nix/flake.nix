@@ -1,17 +1,21 @@
 {
-  description = "NixOS and Darwin configuration";
+  description = "Home Manager configuration";
 
   inputs = {
+    # Common inputs
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      # This ensures home-manager uses the same nixpkgs version
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Darwin (macOS) specific inputs
-    darwin.url = "github:lnl7/nix-darwin";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mac-app-util.url = "github:hraban/mac-app-util";
-
-    # Common inputs
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
