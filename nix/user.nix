@@ -1,33 +1,30 @@
-{ system ? builtins.currentSystem, hostname ? builtins.readFile "/etc/hostname" }:
+{
+  system ? builtins.currentSystem,
+  hostname ? builtins.readFile "/etc/hostname",
+}:
 
 let
   # Remove any trailing newlines from hostname
-  cleanHostname = builtins.replaceStrings ["\n"] [""] hostname;
+  cleanHostname = builtins.replaceStrings [ "\n" ] [ "" ] hostname;
 
   # Common user attributes
   commonAttrs = {
     name = "aimestereo";
+    hostname = cleanHostname;
   };
 
-  # Host-specific configurations
-  hostConfigs = {
-    "aimestereo-Air" = {
+  # Define user configurations for different devices
+  userConfigs = {
+    "macOS" = {
+      # Good for both macbook air and M3 pro
       system = "aarch64-darwin";
       homeDir = "/Users/aimestereo";
-    };
+    } // commonAttrs;
 
-    "aimestereo-arch" = {
+    "main" = {
       system = "x86_64-linux";
       homeDir = "/home/aimestereo";
-    };
+    } // commonAttrs;
   };
-
-  # Get the config for the current host or use a default
-  hostConfig = hostConfigs.${cleanHostname} or (
-    if builtins.match ".*darwin.*" system != null then
-      hostConfigs."aimestereo-Air"
-    else
-      hostConfigs."aimestereo-arch"
-  );
 in
-commonAttrs // hostConfig // { hostname = cleanHostname; }
+userConfigs

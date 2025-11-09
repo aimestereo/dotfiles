@@ -1,15 +1,10 @@
 {
   config,
   pkgs,
-  user,
   ...
 }:
 
 {
-  # Home Manager needs a bit of information about you and the paths it should manage
-  home.username = user.name;
-  home.homeDirectory = user.homeDir;
-
   # Packages to install
   home.packages = with pkgs; [
     hello
@@ -130,11 +125,6 @@
   };
 
   programs.direnv.enable = true;
-
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  home.stateVersion = "23.11"; # Please read the comment before changing.
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

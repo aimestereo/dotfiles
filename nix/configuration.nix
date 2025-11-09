@@ -1,11 +1,11 @@
-{ pkgs, user, ... }:
+{ pkgs, username, ... }:
 {
   nix = {
     settings = {
       # Enable Nix flakes
       experimental-features = "nix-command flakes";
       trusted-users = [
-        user.name
+        username
       ];
     };
     gc = {

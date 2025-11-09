@@ -28,8 +28,7 @@
       ...
     }:
     let
-      # Import user configuration
-      user = import ./user.nix { };
+      userConfigs = import ./userConfigs.nix { };
 
       # Function to create a package set for a specific system
       pkgsFor =
@@ -41,24 +40,44 @@
           };
         };
 
-      # Systems supported
-      supportedSystems = [
-        "aarch64-darwin"
-        "x86_64-linux"
-      ];
+      mkHomeConfig =
+        name: config:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = pkgsFor config.system;
+          modules = [
+            ./home.nix
+            {
+              home = {
+                inherit (config) username homeDirectory;
+                stateVersion = "24.11";
+              };
+
+              # Protect Omarchy-managed directories
+              home.file.".config/omarchy".enable = false;
+              home.file.".config/hypr".enable = false;
+              home.file.".config/alacritty".enable = false;
+              home.file.".config/btop/themes".enable = false;
+            }
+          ];
+        };
+
     in
     {
+      # Home Manager configurations (for standalone use on Linux)
+      homeConfigurations = builtins.mapAttrs mkHomeConfig userConfigs;
+
       # Darwin configurations (for macOS)
       darwinConfigurations = {
         "aimestereo-Air" =
           let
-            system = "aarch64-darwin";
+            config = userConfigs.macOS;
+            system = config.system;
           in
           darwin.lib.darwinSystem {
             inherit system;
             specialArgs = {
               pkgs = pkgsFor system;
-              user = import ./user.nix { hostname = "aimestereo-Air"; };
+              inherit (config) username homeDirectory;
             };
             modules = [
               ./configuration.nix
@@ -67,36 +86,30 @@
 
               home-manager.darwinModules.home-manager
               {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.backupFileExtension = "backup";
-                home-manager.users.aimestereo = import ./darwin/home.nix;
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  backupFileExtension = "backup";
+                  users.${config.username} = {
+                    imports = [ ./darwin/home.nix ];
+                    home = {
+                      inherit (config) username homeDirectory;
+                      stateVersion = "23.05";
+                    };
+                  };
 
-                # To enable it for all users:
-                home-manager.sharedModules = [
-                  mac-app-util.homeManagerModules.default
-                ];
+                  # To enable it for all users:
+                  sharedModules = [
+                    mac-app-util.homeManagerModules.default
+                  ];
 
-                home-manager.extraSpecialArgs = {
-                  pkgs = pkgsFor system;
-                  user = import ./user.nix { hostname = "aimestereo-Air"; };
+                  extraSpecialArgs = {
+                    pkgs = pkgsFor system;
+                  };
                 };
               }
             ];
           };
-      };
-
-      # Home Manager configurations (for standalone use on Linux)
-      homeConfigurations = {
-        "aimestereo-arch" = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsFor "x86_64-linux";
-          extraSpecialArgs = {
-            user = import ./user.nix { hostname = "aimestereo-arch"; };
-          };
-          modules = [
-            ./linux/home.nix
-          ];
-        };
       };
     };
 }

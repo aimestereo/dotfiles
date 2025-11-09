@@ -1,15 +1,15 @@
-{ user, ... }:
+{ username, homeDirectory, ... }:
 {
   users.users = {
-    ${user.name} = {
-      home = user.homeDir;
+    ${username} = {
+      home = homeDirectory;
     };
   };
 
   # Use Touch ID for sudo authentication.
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  system.primaryUser = user.name;
+  system.primaryUser = username;
   system.defaults = {
     dock = {
       autohide = true;
