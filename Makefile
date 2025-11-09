@@ -1,12 +1,7 @@
-.PHONY: home-manager
-
-CONFIG_DIR := $(HOME)/.config
-
-current_dir := $(shell pwd)
-NIX_CONFIG_DIR := nix
+NIX_DIR := nix
 
 .PHONY: mac
-mac: mac-install mac-after-install nix-darwin
+mac: mac-install mac-after-install nix-mac
 
 .PHONY: mac-install
 mac-install:
@@ -24,19 +19,11 @@ symlinks:
 #
 # Nix
 #
-.PHONY: nix-update-lockfile
-nix-update-lockfile:
-	$(MAKE) -C $(NIX_CONFIG_DIR) update-lockfile
-
-.PHONY: nix-darwin
-nix-darwin:
-	$(MAKE) -C $(NIX_CONFIG_DIR) darwin
+.PHONY: nix-mac
+nix-mac:
+	$(MAKE) -C $(NIX_DIR) mac
 
 .PHONY: nix-arch
 nix-arch:
-	$(MAKE) -C $(NIX_CONFIG_DIR) arch
-
-.PHONY: nix-clean
-nix-clean:
-	$(MAKE) -C $(NIX_CONFIG_DIR) clean
+	$(MAKE) -C $(NIX_DIR) arch
 

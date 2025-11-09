@@ -1,9 +1,9 @@
-.PHONY: darwin
-darwin:
+.PHONY: mac
+mac:
 	sudo darwin-rebuild switch --flake .#macOS
 
-.PHONY: darwin-run
-darwin-run:
+.PHONY: mac-run
+mac-run:
 	sudo nix run nix-darwin -- switch --flake .#macOS
 
 .PHONY: arch
