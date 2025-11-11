@@ -1,8 +1,10 @@
+# All the default Omarchy aliases and functions
+# (don't mess with these directly, just overwrite them here!)
+if [ -f ~/.local/share/omarchy/default/bash/rc ]; then
+	source ~/.local/share/omarchy/default/bash/rc
+fi
+
 source ~/.config/shell/rc
 
-# Initialize direnv (a directory-based environment variable manager)
-export DIRENV_HOME="${HOME}/.config/direnv"
-eval "$(direnv hook bash)"
-
-# Initialize Atuin (a shell history manager)
-eval "$(atuin init bash)"
+# use vi keybindings in the shell
+set -o vi

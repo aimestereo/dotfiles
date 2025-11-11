@@ -66,6 +66,7 @@
     # less
     # whois
     # plocate
+    bash-preexec # atuin dependency
     atuin # command history manager
     carapace # shell completion framework
     # jujutsu # git cli alternative
@@ -92,7 +93,7 @@
 
     # Apps
     # slack
-    # zoom-us # contant reinstalls mess with MacOS permissions
+    # zoom-us
     # # zen-browser  # updates ofthen, lets use brew version to avoid overrides
     # postman
     # telegram-desktop
@@ -124,7 +125,23 @@
     '';
   };
 
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+      . ~/.config/shell/bashrc
+      . ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
+    '';
+  };
+
+  programs.fzf.enable = true;
+  programs.zoxide.enable = true;
   programs.direnv.enable = true;
+  programs.atuin = {
+    enable = true;
+    flags = [
+      "--disable-up-arrow"
+    ];
+  };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
