@@ -116,6 +116,7 @@
     fzf.enable = true;
     zoxide.enable = true;
     direnv.enable = true;
+    carapace.enable = true;
     atuin = {
       enable = true;
       flags = [
