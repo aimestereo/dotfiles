@@ -14,19 +14,34 @@
     nerd-fonts.caskaydia-mono
     nerd-fonts.hack
 
-    # Development
-    # git
-    tmux
-    # kitty
-    stow
-    # lazygit
-    # lazydocker
-    # pre-commit
-    awscli2
-    # redli # redis-cli alternative
+    # Development tools
+    bat
     devenv
+    direnv
+    eza # Modern replacement for exa, ls
+    fd
+    git
+    jq
+    ripgrep
+    stow
+    starship
+    tmux
+    zoxide
+
+    # neovim: fzf
+    fzf
+    perl
+    silver-searcher
+    universal-ctags
+
+    # Devops tools
+    awscli2
+    coreutils
+    lazydocker
+    lazygit
     k9s
-    cloc # count lines of code
+
+    # redli # redis-cli alternative
     # imagemagick
 
     # neovim
@@ -39,12 +54,8 @@
     shellharden
     hadolint
     pgformatter
-    # neovim: fzf
-    perl
-    silver-searcher
-    universal-ctags
 
-    # # Build tools
+    # Build tools
     readline
     cargo
     clang
@@ -52,47 +63,40 @@
     cmake
 
     # Terminal utilities
-    # eza # Modern replacement for exa, ls
-    # bat
-    # gum
-    # coreutils
-    # jq
-    # ripgrep
-    # fzf
-    # fd
-    diff-so-fancy
-    # man
-    # tldr
-    # less
-    # whois
-    # plocate
+    gum
+    man
+    tldr
+    less
+    whois
+    cloc # count lines of code
+    plocate
     bash-preexec # atuin dependency
     atuin # command history manager
     carapace # shell completion framework
+    diff-so-fancy
     # jujutsu # git cli alternative
 
     # System tools
-    # mprocs
-    # procs
-    # htop
-    # btop
+    mprocs # Process manager
+    procs # Better top
+    htop
+    btop
 
     # Other utilities
-    # unzip
-    # wget
-    # curl
-    # inetutils
-    # gnupg
-    # rsync
-    # impala # TUI for managing wifi
-    # zoxide
-    # xmlstarlet  # XML command line toolkit
-    # wl-clipboard
-    # fastfetch
-    # ddcutil # monitor control - requires /dev/i2c devices
+    unzip
+    wget
+    curl
+    inetutils # provides: ftp telnet rsh rlogin hostname
+    gnupg
+    rsync
+    impala # TUI for managing wifi
+    xmlstarlet # XML command line toolkit
+    wl-clipboard
+    fastfetch
 
     # Apps
     # slack
+    # kitty
     # zoom-us
     # # zen-browser  # updates ofthen, lets use brew version to avoid overrides
     # postman
@@ -100,16 +104,6 @@
     # obsidian
 
   ];
-
-  # Git configuration
-  # programs.git = {
-  #   enable = true;
-  #   userName = "Valentin Kuznetsov";
-  #   userEmail = "aimestereo@gmail.com";
-  #   extraConfig = {
-  #     init.defaultBranch = "main";
-  #   };
-  # };
 
   # ZSH configuration
   programs.zsh = {
