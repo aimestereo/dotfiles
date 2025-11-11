@@ -94,6 +94,15 @@
     tokei # Code statistics
   ];
 
+  # Environment variables
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+    BROWSER = "zen-browser";
+    PAGER = "less -R";
+    LANG = "en_US.UTF-8";
+  };
+
   # Common program configurations
   programs = {
     bash = {

@@ -2,10 +2,6 @@ export XDG_CONFIG_HOME="${HOME}/.config"
 
 export PATH="${HOME}/.local/bin:${HOME}/.cache/npm/global/bin:${PATH}"
 
-export ALTERNATE_EDITOR=""
-export EDITOR="nvim"       # $EDITOR usualy opens in terminal, but no
-export VISUAL="nvim"       # $VISUAL opens in GUI mode
-
 export FZF_DEFAULT_OPTS='--bind ctrl-y:accept'
 
 # Carapace suggestions
