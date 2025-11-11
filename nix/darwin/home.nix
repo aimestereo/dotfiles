@@ -3,107 +3,110 @@
 {
   # To search by name, run: $ nix-env -qaP | grep wget
   home.packages = with pkgs; [
-    hello
-    nixfmt-rfc-style
+    # Nix Tools
+    nixfmt-rfc-style # Nix code formatter
 
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.hack
+    # Fonts
+    nerd-fonts.jetbrains-mono # Programming font with icons
+    nerd-fonts.hack # Hack font with icons
 
-    # internet
-    git
-    curl
-    wget
-    gnupg
-    rsync
-    wttrbar # wheather
-    gh # github cli
+    # Shell & Terminal Environment
+    kitty # GPU-accelerated terminal emulator
+    tmux # Terminal multiplexer for persistent sessions
+    zoxide # Smart cd command that learns your habits
+    stow # Symlink manager for dotfiles
+    nushell # Modern shell with structured data
+    atuin # Command history manager with sync
+    carapace # Multi-shell completion framework
 
-    # cli tools
-    blueutil
+    # Core CLI Utilities
+    bat # cat with syntax highlighting and git integration
+    eza # Modern replacement for ls with colors and icons
+    fd # Modern replacement for find, faster and easier
+    fzf # Fuzzy finder for files, history, commands (used by neovim)
+    ripgrep # Fast grep alternative, respects .gitignore
+    jq # JSON processor for CLI
+    diff-so-fancy # Better git diff output with colors
+    coreutils # GNU coreutils for macOS (provides gls, gcat, etc.)
 
-    # internet apps
-    slack
-    # zoom-us  # contant reinstalls mess with MacOS permissions
-    # arc-browser  # updates ofthen, lets use brew version to avoid overrides
-    postman
-    telegram-desktop
+    # System Monitoring & Process Management
+    htop # Interactive process viewer
+    btop # Modern resource monitor with better UI
+    procs # Modern replacement for ps with colors
+    mprocs # Run multiple processes in parallel with TUI
 
-    # terminal: environment
-    kitty
-    tmux
-    stow
-    _1password-cli
-    zoxide
-    nushell
+    # System Utilities
+    tldr # Simplified community-driven man pages
+    wget # Download files from web
+    curl # Transfer data with URLs
+    rsync # Fast incremental file transfer
+    gnupg # Encryption and signing tool
+    wttrbar # Weather information for status bar
 
-    # neovim
-    neovim
-    go
-    nodejs_22
-    luarocks
-    rustc
-    cargo
-    shfmt
-    shellharden
-    hadolint
-    pgformatter
-    # neovim: fzf
-    perl
-    silver-searcher
-    universal-ctags
+    # macOS-Specific Utilities
+    blueutil # CLI for Bluetooth management on macOS
+    _1password-cli # 1Password command line interface
+    mos # Mouse, keyboard, and touchpad customization for macOS
+    jankyborders # Window borders for macOS window managers
+    monitorcontrol # Control external monitor brightness and volume
 
-    # Mouse, keyboard, and touchpad
-    mos
+    # Development - Version Control
+    git # Version control system
+    lazygit # TUI for git with keyboard shortcuts
+    gh # GitHub CLI for repository management
+    jujutsu # Git CLI alternative (jj command)
 
-    # Monitor, Windows
-    jankyborders
-    monitorcontrol
-
-    # terminal: essentials
-    eza
-    bat
-    coreutils
-    jq
-    ripgrep
-    fzf
-    fd
-    diff-so-fancy
-    tldr
-    atuin # command history manager
-    carapace # shell completion framework
-    jujutsu # git cli alternative
-
-    # processes
-    mprocs
-    procs
-    htop
-    btop
-
-    # dev: languages
-
-    # dev: tools
-    lazygit
-    lazydocker
-    pre-commit
-    awscli2
-    # redli # redis-cli alternative
-    devenv
-    k9s
-
-    cloc # count lines of code
-
-    # dev: build tools
-    readline
-
-    # others
-    obsidian
-    iina
+    # Development - Languages & Runtimes
+    go # Go programming language (LSP and tools)
+    nodejs_22 # Node.js runtime (provides npm, npx, corepack for LSPs)
+    rustc # Rust compiler (for Rust development and tools)
+    cargo # Rust package manager and build tool
+    luarocks # Lua package manager (for neovim plugins)
+    perl # Perl interpreter (required by fzf for some features)
 
     (python312.withPackages (ppkgs: [
-      ppkgs.pip
-      ppkgs.ipdb
+      ppkgs.pip # Python package installer
+      ppkgs.ipdb # IPython debugger
       # ppkgs.neovim
     ]))
+
+    # Development - Build Tools & Compilers
+    readline # Library for line editing (dependency for many CLI tools)
+
+    # Development - Code Quality & Formatters
+    shfmt # Shell script formatter
+    shellharden # Shell script linter and hardener
+    hadolint # Dockerfile linter
+    pgformatter # PostgreSQL SQL formatter
+    pre-commit # Git hooks framework for code quality checks
+
+    # Development - Editor & LSP Support
+    neovim # Modern vim-based text editor
+    universal-ctags # Code indexing tool (used by neovim plugins)
+    silver-searcher # Fast code search (ag command, used by neovim plugins)
+
+    # Development - Environment Management
+    devenv # Fast, declarative development environments
+
+    # DevOps & Cloud
+    awscli2 # AWS command line interface
+    lazydocker # TUI for managing Docker containers
+    k9s # TUI for managing Kubernetes clusters
+
+    # Data & File Processing
+    cloc # Count lines of code by language
+
+    # Applications
+    slack # Team communication
+    postman # API testing tool
+    telegram-desktop # Messaging app
+    obsidian # Note-taking app
+    iina # Modern media player for macOS
+
+    # Applications (Disabled)
+    # Commented out to manage separately or via other package managers:
+    # zoom-us # Video conferencing (constant reinstalls mess with MacOS permissions)
+    # arc-browser # Browser (managed via brew for faster updates)
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
