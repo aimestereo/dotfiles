@@ -37,8 +37,10 @@
     # System Monitoring & Process Management
     htop # Interactive process viewer
     btop # Modern resource monitor with better UI
+    bottom # System monitor
     procs # Modern replacement for ps with colors
     mprocs # Run multiple processes in parallel with TUI
+    dust # Disk usage analyzer
 
     # System Utilities
     man # Manual pages
@@ -57,6 +59,7 @@
 
     # Development - Version Control
     git # Version control system
+    delta # Better git diff
     lazygit # TUI for git with keyboard shortcuts
     # jujutsu # Git CLI alternative (jj command)
 
@@ -96,6 +99,7 @@
     # Data & File Processing
     xmlstarlet # Command line XML toolkit
     cloc # Count lines of code by language
+    tokei # Code statistics
     # imagemagick # Image manipulation tool
 
     # Applications
