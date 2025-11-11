@@ -28,7 +28,6 @@
     fzf # Fuzzy finder for files, history, commands (used by neovim)
     ripgrep # Fast grep alternative, respects .gitignore
     jq # JSON processor for CLI
-    diff-so-fancy # Better git diff output with colors
 
     # System Monitoring & Process Management
     htop # Interactive process viewer
@@ -53,7 +52,8 @@
 
     # Development - Version Control
     git # Version control system
-    delta # Better git diff
+    delta # Better git diff (current)
+    diff-so-fancy # Better git diff output with colors (not used currently)
     lazygit # TUI for git with keyboard shortcuts
 
     # Development - Languages & Runtimes
