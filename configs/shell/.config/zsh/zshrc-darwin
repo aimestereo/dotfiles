@@ -1,5 +1,3 @@
-source ~/.config/shell/rc
-
 #
 # Darwin-specific Shell integrations
 #
@@ -31,5 +29,3 @@ path=(
     $path
 )
 
-# Source common zsh configuration
-source ~/.config/zsh/zshrc-common

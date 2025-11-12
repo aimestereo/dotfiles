@@ -27,30 +27,6 @@
     # zen-browser # Browser
   ];
 
-  # ZSH configuration
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-
-    plugins = [
-      {
-        name = "powerlevel10k";
-        src = pkgs.zsh-powerlevel10k;
-        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-    ];
-
-    initContent = ''
-      . ~/.config/zsh/zshrc-arch
-
-      # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-      source ~/.config/zsh/.p10k.zsh
-    '';
-  };
-
   # Enable XDG desktop integration
   targets.genericLinux.enable = true;
   xdg.enable = true;

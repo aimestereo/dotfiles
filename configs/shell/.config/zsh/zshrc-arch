@@ -1,9 +1,0 @@
-source ~/.config/shell/rc
-
-#
-# Arch-specific configuration
-#
-
-# Source common zsh configuration
-source ~/.config/zsh/zshrc-common
-

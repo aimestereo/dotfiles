@@ -56,33 +56,14 @@
 
   programs = {
     zsh = {
-      enable = true;
-      enableCompletion = true;
-
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-
-      plugins = [
-        {
-          name = "powerlevel10k";
-          src = pkgs.zsh-powerlevel10k;
-          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-        }
-      ];
-
+      # override: platform-specific config
       initContent = ''
-        . "$HOME/.config/zsh/zshrc-darwin"
+        source "$HOME/.config/shell/rc"
+        source "$HOME/.config/zsh/zshrc-common"
+        source "$HOME/.config/zsh/zshrc-darwin"
 
         # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
         source ~/.config/zsh/.p10k.zsh
-      '';
-    };
-
-    bash = {
-      enable = true;
-      initExtra = ''
-        . ~/.config/shell/bashrc
-        . ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
       '';
     };
   };

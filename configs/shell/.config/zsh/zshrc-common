@@ -1,7 +1,3 @@
-setopt auto_cd
-alias -g ...='../..'
-alias -g ....='../../..'
-
 #
 # Keybindings
 #
@@ -17,36 +13,12 @@ zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^p" up-line-or-beginning-search
 bindkey "^n" down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
+# Will use atuin fo Up/Down session search
+# bindkey "^[[A" up-line-or-beginning-search # Up
+# bindkey "^[[B" down-line-or-beginning-search # Down
 
 # edit command line in nvim
 autoload edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd '^v' edit-command-line
-
-#
-# History
-#
-
-HISTFILE=~/.zsh_history
-HISTSIZE=1000000
-SAVEHIST=$HISTSIZE
-HISTFILESIZE=1000000
-HISTDUP=erase
-
-setopt extended_history       # record timestamp of command in HISTFILE
-
-# I don't want to share history between sessions,
-# still in any new session I want to have complete history
-# also, I have autin, that will suggest latest history in any session at any time.
-setopt inc_append_history     # save new commands right away
-# setopt append_history       # save all commands at once on shell exit
-unsetopt share_history        # don't share command history data
-
-setopt hist_ignore_space      # ignore commands that start with space
-setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups       # ignore duplicated commands history list
-setopt hist_find_no_dups
 

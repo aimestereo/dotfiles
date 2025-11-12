@@ -94,33 +94,149 @@
     tokei # Code statistics
   ];
 
-  # Environment variables
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-    BROWSER = "zen-browser";
-    PAGER = "less -R";
-    LANG = "en_US.UTF-8";
+  home = {
+    sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+      BROWSER = "zen-browser";
+      PAGER = "less -R";
+      LANG = "en_US.UTF-8";
+    };
+    sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.cache/npm/global/bin"
+    ];
+    shellAliases = {
+      # Home Manager
+      hm = "home-manager switch --flake ~/Work/my/dotfiles/nix#main";
+
+      # ls replacements
+      l = "eza --icons";
+      ls = "eza --icons";
+      ll = "eza -la --icons";
+      la = "eza -la --icons";
+      lt = "eza --tree --icons";
+
+      # Modern replacements
+      c = "bat -p";
+      cat = "bat";
+      grep = "rg";
+      find = "fd";
+
+      # Git shortcuts
+      g = "git";
+      wt = "git worktree";
+
+      gst = "git status";
+      gco = "git checkout";
+      gcm = "git commit -m";
+      gcam = "git commit -am";
+
+      v = "nvim";
+      lazyvim = "NVIM_APPNAME=lazyvim nvim";
+
+      cl = "clear";
+      md = "mkdir -p";
+      rd = "rmdir";
+
+      tf = "terraform";
+      tg = "terragrunt";
+      k = "kubectl";
+
+      # It will automatically copy over the terminfo files and also magically enable shell integration on the remote machine.
+      s = "kitten ssh";
+
+      # Navigation
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      "...." = "cd ../../..";
+    };
   };
 
   # Common program configurations
   programs = {
     bash = {
       enable = true;
+      historyControl = [ "ignoreboth" ]; # ignoredups and ignorespace
       initExtra = ''
-        . ~/.config/shell/bashrc
-        . ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
+        # All the default Omarchy aliases and functions
+        # (don't mess with these directly, just overwrite them here!)
+        if [ -f $HOME/.local/share/omarchy/default/bash/rc ]; then
+        	source $HOME/.local/share/omarchy/default/bash/rc
+        fi
+
+        source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
+        source $HOME/.config/shell/rc
+
+        # use vi keybindings in the shell
+        set -o vi
       '';
     };
 
-    fzf.enable = true;
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      autocd = true;
+
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+
+      history = {
+        extended = true; # Write the history file in the ":start:elapsed;command" format.
+        size = 1000000; # Number of history entries kept in memory during a session.
+        save = 1000000; # Number of history entries saved to the history file.
+
+        # if false, then to keep global history set one of:
+        # * append_history (Append history when the shell exits, instead of overwriting the history file.)
+        # * inc_append_history (Write to the history file immediately, not when the shell exits.)
+        # https://zsh.sourceforge.io/Doc/Release/Options.html#index-APPEND_005fHISTORY
+        # P.S. I also have atuin for presize history management
+        share = true; # Write the history file in the ":start:elapsed;command" format.
+
+        ignoreSpace = true; # Don't record an entry starting with a space.
+        saveNoDups = true; # Don't write duplicate entries in the history file.
+        findNoDups = true; # Do not display a line previously found.
+        ignoreDups = true; # Don't record an entry that was just recorded again.
+        ignoreAllDups = true; # Delete old recorded entry if new entry is a duplicate.
+      };
+
+      plugins = [
+        {
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+        }
+      ];
+
+      initContent = ''
+        source "$HOME/.config/shell/rc"
+        source "$HOME/.config/zsh/zshrc-common"
+
+        # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+        source ~/.config/zsh/.p10k.zsh
+      '';
+    };
+
     zoxide.enable = true;
     direnv.enable = true;
     carapace.enable = true;
+
+    fzf = {
+      enable = true;
+      defaultOptions = [
+        "--height=40%"
+        "--layout=reverse"
+        "--border"
+        "--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+        "--bind 'ctrl-y:accept'"
+      ];
+    };
+
     atuin = {
       enable = true;
       flags = [
-        "--disable-up-arrow"
+        # "--disable-up-arrow" - configured for session search
+        # "--disable-ctrl-r" - configured for global search
       ];
     };
 
