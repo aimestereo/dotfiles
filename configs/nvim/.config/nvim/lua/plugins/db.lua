@@ -1,8 +1,14 @@
 return {
+  -- Load vim-dadbod eagerly to avoid issues during session restoration
+  {
+    "tpope/vim-dadbod",
+    -- load this plugin eagerly to avoid issues during session restoration
+    lazy = false,
+  },
   {
     "kristijanhusak/vim-dadbod-ui",
     dependencies = {
-      { "tpope/vim-dadbod", lazy = true },
+      "tpope/vim-dadbod",
       {
         "kristijanhusak/vim-dadbod-completion",
         ft = {
