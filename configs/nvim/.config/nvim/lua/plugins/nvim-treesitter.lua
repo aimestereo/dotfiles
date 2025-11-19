@@ -26,6 +26,7 @@ return {
       "bash",
       "tmux",
       "cmake",
+      "make",
       "jq",
       -- configs
       "ini",
