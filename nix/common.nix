@@ -42,7 +42,6 @@
     man # Manual pages
     tldr # Simplified community-driven man pages
     gum # Shell scripting with styled UI components
-    plocate # Fast file locator (updatedb/locate)
     unzip # Extract zip archives
     inetutils # Network utilities (ftp, telnet, hostname, etc.)
     wget # Download files from web
