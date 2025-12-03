@@ -188,5 +188,19 @@ return {
         vim.treesitter.start(bufnr, parser_name)
       end,
     })
+
+    -- custom parsers
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "TSUpdate",
+      callback = function()
+        -- GitHub Actions: https://crates.io/crates/tree-sitter-ghactions
+        require("nvim-treesitter.parsers").ghactions = {
+          install_info = {
+            url = "https://github.com/rmuir/tree-sitter-ghactions",
+            queries = "queries",
+          },
+        }
+      end,
+    })
   end,
 }
