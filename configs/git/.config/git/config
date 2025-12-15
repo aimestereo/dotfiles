@@ -53,6 +53,7 @@
 	cad = commit -a --amend
 	ced = commit --allow-empty --amend
 	#############
+	rawdiff = -c core.pager=less -c pager.diff=less diff
 	d = diff
 	dc = diff --cached
 	dl = difftool
@@ -73,6 +74,8 @@
 	#############
 	g = grep -p
 	#############
+	rawlog = -c core.pager=less -c pager.diff=less log
+	raw = -c core.pager=less -c pager.diff=less
 	l = log --oneline
 	lg = log --oneline --graph --decorate
 	scd = log --left-right --graph --cherry-pick --oneline
