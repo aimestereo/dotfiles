@@ -1,10 +1,5 @@
 return {
-  {
-    "junegunn/fzf",
-    config = function()
-      vim.fn["fzf#install"]()
-    end,
-  },
+  "junegunn/fzf",
   "junegunn/fzf.vim",
 
   {
