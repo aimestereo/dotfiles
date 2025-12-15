@@ -113,11 +113,11 @@
       hm = "home-manager switch --flake ~/Work/my/dotfiles/nix#main";
 
       # ls replacements
-      l = "eza --icons";
-      ls = "eza --icons";
-      ll = "eza -la --icons";
-      la = "eza -la --icons";
-      lt = "eza --tree --icons";
+      l = "eza --icons=auto";
+      ls = "eza --icons=auto";
+      ll = "eza -la --icons=auto";
+      la = "eza -la --icons=auto";
+      lt = "eza --tree --icons=auto";
 
       # Modern replacements
       c = "bat -p";
