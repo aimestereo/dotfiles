@@ -91,6 +91,9 @@
     # Data & File Processing
     cloc # Count lines of code by language
     tokei # Code statistics
+
+    # Applications
+    # calibre - broken
   ];
 
   home = {

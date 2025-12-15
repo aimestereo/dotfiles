@@ -46,6 +46,8 @@
       "zoom"
 
       "balenaetcher" # for creating bootable USB drives
+
+      "calibre" # ebook management
     ];
   };
 
