@@ -89,6 +89,7 @@ mason_lspconfig.setup({
 mason_tool_installer.setup({
   ensure_installed = {
     "prettier", -- prettier formatter
+    "yamlfmt", -- yaml formatter
     "stylua", -- lua formatter
     "eslint_d", -- js linter
     "ruff",
