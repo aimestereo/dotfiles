@@ -216,6 +216,9 @@
 
         # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
         source ~/.config/zsh/.p10k.zsh
+
+        # for some reason fzf integration doesn't apply or get overwritten later
+        export FZF_DEFAULT_OPTS='--height 20% --layout=reverse --border --preview="if [ -d {} ]; then eza --tree --level 2 --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi" --bind="ctrl-y:accept"'
       '';
     };
 
@@ -225,11 +228,14 @@
 
     fzf = {
       enable = true;
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+      # TODO: if I see that height is 30%, that means it works and I can remove the workaround in zsh initContent
       defaultOptions = [
-        "--height=40%"
+        "--height=30%"
         "--layout=reverse"
         "--border"
-        "--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+        "--preview='if [ -d {} ]; then eza --tree --level 2 --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi'"
         "--bind 'ctrl-y:accept'"
       ];
     };
