@@ -24,8 +24,3 @@ fpath=(
 ulimit -n 200000
 ulimit -u 2048
 
-path=(
-    ${HOMEBREW_PREFIX}/opt/libpq/bin
-    $path
-)
-

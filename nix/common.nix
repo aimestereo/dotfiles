@@ -211,6 +211,7 @@
       ];
 
       initContent = ''
+        # Common zsh config
         source "$HOME/.config/shell/rc"
         source "$HOME/.config/zsh/zshrc-common"
 

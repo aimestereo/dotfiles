@@ -58,12 +58,8 @@
     zsh = {
       # override: platform-specific config
       initContent = ''
-        source "$HOME/.config/shell/rc"
-        source "$HOME/.config/zsh/zshrc-common"
+        # Darwin-specific zsh config
         source "$HOME/.config/zsh/zshrc-darwin"
-
-        # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-        source ~/.config/zsh/.p10k.zsh
       '';
     };
   };
