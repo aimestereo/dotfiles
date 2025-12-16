@@ -6,7 +6,7 @@ set -o nounset
 
 DEBUG_SESSIONIZER=0
 if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
-  echo "" > /tmp/sessionizer.log
+    echo "" >/tmp/sessionizer.log
 fi
 
 # space separated list of directories
@@ -15,33 +15,33 @@ fi
 WORKPLACE_ROOTS=(~/projects ~/Work)
 
 debug() {
-	if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
-		echo "$@" >>/tmp/sessionizer.log
-	fi
+    if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
+        echo "$@" >>/tmp/sessionizer.log
+    fi
 }
 
 handle_outside_call() {
-	debug "outside call"
+    debug "outside call"
 
-	if [ "$has_session" == "true" ]; then
-		tmux a -t "$selected_name"
-	else
-		tmux new-session -s "$selected_name" -c "$selected_path"
-	fi
-	exit 0
+    if [ "$has_session" == "true" ]; then
+        tmux a -t "$selected_name"
+    else
+        tmux new-session -s "$selected_name" -c "$selected_path"
+    fi
+    exit 0
 }
 
 handle_inside_call() {
-	debug "inside call"
+    debug "inside call"
 
-	if [ "$has_session" == "true" ]; then
-		debug "switching to existing session"
-		tmux switch-client -t "$selected_name"
-	else
-		debug "creating new session"
-		tmux new-session -ds "$selected_name" -c "$selected_path"
-		tmux switch-client -t "$selected_name"
-	fi
+    if [ "$has_session" == "true" ]; then
+        debug "switching to existing session"
+        tmux switch-client -t "$selected_name"
+    else
+        debug "creating new session"
+        tmux new-session -ds "$selected_name" -c "$selected_path"
+        tmux switch-client -t "$selected_name"
+    fi
 }
 
 #
@@ -52,30 +52,30 @@ debug
 debug "started"
 
 if [[ $# -eq 1 ]]; then
-	selected_path=$1
+    selected_path=$1
 else
-  # Filter paths array too keep only existing directories
-	EXISTING_ROOTS=()
-  debug "WORKPLACE_ROOTS:" 
-	for raw_path in "${WORKPLACE_ROOTS[@]}"; do
-    # Expand any tildes
-		expanded_path=$(eval echo "$raw_path")
-		if [[ -d "$expanded_path" ]]; then
-			EXISTING_ROOTS+=("$expanded_path")
-      debug "[+] $raw_path -> $expanded_path"
-    else
-      debug "[-] $raw_path -> $expanded_path"
-		fi
-	done
-	
-	# Use only existing directories with find
-	selected_path=$(find "${EXISTING_ROOTS[@]}" -mindepth 2 -maxdepth 2 -type d | fzf)
+    # Filter paths array too keep only existing directories
+    EXISTING_ROOTS=()
+    debug "WORKPLACE_ROOTS:"
+    for raw_path in "${WORKPLACE_ROOTS[@]}"; do
+        # Expand any tildes
+        expanded_path=$(eval echo "$raw_path")
+        if [[ -d "$expanded_path" ]]; then
+            EXISTING_ROOTS+=("$expanded_path")
+            debug "[+] $raw_path -> $expanded_path"
+        else
+            debug "[-] $raw_path -> $expanded_path"
+        fi
+    done
+
+    # Use only existing directories with find
+    selected_path=$(find "${EXISTING_ROOTS[@]}" -mindepth 2 -maxdepth 2 -type d | fzf)
 fi
 
 debug "selected_path: ${selected_path}"
 
 if [[ -z $selected_path ]]; then
-	exit 0
+    exit 0
 fi
 
 # Get both group name and project name for better context
@@ -88,7 +88,7 @@ debug "selected_name: ${selected_name}"
 debug "has_session: ${has_session}"
 
 if [[ -z ${TMUX:-} ]]; then
-	handle_outside_call
+    handle_outside_call
 else
-	handle_inside_call
+    handle_inside_call
 fi
