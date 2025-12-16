@@ -1,0 +1,1 @@
+/Users/aimestereo/.config/lazyvim/lua/plugins/all-themes.lua

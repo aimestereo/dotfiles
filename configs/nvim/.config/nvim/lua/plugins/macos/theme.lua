@@ -1,0 +1,1 @@
+/Users/aimestereo/.config/omarchy/current/theme/neovim.lua

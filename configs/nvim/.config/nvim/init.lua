@@ -25,7 +25,20 @@ vim.opt.rtp:prepend(lazypath)
 -- Disable LazyVim's automatic checking for plugin order (omarchy theme loads lazyvim plugin)
 vim.g.lazyvim_check_order = false
 
-require("lazy").setup("plugins", {
+-- Check OS, for macos import plugins.macos, for linux import plugins.linux
+local os_name = vim.loop.os_uname().sysname
+local os_plugins = {}
+if os_name == "Darwin" then
+  os_plugins = { import = "plugins.macos" }
+elseif os_name == "Linux" then
+  os_plugins = { import = "plugins.linux" }
+end
+
+require("lazy").setup({
+  spec = {
+    { import = "plugins" },
+    os_plugins,
+  },
   checker = {
     enabled = true,
     notify = false,
