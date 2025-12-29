@@ -106,6 +106,7 @@
     };
     sessionPath = [
       "$HOME/.local/bin"
+      "$HOME/.cargo/bin"
       "$HOME/.cache/npm/global/bin"
     ];
     shellAliases = {
