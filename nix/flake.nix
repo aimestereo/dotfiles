@@ -88,7 +88,7 @@
               mac-app-util.darwinModules.default
 
               # 2. Apply the overlay to the system pkgs
-              { nixpkgs.overlays = [ (import ./overlays/nu_plugin_polars.nix) ]; }
+              { nixpkgs.overlays = [ ]; }
 
               # 3. Configure Home Manager
               home-manager.darwinModules.home-manager
