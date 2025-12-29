@@ -10,7 +10,6 @@
   home.packages = with pkgs; [
     # Shell & Terminal Environment
     kitty # GPU-accelerated terminal emulator
-    nushell # Modern shell with structured data
     bash-preexec # Bash hooks for command execution (required by atuin)
 
     # Core CLI Utilities
@@ -58,7 +57,10 @@
     zsh = {
       # override: platform-specific config
       initContent = ''
+        #
         # Darwin-specific zsh config
+        #
+
         source "$HOME/.config/zsh/zshrc-darwin"
       '';
     };

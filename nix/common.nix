@@ -1,5 +1,14 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
+let
+  # Turn the sessionPath list into a colon-separated string once, in Nix.
+  extraSessionPath = lib.concatStringsSep ":" config.home.sessionPath;
+in
 {
   # Common packages across all platforms
   home.packages = with pkgs; [
@@ -139,7 +148,7 @@
       lazyvim = "NVIM_APPNAME=lazyvim nvim";
 
       cl = "clear";
-      md = "mkdir -p";
+      # md = "mkdir -p";
       rd = "rmdir";
 
       tf = "terraform";
@@ -162,6 +171,13 @@
       enable = true;
       historyControl = [ "ignoreboth" ]; # ignoredups and ignorespace
       initExtra = ''
+        #
+        # Common bash config
+        #
+
+        # Re-apply sessionPath on top of Home Manager's PATH
+        export PATH="$PATH:${extraSessionPath}"
+
         # All the default Omarchy aliases and functions
         # (don't mess with these directly, just overwrite them here!)
         if [ -f $HOME/.local/share/omarchy/default/bash/rc ]; then
@@ -173,6 +189,14 @@
 
         # use vi keybindings in the shell
         set -o vi
+      '';
+    };
+
+    nushell = {
+      enable = true;
+      extraConfig = ''
+        # Re-apply sessionPath on top of Home Manager's PATH
+        $env.PATH ++= ("${extraSessionPath}" | split row ":")
       '';
     };
 
@@ -212,7 +236,13 @@
       ];
 
       initContent = ''
+        #
         # Common zsh config
+        #
+
+        # Re-apply sessionPath on top of Home Manager's PATH
+        export PATH="$PATH:${extraSessionPath}"
+
         source "$HOME/.config/shell/rc"
         source "$HOME/.config/zsh/zshrc-common"
 
