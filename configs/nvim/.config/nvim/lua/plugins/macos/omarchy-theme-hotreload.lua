@@ -1,1 +1,0 @@
-/Users/aimestereo/.config/lazyvim/lua/plugins/omarchy-theme-hotreload.lua
