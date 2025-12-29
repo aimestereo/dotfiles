@@ -80,10 +80,17 @@
               inherit (config) username homeDirectory;
             };
             modules = [
+              # 1. Import base configurations
               ./configuration.nix
               ./darwin/configuration.nix
+
+              # Import mac-app-util default modules
               mac-app-util.darwinModules.default
 
+              # 2. Apply the overlay to the system pkgs
+              { nixpkgs.overlays = [ (import ./overlays/nu_plugin_polars.nix) ]; }
+
+              # 3. Configure Home Manager
               home-manager.darwinModules.home-manager
               {
                 home-manager = {

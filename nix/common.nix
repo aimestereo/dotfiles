@@ -29,6 +29,7 @@ in
     stow # Symlink manager for dotfiles
     atuin # Command history manager with sync
     carapace # Multi-shell completion framework
+    nushellPlugins.polars
 
     # Core CLI Utilities
     bat # cat with syntax highlighting and git integration
@@ -77,6 +78,8 @@ in
     clang # C/C++ compiler (LLVM frontend)
     llvm # Compiler infrastructure (required by some LSPs)
     cmake # Cross-platform build system generator
+    libiconv # Character encoding conversion library (required for Rust linking on macOS)
+    pkg-config # Helps find libraries during build
 
     # Development - Code Quality & Formatters
     shfmt # Shell script formatter
@@ -198,6 +201,10 @@ in
         # Re-apply sessionPath on top of Home Manager's PATH
         $env.PATH ++= ("${extraSessionPath}" | split row ":")
       '';
+
+      plugins = [
+        pkgs.nushellPlugins.polars
+      ];
     };
 
     zsh = {
@@ -240,7 +247,7 @@ in
         # Common zsh config
         #
 
-        # Re-apply sessionPath on top of Home Manager's PATH
+        # Re-apply some variables that Home Manager misses: https://github.com/nix-community/home-manager/issues/2991
         export PATH="$PATH:${extraSessionPath}"
 
         source "$HOME/.config/shell/rc"
