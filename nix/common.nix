@@ -86,6 +86,7 @@ in
     shellharden # Shell script linter and hardener
     hadolint # Dockerfile linter
     pgformatter # PostgreSQL SQL formatter
+    nufmt # Nushell code formatter
 
     # Development - Editor & LSP Support
     neovim # Modern vim-based text editor
