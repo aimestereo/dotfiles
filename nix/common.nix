@@ -92,6 +92,7 @@ in
     neovim # Modern vim-based text editor
     universal-ctags # Code indexing tool (used by neovim plugins)
     silver-searcher # Fast code search (ag command, used by neovim plugins)
+    tree-sitter
 
     # Development - Environment Management
     devenv # Fast, declarative development environments
