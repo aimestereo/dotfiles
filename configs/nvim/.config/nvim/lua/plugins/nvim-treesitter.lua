@@ -58,12 +58,17 @@ return {
       "css",
       "prisma",
       "query",
+      "scss",
+      "typst",
+      "vue",
       -- vim
       "vimdoc",
       "vim",
+      "norg",
       -- others
       "markdown",
       "markdown_inline",
+      "latex",
       -- languages
       "commonlisp",
       "nix",

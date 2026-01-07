@@ -93,6 +93,10 @@ in
     universal-ctags # Code indexing tool (used by neovim plugins)
     silver-searcher # Fast code search (ag command, used by neovim plugins)
     tree-sitter
+    imagemagick # Image processing tools (used by neovim plugins)
+    mermaid-cli # Generate diagrams and flowcharts from text (used by neovim plugins)
+    git-spice # Manage stacked Git branches
+    tectonic # Modern LaTeX engine
 
     # Development - Environment Management
     devenv # Fast, declarative development environments

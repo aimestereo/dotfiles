@@ -28,6 +28,7 @@ return {
     --"preservim/vim-markdown",
   },
   opts = {
+    ui = { enable = false },
     dir = "~/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes", -- no need to call 'vim.fn.expand' here
 
     -- see below for full list of options 👇
