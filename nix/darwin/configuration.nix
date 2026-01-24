@@ -26,11 +26,13 @@
 
     taps = [
       "beeftornado/rmtree"
+      "felixkratz/formulae" # For borders (jankyborders alternative)
     ];
 
     brews = [
       "ical-buddy" # for tmux calendar plugin
       "kanata"
+      "borders" # Window borders for macOS (replaces jankyborders)
     ];
 
     casks = [
@@ -57,6 +59,10 @@
       "telegram" # Messaging app
       "obsidian" # Note-taking app
       "iina" # Modern media player for macOS
+
+      # macOS utilities moved from nix (to avoid Swift build dependency)
+      "mos" # Mouse, keyboard, and touchpad customization
+      "monitorcontrol" # External monitor brightness and volume control
     ];
   };
 

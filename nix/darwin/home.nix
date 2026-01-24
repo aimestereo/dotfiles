@@ -20,9 +20,6 @@
     # macOS-Specific Utilities
     blueutil # CLI for Bluetooth management on macOS
     _1password-cli # 1Password command line interface
-    mos # Mouse, keyboard, and touchpad customization for macOS
-    jankyborders # Window borders for macOS window managers
-    monitorcontrol # Control external monitor brightness and volume
 
     # Development - Version Control
     gh # GitHub CLI for repository management
@@ -40,6 +37,7 @@
 
     # GUI Applications moved to homebrew (nix/darwin/configuration.nix)
     # No longer using mac-app-util - these are now managed via homebrew casks
+    # macOS utilities moved to homebrew (to avoid Swift build dependency)
   ];
 
   programs = {
