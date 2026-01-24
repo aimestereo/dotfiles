@@ -9,7 +9,6 @@
   # Darwin-specific packages
   home.packages = with pkgs; [
     # Shell & Terminal Environment
-    kitty # GPU-accelerated terminal emulator
     bash-preexec # Bash hooks for command execution (required by atuin)
 
     # Core CLI Utilities
@@ -39,18 +38,8 @@
     # Development - Code Quality & Formatters
     pre-commit # Git hooks framework for code quality checks
 
-    # Applications
-    slack # Team communication
-    postman # API testing tool
-    telegram-desktop # Messaging app
-    obsidian # Note-taking app
-    iina # Modern media player for macOS
-
-    # Applications (Disabled)
-    # Commented out to manage separately or via other package managers:
-    # zoom-us # Video conferencing (constant reinstalls mess with MacOS permissions)
-    # arc-browser # Browser (managed via brew for faster updates)
-
+    # GUI Applications moved to homebrew (nix/darwin/configuration.nix)
+    # No longer using mac-app-util - these are now managed via homebrew casks
   ];
 
   programs = {

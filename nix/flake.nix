@@ -15,7 +15,6 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mac-app-util.url = "github:hraban/mac-app-util";
   };
 
   outputs =
@@ -24,7 +23,6 @@
       nixpkgs,
       home-manager,
       darwin,
-      mac-app-util,
       ...
     }:
     let
@@ -84,9 +82,6 @@
               ./configuration.nix
               ./darwin/configuration.nix
 
-              # Import mac-app-util default modules
-              mac-app-util.darwinModules.default
-
               # 2. Apply the overlay to the system pkgs
               # { nixpkgs.overlays = [ ]; }
 
@@ -104,11 +99,6 @@
                       stateVersion = "23.05";
                     };
                   };
-
-                  # To enable it for all users:
-                  sharedModules = [
-                    mac-app-util.homeManagerModules.default
-                  ];
 
                   extraSpecialArgs = {
                     pkgs = pkgsFor system;

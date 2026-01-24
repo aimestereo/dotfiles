@@ -49,6 +49,14 @@
       "balenaetcher" # for creating bootable USB drives
 
       "calibre" # ebook management
+
+      # GUI apps moved from nix (previously required mac-app-util)
+      "kitty" # GPU-accelerated terminal emulator
+      "slack" # Team communication
+      "postman" # API testing tool
+      "telegram" # Messaging app
+      "obsidian" # Note-taking app
+      "iina" # Modern media player for macOS
     ];
   };
 
