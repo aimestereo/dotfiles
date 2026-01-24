@@ -14,16 +14,12 @@
     # Core CLI Utilities
     coreutils # GNU coreutils for macOS (provides gls, gcat, etc.)
 
-    # System Utilities
-    wttrbar # Weather information for status bar
-
     # macOS-Specific Utilities
     blueutil # CLI for Bluetooth management on macOS
     _1password-cli # 1Password command line interface
 
     # Development - Version Control
     gh # GitHub CLI for repository management
-    jujutsu # Git CLI alternative (jj command)
 
     # Development - Languages & Runtimes
     (python312.withPackages (ppkgs: [
@@ -36,8 +32,7 @@
     pre-commit # Git hooks framework for code quality checks
 
     # GUI Applications moved to homebrew (nix/darwin/configuration.nix)
-    # No longer using mac-app-util - these are now managed via homebrew casks
-    # macOS utilities moved to homebrew (to avoid Swift build dependency)
+    # to avoid Swift build dependency and re-builds on updates
   ];
 
   programs = {
