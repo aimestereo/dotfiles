@@ -15,7 +15,6 @@
     coreutils # GNU coreutils for macOS (provides gls, gcat, etc.)
 
     # macOS-Specific Utilities
-    blueutil # CLI for Bluetooth management on macOS
     _1password-cli # 1Password command line interface
 
     # Development - Version Control
@@ -27,9 +26,6 @@
       ppkgs.ipdb # IPython debugger
       # ppkgs.neovim
     ]))
-
-    # Development - Code Quality & Formatters
-    pre-commit # Git hooks framework for code quality checks
 
     # GUI Applications moved to homebrew (nix/darwin/configuration.nix)
     # to avoid Swift build dependency and re-builds on updates
