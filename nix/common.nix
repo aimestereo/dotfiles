@@ -13,7 +13,7 @@ in
   # Common packages across all platforms
   home.packages = with pkgs; [
     # Nix Tools
-    nixfmt-rfc-style # Nix code formatter
+    nixfmt # Nix code formatter
 
     # Fonts
     nerd-fonts.jetbrains-mono # Programming font with icons
