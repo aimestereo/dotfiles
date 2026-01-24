@@ -35,6 +35,7 @@ in
     bat # cat with syntax highlighting and git integration
     eza # Modern replacement for ls with colors and icons
     fd # Modern replacement for find, faster and easier
+    sd # Streamlined alternative to sed for simple replacements
     fzf # Fuzzy finder for files, history, commands (used by neovim)
     ripgrep # Fast grep alternative, respects .gitignore
     jq # JSON processor for CLI
@@ -68,6 +69,7 @@ in
     # Development - Languages & Runtimes
     go # Go programming language (LSP and tools)
     nodejs_22 # Node.js runtime (provides npm, npx, corepack for LSPs)
+    yarn # Yarn package manager (for JS/TS projects)
     rustc # Rust compiler (for Rust development and tools)
     cargo # Rust package manager and build tool
     luarocks # Lua package manager (for neovim plugins)

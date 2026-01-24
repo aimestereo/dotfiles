@@ -44,6 +44,7 @@
       "yandex" # browser, nix version is x86 only
       "transmission" # torrent client
       "zoom"
+      "zed" # code editor
 
       "balenaetcher" # for creating bootable USB drives
 
