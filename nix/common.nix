@@ -143,8 +143,6 @@ in
       # Modern replacements
       c = "bat -p";
       cat = "bat";
-      grep = "rg";
-      find = "fd";
 
       # Git shortcuts
       g = "git";
