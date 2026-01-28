@@ -65,6 +65,7 @@ in
     delta # Better git diff (current)
     diff-so-fancy # Better git diff output with colors (not used currently)
     lazygit # TUI for git with keyboard shortcuts
+    claude-code
 
     # Development - Languages & Runtimes
     go # Go programming language (LSP and tools)
