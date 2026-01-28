@@ -13,7 +13,9 @@ hyper.bindKey("m", hyper.appHandler("ru.yandex.desktop.music"))
 
 hyper.bindShiftKey("f", hyper.appHandler("com.mitchellh.ghostty"))
 hyper.bindKey("f", hyper.appHandler("net.kovidgoyal.kitty"))
-hyper.bindKey("e", hyper.appHandler("com.todesktop.230313mzl4w4u92"))
+-- Cursor
+-- hyper.bindKey("e", hyper.appHandler("com.todesktop.230313mzl4w4u92"))
+hyper.bindKey("e", hyper.appHandler("dev.zed.Zed"))
 
 hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 
