@@ -65,7 +65,7 @@ in
     delta # Better git diff (current)
     diff-so-fancy # Better git diff output with colors (not used currently)
     lazygit # TUI for git with keyboard shortcuts
-    claude-code
+    # claude-code  # brew has newer version
 
     # Development - Languages & Runtimes
     go # Go programming language (LSP and tools)
@@ -75,6 +75,7 @@ in
     cargo # Rust package manager and build tool
     luarocks # Lua package manager (for neovim plugins)
     perl # Perl interpreter (required by fzf for some features)
+    mise # Manage development environments for multiple languages
 
     # Development - Build Tools & Compilers
     readline # Library for line editing (dependency for many CLI tools)
