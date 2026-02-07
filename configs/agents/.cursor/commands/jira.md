@@ -1,1 +1,1 @@
-../../../agents/.config/agents/commands/jira.md
+../../.config/agents/commands/jira.md

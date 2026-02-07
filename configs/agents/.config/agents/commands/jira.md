@@ -34,13 +34,23 @@ Ask for clarification if:
 - Breaking changes are required
 - Migration strategy is needed
 
-### 3. Create Branch
+### 3. Create Implementation Plan
+
+Before any code changes, present a plan for user approval:
+- List files to be created/modified
+- Describe the approach for each change
+- Note any risks or alternatives considered
+- Outline testing strategy
+
+**Wait for explicit user approval before proceeding.**
+
+### 4. Create Branch
 
 Branch naming: `<type>/<ticket-id>-<short-description>`
 - Types: `feat`, `fix`, `chore`, `refactor`
 - Example: `feat/PROJ-123-add-user-export`
 
-### 4. Implement Changes
+### 5. Implement Changes
 
 Follow project conventions. For database changes:
 - Update Prisma schema in keystone
@@ -49,7 +59,7 @@ Follow project conventions. For database changes:
 
 Commit atomically as you code (one logical change per commit).
 
-### 5. Create Pull Request
+### 6. Create Pull Request
 
 Push branch and create PR with:
 - Reference to Jira ticket

@@ -41,9 +41,9 @@ configs/agents/
 ├── .config/agents/commands/    # Source commands
 │   └── jira.md
 ├── .claude/commands/           # Symlinks for Claude Code
-│   └── jira.md -> ../../../agents/.config/agents/commands/jira.md
+│   └── jira.md -> ../../.config/agents/commands/jira.md
 └── .cursor/commands/           # Symlinks for Cursor
-    └── jira.md -> ../../../agents/.config/agents/commands/jira.md
+    └── jira.md -> ../../.config/agents/commands/jira.md
 ```
 
 Commands are markdown files invoked via `/command-name` (e.g., `/jira PROJ-123`).
