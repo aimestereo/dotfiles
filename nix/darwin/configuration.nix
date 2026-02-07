@@ -27,12 +27,17 @@
     taps = [
       "beeftornado/rmtree"
       "felixkratz/formulae" # For borders (jankyborders alternative)
+
+      "netbirdio/tap" # For netbird VPN
+      "tailscale"
     ];
 
     brews = [
       "ical-buddy" # for tmux calendar plugin
       "kanata"
       "borders" # Window borders for macOS (replaces jankyborders)
+
+      "netbirdio/tap/netbird" # netbird VPN CLI
     ];
 
     casks = [
@@ -46,14 +51,22 @@
       "yandex" # browser, nix version is x86 only
       "transmission" # torrent client
       "zoom"
-      "zed" # code editor
 
       "balenaetcher" # for creating bootable USB drives
 
       "calibre" # ebook management
 
-      # GUI apps moved from nix (previously required mac-app-util)
+      # dev tools
+      "zed" # code editor
       "kitty" # GPU-accelerated terminal emulator
+      "claude"
+      "claude-code"
+
+      "netbirdio/tap/netbird-ui" # GUI for netbird VPN
+      "aws-vpn-client" # AWS VPN client
+      "tailscale-app" # Tailscale VPN client
+
+      # GUI apps moved from nix (previously required mac-app-util)
       "slack" # Team communication
       "postman" # API testing tool
       "telegram" # Messaging app
