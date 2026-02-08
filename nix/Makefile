@@ -2,9 +2,9 @@
 mac:
 	sudo darwin-rebuild switch --flake .#macOS
 
-.PHONY: mac-run
-mac-run:
-	sudo nix run nix-darwin -- switch --flake .#macOS
+.PHONY: mac-initial
+mac-initial:
+	sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake .#macOS
 
 .PHONY: arch
 arch:
@@ -32,4 +32,3 @@ update:
 clean:
 	nix-store --gc
 	sudo nix-collect-garbage -d
-
