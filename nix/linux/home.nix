@@ -16,6 +16,7 @@
     wl-clipboard # Wayland clipboard utilities (wl-copy, wl-paste)
     impala # TUI for managing WiFi connections
     plocate # Fast file locator (updatedb/locate)
+    inetutils # Network utilities (ftp, telnet, hostname, etc.)
 
     # Applications
     # Commented out to manage separately or via other package managers:

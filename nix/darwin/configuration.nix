@@ -29,7 +29,6 @@
       "felixkratz/formulae" # For borders (jankyborders alternative)
 
       "netbirdio/tap" # For netbird VPN
-      "tailscale"
     ];
 
     brews = [
@@ -63,7 +62,7 @@
       "claude-code"
 
       "netbirdio/tap/netbird-ui" # GUI for netbird VPN
-      "aws-vpn-client" # AWS VPN client
+      # "aws-vpn-client" # AWS VPN client
       "tailscale-app" # Tailscale VPN client
 
       # GUI apps moved from nix (previously required mac-app-util)

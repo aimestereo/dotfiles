@@ -54,7 +54,6 @@ in
     tldr # Simplified community-driven man pages
     gum # Shell scripting with styled UI components
     unzip # Extract zip archives
-    inetutils # Network utilities (ftp, telnet, hostname, etc.)
     wget # Download files from web
     curl # Transfer data with URLs
     rsync # Fast incremental file transfer
