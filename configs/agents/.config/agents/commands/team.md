@@ -125,7 +125,16 @@ EXCLUDE from review (auto-generated files):
 - Schema files when marked with generation comments
 - Helm chart generated files
 
-Review command: `git diff main...HEAD -- . ':!*.lock' ':!*-lock.json' ':!*-lock.yaml'`
+Review command:
+```bash
+git diff main...HEAD -- . \
+  ':!*.lock' ':!*-lock.json' ':!*-lock.yaml' \
+  ':!*.generated.*' ':!*.gen.*' ':!*_generated.*' \
+  ':!*.pb.go' ':!*_pb2.py' ':!*_grpc.py' \
+  ':!sqlc/' ':!generated/' \
+  ':!schema.prisma' ':!schema.graphql' \
+  ':!*.graphql.ts' ':!*.gql.ts'
+```
 ```
 
 **Decision matrix:**
