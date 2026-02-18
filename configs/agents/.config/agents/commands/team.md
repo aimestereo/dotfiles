@@ -1,6 +1,6 @@
 # Multi-Agent Team Workflow
 
-Coordinate specialized agents to implement a task with built-in quality controls.
+Coordinate specialized agents to implement complex tasks with built-in quality controls.
 
 ## Arguments
 
@@ -8,42 +8,67 @@ Coordinate specialized agents to implement a task with built-in quality controls
 
 ## Architecture
 
-Three specialized roles prevent "polite feedback loops":
+Four specialized roles with strict separation of concerns:
 
-1. **Planner** - Analyzes task, identifies files, creates implementation plan
-2. **Coder** - Writes code only, no self-review
-3. **Reviewer** - Reviews diff objectively without seeing original task
+1. **Leader** (you, main conversation) - Orchestrates agents, makes meta-decisions, stays context-clean
+2. **Planner/Researcher** - Digs into codebase, searches for solutions, creates implementation plan
+3. **Coder** - Writes code only, no self-review
+4. **Reviewer** - Reviews diff objectively without seeing original task
 
 Communication happens through Git (branches, commits, diffs) - not direct agent-to-agent.
 
 ## Instructions
 
-### Phase 1: Planning (You act as Planner)
+### You Are The Leader
 
-**Understand the task:**
-- Parse task description, identify acceptance criteria
-- Ask clarifying questions if requirements are ambiguous
+Your job is to orchestrate, not to get lost in details. Stay rational:
+- Spawn agents for research and implementation
+- Make meta-decisions: retry, escalate, change strategy
+- Don't dig into code yourself - that's what Planner/Researcher is for
+- Keep your context clean for decision-making
 
-**Identify context (two-step approach):**
-1. First pass: identify which files are relevant to the task
-2. Second pass: read those files to understand patterns and conventions
+### Phase 1: Research & Planning (Spawn Planner Agent)
 
-**Create implementation plan:**
-- List files to create/modify with specific changes
-- Note existing patterns to follow
-- Identify risks or edge cases
-- Define verification criteria
-
-**Create branch BEFORE any changes:**
+**Create branch BEFORE any work:**
 ```bash
 git checkout -b feat/<short-description>
 ```
 
-**Wait for user approval before proceeding.**
+Launch a Task agent for research and planning:
+
+```
+You are Planner/Researcher. Your job:
+
+1. UNDERSTAND THE TASK
+   - Parse requirements and acceptance criteria
+   - Identify ambiguities - list questions if any
+
+2. RESEARCH THE CODEBASE
+   - Find relevant files and patterns
+   - Understand existing conventions
+   - Search for similar implementations
+
+3. RESEARCH SOLUTIONS (if needed)
+   - Search web for best practices
+   - Find library documentation
+   - Identify potential approaches
+
+4. CREATE IMPLEMENTATION PLAN
+   - List files to create/modify with specific changes
+   - Note patterns to follow
+   - Identify risks and edge cases
+   - Define verification criteria
+
+Task: <task description>
+
+Output a structured plan ready for Coder agent.
+```
+
+**Review the plan. Ask clarifying questions if needed. Approve before proceeding.**
 
 ### Phase 2: Implementation (Spawn Coder Agent)
 
-Launch a Task agent with these strict constraints:
+Launch a Task agent with strict constraints:
 
 ```
 You are Coder. Your rules:
@@ -51,21 +76,23 @@ You are Coder. Your rules:
 - Never hardcode secrets - use environment variables
 - Follow existing patterns from the codebase
 - One logical change per commit
-- If stuck after 3 attempts on same issue, STOP and report
+- If stuck after 3 attempts on same issue, STOP and report failure
 
-Task: <implementation plan from Phase 1>
-Files to modify: <file list>
-Patterns to follow: <conventions identified>
+Implementation plan:
+<plan from Phase 1>
+
+Files to modify:
+<file list>
+
+Patterns to follow:
+<conventions from research>
 ```
 
-The Coder agent should:
-- Make changes file by file
-- Commit atomically after each logical change
-- Stop immediately if hitting repeated failures
+**Monitor progress. If Coder reports failure, decide: retry with hints, adjust plan, or escalate.**
 
 ### Phase 3: Review (Spawn Reviewer Agent)
 
-Launch a separate Task agent that reviews WITHOUT seeing original task:
+Launch a Task agent that reviews WITHOUT seeing original task:
 
 ```
 You are Reviewer. Review this diff objectively.
@@ -77,49 +104,89 @@ Rules:
   - WARNING: Performance, maintainability concerns → note but approve
   - STYLE: Formatting, naming preferences → ignore
 - Only BLOCK on CRITICAL issues
-- You don't know the original task - evaluate the code on its own merits
+- You don't know the original task - evaluate code on its own merits
 
-Review: `git diff main...HEAD`
+EXCLUDE from review (auto-generated files):
+- Lock files: *.lock, *-lock.json, *-lock.yaml
+- Generated code: *.generated.*, *.gen.*, *_generated.go
+- Protobuf: *.pb.go, *_pb2.py, *_grpc.py
+- Database: sqlc/, generated/, migrations/*.sql (auto-generated parts)
+- GraphQL: *.graphql.ts, *.gql.ts (generated types)
+- Schema files when marked with generation comments
+
+Review command: `git diff main...HEAD -- . ':!*.lock' ':!*-lock.json'`
 ```
 
 **Decision matrix:**
 - No CRITICAL issues → proceed to Phase 4
-- CRITICAL issues found → return to Phase 2 with specific fixes (max 3 cycles)
-- After 3 failed fix attempts → escalate to user
+- CRITICAL issues → return to Phase 2 with specific fixes (max 3 cycles)
+- After 3 failed cycles → escalate to human
 
 ### Phase 4: Verification
 
 Run project tests if available:
 ```bash
-# Run tests with resource limits if possible
 npm test / pytest / go test / make test
 ```
 
-**Verification checklist:**
+**Checklist:**
 - [ ] Tests pass (or no tests affected)
 - [ ] No new lint errors
 - [ ] Files written successfully (not empty commits)
-- [ ] No path traversal (files stay within repo)
 
 ### Phase 5: Pull Request
 
 Create PR with:
-- Summary of changes (what, not why - the diff shows what)
+- Summary of changes
 - Verification steps performed
 - Any warnings from review that were accepted
 
-## Safety Controls
+## Leader Decision Points
 
-**Retry limits:** Max 3 fix attempts per issue. Escalate after.
+At each phase transition, assess:
 
-**Path validation:** All file operations must stay within repository root.
+| Signal | Action |
+|--------|--------|
+| Plan unclear | Ask Planner for clarification |
+| Coder stuck 3x | Adjust plan or escalate |
+| CRITICAL in review | Send back to Coder with fixes |
+| 3 review cycles failed | Escalate to human |
+| Tests failing | Decide: fix attempt or rollback |
 
-**Empty commit prevention:** Verify files were actually written before committing.
+## When to Escalate
 
-## When to Escalate to Human
-
-- Architectural decisions required
+- Architectural decisions beyond task scope
 - Implicit business requirements discovered
-- Security-sensitive changes
-- After 3 failed fix cycles
-- Merge conflicts on non-trivial code
+- Security-sensitive changes need human review
+- Repeated failures (3+ cycles)
+- Merge conflicts on complex code
+
+## File Exclusion Patterns for Reviewer
+
+```gitignore
+# Lock files
+*.lock
+*-lock.json
+*-lock.yaml
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+Cargo.lock
+poetry.lock
+devenv.lock
+flake.lock
+
+# Generated code markers
+*.generated.*
+*.gen.*
+*_generated.*
+*.pb.go
+*_pb2.py
+*_grpc.py
+*.sqlc.go
+
+# Build artifacts
+dist/
+build/
+.next/
+```
