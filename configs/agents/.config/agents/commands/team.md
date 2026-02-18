@@ -84,11 +84,18 @@ You are Planner/Researcher. Your job:
    - Suggest specific tests to add for this feature
    - Follow the testing philosophy below
 
-5. CREATE IMPLEMENTATION PLAN
+5. REVIEW DOCUMENTATION
+   - Find *.md files in affected folders, parent folders, and ./docs/
+   - Determine if existing docs need updates for this feature
+   - If feature is significant and docs are missing, plan to create them
+   - Follow the documentation philosophy below
+
+6. CREATE IMPLEMENTATION PLAN
    - List files to create/modify with specific changes
    - Note patterns to follow
    - Identify risks and edge cases
    - Include test plan: which tests to add/modify
+   - Include documentation plan: which docs to update/create
 
 ---
 
@@ -113,6 +120,27 @@ VCR Pattern:
 - Update fixtures explicitly when API contracts change
 
 CI DB is only for schema validation and migration generation, NOT for running tests.
+
+---
+
+DOCUMENTATION PHILOSOPHY:
+
+Docs should be lean and human-readable:
+- Explain WHAT it does, WHY it exists, HOW it works
+- Explain behavior and interconnections with other parts
+- No copy-paste of code blocks or configuration parameters
+- Code is the source of truth for implementation details
+
+When to create docs:
+- Feature is significant and affects multiple parts
+- Behavior is non-obvious or has important edge cases
+- Integration points that others need to understand
+
+Format guidelines:
+- Use markdown tables for structured comparisons
+- Use mermaid diagrams for flows and relationships
+- NEVER use ASCII art graphics
+- Keep it concise - if it's too long, nobody reads it
 
 ---
 
