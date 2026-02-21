@@ -20,7 +20,8 @@ hyper.bindKey("e", hyper.appHandler("dev.zed.Zed"))
 hyper.bindKey("d", hyper.appHandler("com.apple.finder"))
 
 hyper.bindKey("a", hyper.appHandler("company.thebrowser.Browser"))
-hyper.bindKey("y", hyper.appHandler("ru.yandex.desktop.yandex-browser"))
+hyper.bindKey("b", hyper.appHandler("com.google.Chrome"))
+-- hyper.bindKey("y", hyper.appHandler("ru.yandex.desktop.yandex-browser"))
 
 hyper.bindKey("s", hyper.appHandler("com.tinyspeck.slackmacgap"))
 hyper.bindKey("t", hyper.appHandler("com.tdesktop.Telegram"))
@@ -41,7 +42,7 @@ hyper.bindKey(".", hyper.appHandler("com.runningwithcrayons.Alfred-Preferences")
 hyper.bindKey(",", hyper.appHandler("com.apple.systempreferences"))
 
 -- Show the bundleID of the currently open window
-hyper.bindKey("b", function()
+hyper.bindShiftKey("b", function()
   local bundleId = hs.window.focusedWindow():application():bundleID()
   hs.alert.show(bundleId)
   hs.pasteboard.setContents(bundleId)
