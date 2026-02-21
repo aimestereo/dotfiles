@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+ROUTER_A="192.168.1.1"
+ROUTER_B="192.168.1.3"
+
+current=$(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')
+
+if [[ -z "$current" ]]; then
+    echo "Error: Could not determine current gateway"
+    exit 1
+fi
+
+echo "Current gateway: $current"
+
+if [[ "$current" == "$ROUTER_A" ]]; then
+    new="$ROUTER_B"
+elif [[ "$current" == "$ROUTER_B" ]]; then
+    new="$ROUTER_A"
+else
+    echo "Current gateway is neither $ROUTER_A nor $ROUTER_B"
+    echo "Setting to $ROUTER_A"
+    new="$ROUTER_A"
+fi
+
+echo "Switching to: $new"
+sudo route delete default >/dev/null 2>&1
+sudo route add default "$new"
+
+echo "Done. New gateway: $(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')"
