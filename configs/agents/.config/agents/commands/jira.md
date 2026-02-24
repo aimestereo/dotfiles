@@ -4,9 +4,24 @@ Work on a Jira ticket from understanding to pull request.
 
 ## Arguments
 
-- `$ARGUMENTS` - Jira ticket ID (e.g., PROJ-123)
+- `$ARGUMENTS` - Jira ticket ID (e.g., PROJ-123) or Jira browse URL
+
+## Jira MCP Reference
+
+- **cloudId**: Call `getAccessibleAtlassianResources` first to get the cloudId — all subsequent Jira/Confluence calls need it
+- **Description format**: `editJiraIssue` accepts markdown strings for the `description` field — do NOT pass ADF objects, they will fail with "Failed to convert markdown to adf"
+- **Linking PR to ticket**: Add a Jira comment with the PR link (not a remote link)
 
 ## Instructions
+
+### 0. Assess Current State
+
+Before starting, check what's already done:
+- Run `git log main..HEAD --oneline` and `git diff main...HEAD --stat` to see if code is already on the branch
+- If code is done: skip to step 5 (Fill Jira Description) and step 6 (Create PR)
+- If no code yet: follow the full workflow from step 1
+
+Parallelize independent calls — fetch Jira ticket details and git state in the same step.
 
 ### 1. Understand the Task
 
@@ -44,24 +59,35 @@ Before any code changes, present a plan for user approval:
 
 **Wait for explicit user approval before proceeding.**
 
-### 4. Create Branch
+### 4. Implement Changes
 
-Branch naming: `<type>/<ticket-id>-<short-description>`
+Create branch if needed: `<type>/<ticket-id>-<short-description>`
 - Types: `feat`, `fix`, `chore`, `refactor`
 - Example: `feat/PROJ-123-add-user-export`
 
-### 5. Implement Changes
+Follow project conventions. Commit atomically (one logical change per commit).
 
-Follow project conventions. For database changes:
-- Update Prisma schema in keystone
-- Generate and review migrations
-- Consider data migration if needed
+### 5. Fill Jira Description
 
-Commit atomically as you code (one logical change per commit).
+If the ticket description is empty or just a link, update it based on the actual work done:
+- **Problem**: What was wrong and root causes
+- **Fix**: What was changed and why
+- **Affected Services**: Which services/files were touched
+
+Use `editJiraIssue` with a markdown string for the `description` field.
 
 ### 6. Create Pull Request
 
 Push branch and create PR with:
-- Reference to Jira ticket
-- Summary of changes
-- Test plan or verification steps
+- Title: conventional commit style, under 70 chars
+- Body structure:
+  - `## Summary` — ticket link + bullet points explaining the change
+  - `## Changed files` — list of files with one-line description each
+  - `## Test plan` — checklist of verification steps
+
+### 7. Link PR to Jira
+
+Add a comment on the Jira ticket with the PR link:
+```
+PR: [#NUMBER TITLE](URL)
+```
