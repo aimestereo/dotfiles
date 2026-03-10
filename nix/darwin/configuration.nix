@@ -37,6 +37,8 @@
       "borders" # Window borders for macOS (replaces jankyborders)
       "mactop" # top-like activity monitor for macOS
 
+      "worktrunk" # CLI for Worktrunk, a tool for managing workspaces and projects
+
       "netbirdio/tap/netbird" # netbird VPN CLI
     ];
 

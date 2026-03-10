@@ -147,7 +147,7 @@ in
 
       # Git shortcuts
       g = "git";
-      wt = "git worktree";
+      # wt = "git worktree";
 
       gst = "git status";
       gco = "git checkout";
@@ -265,6 +265,9 @@ in
 
         # for some reason fzf integration doesn't apply or get overwritten later
         export FZF_DEFAULT_OPTS='--height 20% --layout=reverse --border --preview="if [ -d {} ]; then eza --tree --level 2 --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi" --bind="ctrl-y:accept"'
+
+        # Worktrunk terminal integration, only if wt is installed (to avoid issues on Linux)
+        if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
       '';
     };
 
