@@ -8,8 +8,8 @@ Work on a Jira ticket from understanding to pull request.
 
 ## Jira MCP Reference
 
-- **cloudId**: Call `getAccessibleAtlassianResources` first to get the cloudId — all subsequent Jira/Confluence calls need it
-- **Description format**: `editJiraIssue` accepts markdown strings for the `description` field — do NOT pass ADF objects, they will fail with "Failed to convert markdown to adf"
+- **cloudId**: Call `getAccessibleAtlassianResources` first to get the cloudId
+- **Description format**: `editJiraIssue` accepts markdown strings for `description` — do NOT pass ADF objects
 - **Linking PR to ticket**: Add a Jira comment with the PR link (not a remote link)
 
 ## Instructions
@@ -17,107 +17,22 @@ Work on a Jira ticket from understanding to pull request.
 ### 0. Assess Current State
 
 Before starting, check what's already done:
+
 - Run `git log main..HEAD --oneline` and `git diff main...HEAD --stat` to see if code is already on the branch
-- If code is done: skip to step 5 (Fill Jira Description) and step 6 (Create PR)
+- If code is done: skip to PR creation
 - If no code yet: follow the full workflow from step 1
 
 Parallelize independent calls — fetch Jira ticket details and git state in the same step.
 
-### 1. Understand the Task
+### 1. Read Skills
 
-Use Jira MCP to gather context:
-- Fetch the ticket details (summary, description, acceptance criteria)
-- Check parent epic or linked issues for broader context
-- Read comments for clarifications or updates
-- Identify the ticket type (feature, bug, task, subtask)
+Read the `git-workflow` and `orchestrate` skills.
 
-Ask clarifying questions if:
-- Requirements are ambiguous
-- Acceptance criteria is missing or unclear
-- Technical approach isn't specified
+### 2. Follow Orchestration Protocol with Jira Context
 
-### 2. Analyze Codebase Impact
+- Analyst fetches Jira ticket details (summary, description, acceptance criteria, comments) as part of research
+- Branch/commit/PR naming includes ticket ID (per `git-workflow` skill)
+- After each PR creation: link PR to Jira ticket via comment
+- After all PRs complete: fill Jira description if empty using `editJiraIssue` with markdown (Problem / Fix / Affected Services)
 
-This is a monorepo. Determine scope:
-- Which applications/services are affected?
-- Are database changes needed? (Keystone/Prisma schema)
-- Are API changes required?
-- What existing patterns should be followed?
-
-Ask for clarification if:
-- Change spans multiple services and priority is unclear
-- Breaking changes are required
-- Migration strategy is needed
-
-### 3. Create Implementation Plan
-
-Before any code changes, present a plan for user approval:
-- List files to be created/modified
-- Describe the approach for each change
-- Note any risks or alternatives considered
-- Outline testing strategy
-
-**Wait for explicit user approval before proceeding.**
-
-### 4. Implement Changes
-
-Create branch if needed: `<type>/<ticket-id>-<short-description>`
-- Types: `feat`, `fix`, `chore`, `refactor`
-- Example: `feat/PROJ-123-add-user-export`
-
-Follow project conventions. Commit atomically (one logical change per commit).
-
-### 5. Fill Jira Description
-
-If the ticket description is empty or just a link, update it based on the actual work done:
-- **Problem**: What was wrong and root causes
-- **Fix**: What was changed and why
-- **Affected Services**: Which services/files were touched
-
-Use `editJiraIssue` with a markdown string for the `description` field.
-
-### 6. Create Pull Request
-
-Push branch and create PR with:
-- Title: conventional commit style, under 70 chars
-- Body structure:
-  - `## Summary` — ticket link + bullet points explaining the change
-  - `## Changed files` — list of files with one-line description each
-  - `## Test plan` — checklist of verification steps
-
-### 7. Link PR to Jira
-
-Add a comment on the Jira ticket with the PR link:
-```
-PR: [#NUMBER TITLE](URL)
-```
-
-### 8. Review & Fix Loop
-
-After creating and linking the PR, enter an automated review-fix loop. **Do not stop or ask the user — keep iterating until the review passes.**
-
-**Spawn a Reviewer subagent (Agent tool, subagent_type: general-purpose):**
-
-```
-Review PR #<number> on this repo.
-
-1. Run `gh pr diff <number>` to get the full diff
-2. Read changed files for full context where needed
-3. Review objectively:
-   - CRITICAL: Security issues, bugs, data loss risks, incorrect logic → blocks merge
-   - WARNING: Performance, maintainability → note but don't block
-   - STYLE: Formatting, naming → ignore entirely
-4. Post your review as a PR comment using `gh pr review <number> --comment --body "..."`
-5. At the end of your response, output exactly one of:
-   - RESULT: PASS — no critical issues found
-   - RESULT: FAIL — critical issues found (list them)
-
-Exclude from review (auto-generated, don't flag): *.lock, *-lock.*, *.generated.*, *.pb.go, *_pb2.py, sqlc/, schema.prisma, dist/, build/
-```
-
-**Loop logic:**
-
-1. Parse reviewer result
-2. If `RESULT: PASS` → done, report PR URL to user
-3. If `RESULT: FAIL` → fix all CRITICAL issues, commit, push, spawn reviewer again
-4. Max 3 cycles. If still failing after 3 cycles, stop and report remaining issues to user
+### 3. Report Final PR URL(s) to User
