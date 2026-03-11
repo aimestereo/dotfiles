@@ -32,6 +32,13 @@ You are the **Coordinator**. You do NOT do research, write code, or run tests yo
 - All reviews (local and PR)
 - All test execution, linting, committing, pushing
 
+**Sub-agent lifecycle:**
+
+- Every Agent call returns an `agentId`. **Track all agent IDs.**
+- To continue a previous agent's work, use `resume: <agentId>` instead of spawning a new agent. The resumed agent keeps its full previous context (research, reasoning, file reads).
+- Resume when: user requests plan changes, follow-up investigation is needed, or a fix attempt needs the same context.
+- Spawn fresh when: the task is unrelated to the previous agent's work, or the agent's context is no longer relevant.
+
 **Before spawning any agent**, read all CLAUDE.md files in the project hierarchy and build a PROJECT CONTEXT block. Include it in every agent prompt:
 
 ```
@@ -62,6 +69,7 @@ PROJECT CONTEXT:
 3. Analyst: research codebase, design plan, identify PR boundaries, output structured plan
 4. Coordinator: review plan, present to user for approval
 5. **Wait for explicit user approval before proceeding**
+6. If user requests changes or deeper investigation: **resume the same Analyst** (using its agentId) with the follow-up instructions — don't spawn a fresh one
 
 ### Phase 2: Per-PR Loop
 
