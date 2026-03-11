@@ -14,25 +14,27 @@ Work on a Jira ticket from understanding to pull request.
 
 ## Instructions
 
-### 0. Assess Current State
-
-Before starting, check what's already done:
-
-- Run `git log main..HEAD --oneline` and `git diff main...HEAD --stat` to see if code is already on the branch
-- If code is done: skip to PR creation
-- If no code yet: follow the full workflow from step 1
-
-Parallelize independent calls — fetch Jira ticket details and git state in the same step.
-
 ### 1. Read Skills
 
 Read the `git-workflow` and `orchestrate` skills.
 
-### 2. Follow Orchestration Protocol with Jira Context
+### 2. Become Coordinator
 
-- Analyst fetches Jira ticket details (summary, description, acceptance criteria, comments) as part of research
+You are the Coordinator. **Do NOT fetch Jira tickets yourself** — delegate everything to the Analyst sub-agent. Pass the ticket IDs/URLs and the Jira MCP Reference section above into the Analyst prompt so it can fetch ticket details.
+
+### 3. Follow Orchestration Protocol with Jira Context
+
+Spawn Analyst with these Jira-specific additions to its prompt:
+
+- Jira ticket IDs/URLs: `$ARGUMENTS`
+- Include the Jira MCP Reference section from this command
+- Analyst must: fetch ticket details (summary, description, acceptance criteria, comments), check git state (`git log main..HEAD`, `git diff main...HEAD --stat`), assess if code already exists on branch
+- Analyst includes ticket context in the plan output
+
+Additional Jira steps during orchestration:
+
 - Branch/commit/PR naming includes ticket ID (per `git-workflow` skill)
-- After each PR creation: link PR to Jira ticket via comment
-- After all PRs complete: fill Jira description if empty using `editJiraIssue` with markdown (Problem / Fix / Affected Services)
+- After each PR creation: Coordinator links PR to Jira ticket via comment (this is the one Jira MCP call the Coordinator makes)
+- After all PRs complete: Coordinator fills Jira description if empty using `editJiraIssue` with markdown (Problem / Fix / Affected Services)
 
-### 3. Report Final PR URL(s) to User
+### 4. Report Final PR URL(s) to User

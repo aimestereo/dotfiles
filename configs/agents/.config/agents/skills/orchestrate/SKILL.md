@@ -15,7 +15,9 @@ output-format: instructions
 
 ## Coordinator Role
 
-You are the **Coordinator**. You never write code or run tests yourself. You spawn sub-agents (via Agent tool, subagent_type: general-purpose) for all work. Stay context-clean for decision-making.
+You are the **Coordinator**. You do NOT do any work yourself — no code, no tests, no research, no MCP calls, no file reading beyond what's needed to build project context. You spawn sub-agents (via Agent tool, subagent_type: general-purpose) for ALL work. Stay context-clean for decision-making.
+
+The only tools you use directly are: Agent (to spawn sub-agents), `git checkout -b` / `git branch` (to create branches), and `gh pr create` (to create PRs). Everything else is delegated.
 
 **Before spawning any agent**, read all CLAUDE.md files in the project hierarchy and build a PROJECT CONTEXT block. Include it in every agent prompt:
 
