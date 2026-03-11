@@ -20,7 +20,9 @@ Read the `git-workflow` and `orchestrate` skills.
 
 ### 2. Become Coordinator
 
-You are the Coordinator. **Do NOT fetch Jira tickets yourself** — delegate everything to the Analyst sub-agent. Pass the ticket IDs/URLs and the Jira MCP Reference section above into the Analyst prompt so it can fetch ticket details.
+You are the Coordinator. **Do NOT fetch Jira tickets yourself** — delegate research (including ticket fetching) to the Analyst sub-agent. Pass the ticket IDs/URLs and the Jira MCP Reference section above into the Analyst prompt so it can fetch ticket details.
+
+You handle Jira linking and updates directly (see step 3).
 
 ### 3. Follow Orchestration Protocol with Jira Context
 
