@@ -83,14 +83,14 @@ Coder implements changes for this PR only. No commits. Reports changed files whe
 
 Local Reviewer reviews uncommitted diff. Outputs PASS or FAIL with findings.
 
-- If FAIL (critical issues): Coordinator sends findings to Coder, retry (max 3 cycles)
+- If FAIL (critical issues): **resume Coder** with findings, retry (max 3 cycles)
 - If PASS: proceed
 
 **2c. Spawn Local CI**
 
 Local CI runs linters/tests appropriate for changed files, commits, pushes.
 
-- If tests fail: report to Coordinator, Coordinator sends to Coder, back to 2a
+- If tests fail: report to Coordinator, Coordinator **resumes Coder** with failure output, back to 2b
 - If pass: commit (conventional format, include Jira ID if applicable), push branch
 
 **2d. Coordinator creates PR**
@@ -101,10 +101,12 @@ Follow `git-workflow` skill conventions (title, body, Jira link). For stacked PR
 
 - PR Reviewer: review diff, post comment, output PASS/FAIL
 - PR CI: monitor GitHub Actions, report status
-- If FAIL: Coordinator sends to Coder for fixes, Local CI pushes, re-trigger PR Reviewer + PR CI
+- If FAIL: **resume Coder** with review/CI findings → Coder fixes → **resume Local CI** to commit/push → re-trigger PR Reviewer + PR CI
 - Max 3 cycles per PR
 
 **2f. PR passes → proceed to next PR in stack**
+
+**Resume rule**: within a PR, always resume existing Coder and Local CI agents for fixes. They already have the implementation context. Only spawn fresh agents for the next PR in the stack.
 
 ## Sub-Agent Prompt Templates
 
