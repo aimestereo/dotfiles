@@ -32,21 +32,17 @@ configs/git/.local/bin/gclean   →  ~/.local/bin/gclean
 
 Run `make symlinks` or `utils/symlinks` to apply all packages.
 
-## Agent Commands
+## Agent Commands & Skills
 
-The `agents` package contains AI agent commands for Claude Code and Cursor:
+The `agents` package contains AI agent commands and reusable skills for Claude Code and Cursor. See `configs/agents/.config/agents/README.md` for full setup details.
 
 ```
-configs/agents/
-├── .config/agents/commands/    # Source commands
-│   └── jira.md
-├── .claude/commands/           # Symlinks for Claude Code
-│   └── jira.md -> ../../.config/agents/commands/jira.md
-└── .cursor/commands/           # Symlinks for Cursor
-    └── jira.md -> ../../.config/agents/commands/jira.md
+configs/agents/.config/agents/
+├── commands/       # User-invocable (/feat, /jira, /team)
+└── skills/         # Shared protocols (git-workflow, orchestrate)
 ```
 
-Commands are markdown files invoked via `/command-name` (e.g., `/jira PROJ-123`).
+Commands and skills are symlinked to `.claude/` and `.cursor/` directories within the stow package.
 
 ## Installation
 
