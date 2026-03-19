@@ -38,11 +38,11 @@ The `agents` package contains AI agent commands and reusable skills for Claude C
 
 ```
 configs/agents/.config/agents/
-├── commands/       # User-invocable (/feat, /jira, /team)
-└── skills/         # Shared protocols (git-workflow, orchestrate)
+├── commands/       # User-invocable (/feat)
+└── skills/         # Shared protocols (git-workflow)
 ```
 
-Commands and skills are symlinked to `.claude/` and `.cursor/` directories within the stow package.
+Commands and skills are symlinked to `.claude/` and `.cursor/` directories within the stow package. The `/feat` command leverages `feature-dev` and `pr-review-toolkit` plugins for implementation and PR review.
 
 ## Installation
 

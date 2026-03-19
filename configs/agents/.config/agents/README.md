@@ -6,14 +6,10 @@ AI agent commands and skills for Claude Code and Cursor, managed with GNU Stow.
 
 ```
 .config/agents/
-├── commands/          # User-invocable commands (/feat, /jira, /team)
-│   ├── feat.md
-│   ├── jira.md
-│   └── team.md
+├── commands/          # User-invocable commands (/feat)
+│   └── feat.md
 ├── skills/            # Reusable skills referenced by commands
-│   ├── git-workflow/
-│   │   └── SKILL.md
-│   └── orchestrate/
+│   └── git-workflow/
 │       └── SKILL.md
 └── README.md
 ```
@@ -23,6 +19,11 @@ AI agent commands and skills for Claude Code and Cursor, managed with GNU Stow.
 **Commands** are markdown files invoked via `/command-name` (e.g., `/feat add user export`).
 
 **Skills** are reusable protocols that commands reference. Each skill is a directory with a `SKILL.md` file containing YAML frontmatter (name, description, triggers). Skills can be auto-triggered by matching keywords or explicitly referenced by commands.
+
+**Plugins** provide specialized agents used by commands:
+
+- `feature-dev` — guided feature development (exploration, architecture, implementation, review)
+- `pr-review-toolkit` — comprehensive PR review (code, tests, errors, types, comments, simplification)
 
 ## Symlink Setup
 
