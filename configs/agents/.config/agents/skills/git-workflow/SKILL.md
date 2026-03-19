@@ -67,6 +67,8 @@ PR: [#NUMBER TITLE](URL)
 
 When a plan decomposes into 2+ independently reviewable units, use stacked PRs.
 
+Single logical unit = one PR to main (no stacking). If units are independent (no dependency between them), prefer multiple independent PRs targeting `main` over stacking.
+
 **Planning phase** identifies PR boundaries by:
 
 - Independent subsystems (schema, API, frontend)
@@ -92,4 +94,9 @@ feat/PROJ-123-add-ui        (PR3)
 
 Each PR goes through full review+CI loop before starting the next.
 
-Single logical unit = one PR to main (no stacking).
+**Updating stacked PRs** — never cascade-update the whole stack. A PR is only updated in two cases:
+
+1. **Own CI/review failure**: the PR's own checks or review found issues — fix on its branch, push
+2. **Direct parent merged**: the immediately preceding PR was merged into main — rebase onto updated main and verify the PR base was retargeted to `main` (GitHub usually does this automatically)
+
+If an early PR gets fixes, do NOT force-update or rebase the following PRs. They will naturally pick up the changes when their direct parent merges. This minimizes unnecessary rebases and avoids overburdening CI with redundant runs across the stack.
