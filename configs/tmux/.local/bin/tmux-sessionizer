@@ -20,6 +20,18 @@ debug() {
     fi
 }
 
+setup_new_session() {
+    debug "setting up new session windows"
+    tmux new-window -t "$selected_name" -c "$selected_path" -n claude
+
+    sleep 3
+
+    tmux send-keys -t "$selected_name:1" 'v -S' Enter
+    tmux send-keys -t "$selected_name:claude" 'claude --dangerously-skip-permissions' Enter
+
+    tmux select-window -t "$selected_name:1"
+}
+
 handle_outside_call() {
     debug "outside call"
 
@@ -27,6 +39,7 @@ handle_outside_call() {
         tmux a -t "$selected_name"
     else
         tmux new-session -s "$selected_name" -c "$selected_path"
+        setup_new_session
     fi
     exit 0
 }
@@ -40,6 +53,7 @@ handle_inside_call() {
     else
         debug "creating new session"
         tmux new-session -ds "$selected_name" -c "$selected_path"
+        setup_new_session
         tmux switch-client -t "$selected_name"
     fi
 }
