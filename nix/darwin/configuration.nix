@@ -40,6 +40,19 @@
       "worktrunk" # CLI for Worktrunk, a tool for managing workspaces and projects
 
       "netbirdio/tap/netbird" # netbird VPN CLI
+
+      # moved from nix due to closure size
+      "hadolint" # Dockerfile linter
+      "mermaid-cli" # Generate diagrams and flowcharts from text (used by neovim plugins)
+      "mise" # Manage development environments for multiple languages
+      "awscli" # AWS command line interface
+      "tectonic" # Modern LaTeX engine
+      "yarn" # Yarn package manager (for JS/TS projects)
+      "imagemagick" # Image processing tools (used by neovim plugins)
+      "cmake" # Cross-platform build system generator
+      "perl" # Perl interpreter (required by fzf for some features)
+      "luarocks" # Lua package manager (for neovim plugins)
+      "rust" # Rust compiler and package manager
     ];
 
     casks = [

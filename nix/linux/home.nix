@@ -12,6 +12,12 @@
 
   # Linux-specific packages
   home.packages = with pkgs; [
+    # Development - Build Tools & Compilers
+    clang # C/C++ compiler (LLVM frontend)
+    llvm # Compiler infrastructure (required by some LSPs)
+    rustc # Rust compiler
+    cargo # Rust package manager and build tool
+
     # System Utilities
     wl-clipboard # Wayland clipboard utilities (wl-copy, wl-paste)
     impala # TUI for managing WiFi connections

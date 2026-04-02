@@ -69,25 +69,15 @@ in
     # Development - Languages & Runtimes
     go # Go programming language (LSP and tools)
     nodejs_22 # Node.js runtime (provides npm, npx, corepack for LSPs)
-    yarn # Yarn package manager (for JS/TS projects)
-    rustc # Rust compiler (for Rust development and tools)
-    cargo # Rust package manager and build tool
-    luarocks # Lua package manager (for neovim plugins)
-    perl # Perl interpreter (required by fzf for some features)
-    mise # Manage development environments for multiple languages
 
     # Development - Build Tools & Compilers
     readline # Library for line editing (dependency for many CLI tools)
-    clang # C/C++ compiler (LLVM frontend)
-    llvm # Compiler infrastructure (required by some LSPs)
-    cmake # Cross-platform build system generator
     libiconv # Character encoding conversion library (required for Rust linking on macOS)
     pkg-config # Helps find libraries during build
 
     # Development - Code Quality & Formatters
     shfmt # Shell script formatter
     shellharden # Shell script linter and hardener
-    hadolint # Dockerfile linter
     pgformatter # PostgreSQL SQL formatter
     nufmt # Nushell code formatter
 
@@ -96,16 +86,12 @@ in
     universal-ctags # Code indexing tool (used by neovim plugins)
     silver-searcher # Fast code search (ag command, used by neovim plugins)
     tree-sitter
-    imagemagick # Image processing tools (used by neovim plugins)
-    mermaid-cli # Generate diagrams and flowcharts from text (used by neovim plugins)
     git-spice # Manage stacked Git branches
-    tectonic # Modern LaTeX engine
 
     # Development - Environment Management
     devenv # Fast, declarative development environments
 
     # DevOps & Cloud
-    awscli2 # AWS command line interface
     lazydocker # TUI for managing Docker containers
     k9s # TUI for managing Kubernetes clusters
 
