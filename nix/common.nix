@@ -80,6 +80,8 @@ in
     shellharden # Shell script linter and hardener
     pgformatter # PostgreSQL SQL formatter
     nufmt # Nushell code formatter
+    yamlfmt # YAML formatter
+    mdformat # Markdown formatter
 
     # Development - Editor & LSP Support
     neovim # Modern vim-based text editor
