@@ -182,6 +182,7 @@ in
 
         source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
         source $HOME/.config/shell/rc
+        eval "$(mise activate bash)"
 
         # use vi keybindings in the shell
         set -o vi
