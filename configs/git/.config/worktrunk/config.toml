@@ -3,7 +3,7 @@
 # override the default post-create and pre-remove hooks to create a tmux session for each worktree, and kill it when the worktree is removed.
 # wt switch --create <feature> -x 'tmux switch-client -t {{ branch | sanitize }}'
 
-[post-create]
+[pre-start]
 tmux = """
 S={{ branch | sanitize }}
 W={{ worktree_path }}
