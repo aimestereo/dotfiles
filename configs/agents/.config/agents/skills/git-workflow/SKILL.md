@@ -38,6 +38,8 @@ Conventional format: `<type>(<scope>): <subject>`
 
 ## Pull Requests
 
+Always push and create a PR after completing work. Do not ask — just do it.
+
 **Title**: same format as commits.
 
 - With Jira: `feat(PROJ-123): add export endpoint`
