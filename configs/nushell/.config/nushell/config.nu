@@ -897,17 +897,12 @@ $env.config = {
     ]
 }
 
-# seems this is inherited from parent shell
-# (nushell is not a login shell)
-# $env.PATH = (
-#   $env.PATH
-#   | split row (char esep)
-#   | append /usr/local/bin
-#   | prepend ('/opt/homebrew/bin')
-#   | append ($env.CARGO_HOME | path join bin)
-#   | append ($env.HOME | path join .local bin)
-#   | uniq # filter so the paths are unique
-# )
+# Ensure PATH includes local dirs (inherited from parent shell, but explicit for standalone use)
+$env.PATH = ($env.PATH | split row (char esep) | append [
+  ($env.HOME | path join .local bin)
+  ($env.HOME | path join .cargo bin)
+  ($env.HOME | path join .cache npm global bin)
+] | uniq)
 
 
 source "~/.config/nushell/plugins/atuin.nu"
