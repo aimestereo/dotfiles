@@ -1,12 +1,20 @@
 # wt switch --create <feature>
 #
 # override the default post-create and pre-remove hooks to create a tmux session for each worktree, and kill it when the worktree is removed.
-# wt switch --create <feature> -x 'tmux switch-client -t {{ branch | sanitize }}'
+# wt switch --create <feature> -x 'tmux switch-client -t <session>'
 
 [pre-start]
 tmux = """
-S={{ branch | sanitize }}
-W={{ worktree_path }}
+W="{{ worktree_path }}"
+G=$(basename "$(dirname "$W")")
+P=$(basename "$W")
+S=$(echo "${P}[${G}]" | tr . _)
+
+if tmux has-session -t "$S" 2>/dev/null; then
+    tmux switch-client -t "$S"
+    exit 0
+fi
+
 tmux new-session -d -s "$S" -c "$W" -n nvim
 tmux new-window -t "$S" -c "$W" -n claude
 tmux new-window -t "$S" -c "$W" -n shell
@@ -18,8 +26,13 @@ tmux send-keys -t "$S:claude" 'claude --dangerously-skip-permissions' Enter
 
 tmux select-window -t "$S:nvim"
 tmux switch-client -t "$S"
-# echo "✓ Session '$S' — attach with: tmux attach -t $S"
 """
 
 [pre-remove]
-tmux = "tmux kill-session -t {{ branch | sanitize }} 2>/dev/null || true"
+tmux = """
+W="{{ worktree_path }}"
+G=$(basename "$(dirname "$W")")
+P=$(basename "$W")
+S=$(echo "${P}[${G}]" | tr . _)
+tmux kill-session -t "$S" 2>/dev/null || true
+"""
