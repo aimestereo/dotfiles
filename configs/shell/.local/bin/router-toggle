@@ -23,7 +23,12 @@ else
 fi
 
 echo "Switching to: $new"
+
+for iface in $(netstat -rn -f inet | awk '/^default/ && $4 ~ /^en[0-9]/ {print $4}'); do
+    sudo route delete default -ifscope "$iface" >/dev/null 2>&1
+done
 sudo route delete default >/dev/null 2>&1
+
 sudo route add default "$new"
 
 echo "Done. New gateway: $(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')"
