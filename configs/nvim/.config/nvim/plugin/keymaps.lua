@@ -109,6 +109,31 @@ vim.keymap.set(
   { desc = "Moves the cursor to the previous item in the quickfix list" }
 )
 
+-- URL picker: extract all URLs from current buffer, pick one, open in browser
+Map("n", "<leader>gu", function()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local urls = {}
+  local seen = {}
+  for _, line in ipairs(lines) do
+    for url in line:gmatch("https?://[^%s%)%]>\"]+") do
+      url = url:gsub("[.,;:!?]+$", "")
+      if not seen[url] then
+        seen[url] = true
+        urls[#urls + 1] = url
+      end
+    end
+  end
+  if #urls == 0 then
+    vim.notify("No URLs found", vim.log.levels.INFO)
+    return
+  end
+  vim.ui.select(urls, { prompt = "Open URL" }, function(choice)
+    if choice then
+      vim.ui.open(choice)
+    end
+  end)
+end, { desc = "Pick and open URL from buffer" })
+
 -- Move selected line / block of text in visual mode
 Map("v", "<M-j>", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down in visual mode" })
 Map("v", "<M-k>", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up in visual mode" })

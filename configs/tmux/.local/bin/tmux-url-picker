@@ -1,0 +1,10 @@
+#!/bin/sh
+url=$(
+  tmux capture-pane -J -p -S -3000 \
+    | rg -oP 'https?://[^\s\)\]>"]+' \
+    | sed 's/[.,;:!?]*$//' \
+    | awk '!seen[$0]++' \
+    | FZF_DEFAULT_OPTS= fzf-tmux -p --reverse --wrap
+)
+[ -n "$url" ] && open "$url"
+exit 0

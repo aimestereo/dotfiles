@@ -63,7 +63,7 @@ alias s='kitten ssh'
 alias hm='home-manager switch --flake ~/projects/my/dotfiles/nix#main'
 
 # --- FZF ---
-export FZF_DEFAULT_OPTS='--height 20% --layout=reverse --border --preview="if [ -d {} ]; then eza --tree --level 2 --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi" --bind="ctrl-y:accept"'
+export FZF_DEFAULT_OPTS='--height 20% --layout=reverse --border --preview="if [ -d {} ]; then eza --tree --level 2 --color=always {} | head -200; elif [ -f {} ]; then bat -n --color=always --line-range :500 {}; fi" --bind="ctrl-y:accept"'
 
 # --- Tool initializations ---
 eval "$(zoxide init zsh)"
