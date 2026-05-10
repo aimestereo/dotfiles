@@ -6,24 +6,32 @@ spoons.init({ install = true })
 -- LSP annotations for Hammerspoon
 hs.loadSpoon("EmmyLua")
 
-local hyper = require("hyper")
-require("hyper.mapping")
+-- Hyper mode: "f18" (CapsLock→F18 via hidutil) or "quad" (CapsLock→Cmd+Ctrl+Alt+Shift via Karabiner)
+local HYPER_MODE = "quad"
 
--- Hotkey cheatsheet for any app.
-local sheet = hs.loadSpoon("KSheet")
-hyper.bindShiftKey("/", hs.fnutils.partial(sheet.toggle, sheet))
+if HYPER_MODE == "f18" then
+  local hyper = require("hyper")
+  require("hyper.mapping")
 
--- Menu item search.
-local menusearch = require("menusearch")
-hyper.bindKey("/", menusearch.toggle)
+  local sheet = hs.loadSpoon("KSheet")
+  hyper.bindShiftKey("/", hs.fnutils.partial(sheet.toggle, sheet))
 
--- Super Duper mode (hold s and d), Ah Fudge mode (hold a and f). Hold 5 seconds for help.
-local keyboard = require("keyboard") -- Load Hammerspoon bits from https://github.com/jasonrudolph/keyboard
-hyper.bindKey("w", keyboard.windows.toggle)
+  local menusearch = require("menusearch")
+  hyper.bindKey("/", menusearch.toggle)
 
--- Draw on screen. hyper + i (c/a/t).  (c)lear/(a)nnotate/(t)oggle
-local drawonscreen = require("drawonscreen")
-hyper.bindKey("i", drawonscreen.start)
+  local keyboard = require("keyboard")
+  hyper.bindKey("w", keyboard.windows.toggle)
+
+  local drawonscreen = require("drawonscreen")
+  hyper.bindKey("i", drawonscreen.start)
+else
+  require("quad-mapping")
+
+  local HYPER = { "cmd", "ctrl", "alt", "shift" }
+
+  local menusearch = require("menusearch")
+  hs.hotkey.bind(HYPER, "/", menusearch.toggle)
+end
 
 -- End
 local alert_sound = hs.sound.getByName("Tink")

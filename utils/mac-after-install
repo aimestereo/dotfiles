@@ -5,9 +5,10 @@ set -euo pipefail
 # Autolaunch
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' >/dev/null
 
-# enable Keyboard remapping on system load
-launchctl unload -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2 &>/dev/null || true
-launchctl load -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist
+# CapsLock remapping: using Karabiner-Elements (CapsLock → Cmd+Ctrl+Alt+Shift)
+# Legacy hidutil approach (CapsLock → F18) kept in configs/hammerspoon/Library/LaunchAgents/ but no longer loaded
+# launchctl unload -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2 &>/dev/null || true
+# launchctl load -w ~/Library/LaunchAgents/com.local.KeyRemapping.plist
 
 npm config set prefix "${HOME}/.cache/npm/global" &&
 	mkdir -p "${HOME}/.cache/npm/global" &&

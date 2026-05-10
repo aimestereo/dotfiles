@@ -9,8 +9,8 @@ dotfiles/
 ├── configs/           # Stow packages (each subdirectory is a package)
 │   ├── agents/        # AI agent commands (Claude, Cursor)
 │   ├── git/           # Git configuration
-│   ├── hammerspoon/   # macOS automation
-│   ├── kanata/        # Keyboard remapping
+│   ├── hammerspoon/   # macOS automation (Hyper key, window mgmt, draw on screen)
+│   ├── kanata/        # Keyboard remapping (legacy, unused)
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim
@@ -51,6 +51,15 @@ make mac           # Full macOS setup
 make symlinks      # Just symlink configs
 make nix-mac       # Nix/Home Manager only
 ```
+
+## Hyper Key
+
+CapsLock acts as a Hyper key for global shortcuts (app switching, window management, etc.).
+
+Two modes available (set `HYPER_MODE` in `configs/hammerspoon/.hammerspoon/init.lua`):
+
+- **`quad`** (default) — Karabiner-Elements maps CapsLock → Cmd+Ctrl+Alt+Shift. Bindings in `quad-mapping.lua` are plain `hs.hotkey.bind` calls. No modal, survives sleep.
+- **`f18`** (legacy) — hidutil maps CapsLock → F18. Uses `hs.hotkey.modal` via `hyper/` module. Can break after macOS sleep cycles.
 
 ## Key Utilities
 
