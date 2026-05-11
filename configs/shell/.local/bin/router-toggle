@@ -7,7 +7,7 @@ MASK="255.255.255.0"
 WIFI_SERVICE="Wi-Fi"
 WIFI_IP="192.168.1.21"
 
-ETH_SERVICE="USB 10/100/1000 LAN"
+ETH_SERVICE="AX88179A"
 ETH_IP="192.168.1.22"
 
 current=$(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')
