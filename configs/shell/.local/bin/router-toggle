@@ -59,4 +59,4 @@ if [[ $applied -eq 0 ]]; then
     exit 1
 fi
 
-echo "Done. New gateway: $(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')"
+echo "Done. New gateway: $new"
