@@ -2,6 +2,13 @@
 
 ROUTER_A="192.168.1.1"
 ROUTER_B="192.168.1.3"
+MASK="255.255.255.0"
+
+WIFI_SERVICE="Wi-Fi"
+WIFI_IP="192.168.1.21"
+
+ETH_SERVICE="USB 10/100/1000 LAN"
+ETH_IP="192.168.1.22"
 
 current=$(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')
 
@@ -24,11 +31,32 @@ fi
 
 echo "Switching to: $new"
 
-for iface in $(netstat -rn -f inet | awk '/^default/ && $4 ~ /^en[0-9]/ {print $4}'); do
-    sudo route delete default -ifscope "$iface" >/dev/null 2>&1
-done
-sudo route delete default >/dev/null 2>&1
+applied=0
 
-sudo route add default "$new"
+is_valid_ip() {
+    [[ -n "$1" && "$1" != *"none"* && "$1" != "(null)" && "$1" != "0.0.0.0" ]]
+}
+
+apply_gateway() {
+    local service=$1 static_ip=$2
+    local active_ip
+    active_ip=$(networksetup -getinfo "$service" 2>/dev/null | awk -F': ?' '/^IP address/ {print $2}')
+    if is_valid_ip "$active_ip"; then
+        echo "Applying to $service ($static_ip -> $new)"
+        if sudo networksetup -setmanual "$service" "$static_ip" "$MASK" "$new"; then
+            applied=1
+        else
+            echo "Error: Failed to apply gateway to $service"
+        fi
+    fi
+}
+
+apply_gateway "$WIFI_SERVICE" "$WIFI_IP"
+apply_gateway "$ETH_SERVICE" "$ETH_IP"
+
+if [[ $applied -eq 0 ]]; then
+    echo "Error: No active network interface found"
+    exit 1
+fi
 
 echo "Done. New gateway: $(route -n get default 2>/dev/null | awk '/gateway:/ {print $2}')"
