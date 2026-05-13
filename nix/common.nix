@@ -76,6 +76,7 @@
     nufmt # Nushell code formatter
     yamlfmt # YAML formatter
     mdformat # Markdown formatter
+    pass # Password manager CLI
 
     # Development - Editor & LSP Support
     neovim # Modern vim-based text editor
