@@ -77,6 +77,7 @@
     yamlfmt # YAML formatter
     mdformat # Markdown formatter
     pass # Password manager CLI
+    doppler # App Secrets manager CLI
 
     # Development - Editor & LSP Support
     neovim # Modern vim-based text editor
