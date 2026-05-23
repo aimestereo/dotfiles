@@ -49,6 +49,7 @@ sudo rpm-ostree install -y --allow-inactive \
 	gnupg \
 	pinentry \
 	gcc \
+	stow \
 	wl-clipboard \
 	tailscale \
 	keyd \
