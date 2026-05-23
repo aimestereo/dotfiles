@@ -31,8 +31,11 @@ repo_gpgcheck=1
 gpgkey=https://downloads.1password.com/linux/keys/1password.asc
 EOF
 
+# --allow-inactive: packages already provided by the base (e.g. gnupg via
+# gnupg2 on Sway Atomic) are recorded as requested but stay inactive instead
+# of failing the transaction. Keeps the script portable across Atomic editions.
 echo "[3/5] Layering rpm-ostree packages (this takes a few minutes)..."
-sudo rpm-ostree install -y \
+sudo rpm-ostree install -y --allow-inactive \
 	kitty \
 	tmux \
 	xonsh \
