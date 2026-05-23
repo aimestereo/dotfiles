@@ -14,13 +14,13 @@ echo "=== Fedora Atomic Sway bootstrap ==="
 echo
 
 # Tailscale's .repo file embeds the GPG key URL, so no separate rpm --import.
-echo "[1/5] Registering Tailscale repo..."
+echo "[1/6] Registering Tailscale repo..."
 curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo |
 	sudo tee /etc/yum.repos.d/tailscale.repo >/dev/null
 
 # Skip 'rpm --import' on Atomic: /usr/share/rpm/ is read-only. The .repo file's
 # embedded gpgkey URL is enough — rpm-ostree fetches it at install time.
-echo "[2/5] Registering 1Password repo..."
+echo "[2/6] Registering 1Password repo..."
 sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<'EOF'
 [1password]
 name=1Password Stable Channel
@@ -31,10 +31,16 @@ repo_gpgcheck=1
 gpgkey=https://downloads.1password.com/linux/keys/1password.asc
 EOF
 
+# keyd lives in COPR — the project's own README endorses alternateved/keyd.
+# The .repo file uses $releasever/$basearch so it works across Fedora versions.
+echo "[3/6] Registering keyd COPR repo..."
+curl -fsSL https://copr.fedorainfracloud.org/coprs/alternateved/keyd/repo/fedora-/alternateved-keyd-fedora-.repo |
+	sudo tee /etc/yum.repos.d/keyd.repo >/dev/null
+
 # --allow-inactive: packages already provided by the base (e.g. gnupg via
 # gnupg2 on Sway Atomic) are recorded as requested but stay inactive instead
 # of failing the transaction. Keeps the script portable across Atomic editions.
-echo "[3/5] Layering rpm-ostree packages (this takes a few minutes)..."
+echo "[4/6] Layering rpm-ostree packages (this takes a few minutes)..."
 sudo rpm-ostree install -y --allow-inactive \
 	kitty \
 	tmux \
@@ -51,13 +57,13 @@ sudo rpm-ostree install -y --allow-inactive \
 
 # Flathub goes in here so the post-reboot `make fedora` step can install
 # Tier-2 GUI flatpaks without a separate remote-add.
-echo "[4/5] Adding Flathub user remote..."
+echo "[5/6] Adding Flathub user remote..."
 flatpak remote-add --if-not-exists --user flathub \
 	https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Clone over HTTPS — no SSH key needed yet. Re-runs are no-ops if the
 # directory is already a git checkout.
-echo "[5/5] Cloning dotfiles into $dotfiles_dir..."
+echo "[6/6] Cloning dotfiles into $dotfiles_dir..."
 mkdir -p "$(dirname "$dotfiles_dir")"
 if [[ -d "$dotfiles_dir/.git" ]]; then
 	echo "  ($dotfiles_dir already a git checkout; skipping clone)"
