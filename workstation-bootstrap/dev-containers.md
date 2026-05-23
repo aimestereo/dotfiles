@@ -8,8 +8,8 @@ How to live inside per-project DevPod containers without losing the dotfiles exp
 Fedora host  ← always-available tools layer (from `make fedora`)
   ├─ kitty + xonsh + tmux + tmux-sessionizer + mise + nvim + git + devpod
   └─ devpod manages one container per project repo:
-       ├─ container: fenix       (Node stack, devenv-derived .devcontainer.json)
-       └─ container: DemoStand   (Compose-based, devenv-derived .devcontainer.json)
+       ├─ container: fenix       (Node stack, hand-authored .devcontainer.json)
+       └─ container: DemoStand   (Compose-based, hand-authored .devcontainer.json)
 ```
 
 There is **no "outer dev container"**. The Fedora host already has the full dotfiles toolchain. DevPod spins one container *per project* and you attach to it; you do not nest containers.
@@ -136,24 +136,31 @@ The reference snippet in `utils/devcontainer-mounts.json` uses leading-comma aut
 
 ## Per-project `.devcontainer.json`
 
-For devenv-based projects (fenix, DemoStand), generate the base via:
+`.devcontainer.json` is hand-authored — devenv has no command that emits one from `devenv.nix`. (The container subcommand is `devenv container {build,copy,run}`; there is no `generate`.) Two reasonable starting points:
 
-```bash
-devenv container generate
-```
+- **Upstream image** — set `"image": "ghcr.io/cachix/devenv/devcontainer:latest"`. The image ships Nix + devenv preinstalled; inside the container, enter the project's environment with `devenv shell --from path:./<devenv-dir>`. Zero build step, useful for experimentation.
+- **Project-specific OCI image** — define `containers.<name>` in `devenv.nix`, then on the build host:
 
-Then merge in the dotfiles bits from `utils/devcontainer-mounts.json`:
+  ```bash
+  devenv container build shell                                 # produces an OCI image
+  devenv container copy shell --registry docker-daemon://      # load into local daemon
+  # or push: devenv container copy shell --registry docker://ghcr.io/<owner>/
+  ```
+
+  Then set `"image"` in `.devcontainer.json` to the resulting tag. Tools are baked in, no devenv at runtime, faster container start, but the image must be rebuilt and redistributed on every `devenv.nix` change.
+
+Either way, merge in the dotfiles bits from `utils/devcontainer-mounts.json`:
 
 - `mounts` block (12 bind mounts + any per-project named volumes)
 - `postCreateCommand: /dotfiles-utils/devpod-container-bootstrap`
 
 Project-specific fields the snippet does not provide:
 
-- `image` or `build` — set by `devenv container generate`
+- `image` or `build` — picked per the choice above
 - `runArgs` — privileged flags, network mode
 - `forwardPorts` — dev server ports auto-forward to host
 - `containerEnv` — project env vars
-- `customizations` — editor settings
+- `customizations` — editor settings (skip for neovim users; the bind-mounted `~/.config/nvim/` is the configuration source)
 
 For Compose-based projects (DemoStand-shaped), DevPod supports `dockerComposeFile` + `service` in `.devcontainer.json`; sidecars (Postgres, etc.) start alongside the dev container. See upstream DevPod docs for the exact schema.
 
@@ -166,7 +173,7 @@ For Compose-based projects (DemoStand-shaped), DevPod supports `dockerComposeFil
 | `devpod-container-bootstrap: /home/<user>/.bashrc is a directory` (or `.zshrc` / `.zshenv` — any of the three) | Host hasn't stowed; Docker created empty dir at mount target | Run `make symlinks-fedora` on host, recreate container |
 | First `nvim` hangs 15–60s | Lazy bootstrap + treesitter compile inside container | Wait it out; subsequent launches are fast |
 | `git push` prompts for password | DevPod SSH agent not forwarded | Verify `eval $(ssh-agent)` + `ssh-add` on host; check DevPod ssh-config |
-| Files owned by wrong UID/GID inside container | Host UID ≠ container user UID | Devcontainer image needs `remoteUser` matching host UID; `devenv container generate` handles this — verify with `id` |
+| Files owned by wrong UID/GID inside container | Host UID ≠ container user UID | Set `remoteUser` in `.devcontainer.json` to match the host user; verify with `id` inside the container. |
 | `mise install` finds no tools | Project lacks `.mise.toml`; global config is empty by design | Add `.mise.toml` to project root with the tool versions you need |
 
 For deeper logs: `journalctl --user -n 50` on host for DevPod issues; `devpod logs <project>` for container build/run logs.
