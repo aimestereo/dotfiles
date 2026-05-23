@@ -1,0 +1,40 @@
+{
+  // Reference snippet for a project's .devcontainer.json. Merge `mounts` and
+  // `postCreateCommand` into the project's existing config. Mounts are bind
+  // (rw by default) so container-side writes — lazy-lock updates, atuin
+  // history, mise pinning — flow back to the host's stowed configs.
+  //
+  // PRECONDITION: run `make symlinks-fedora` on the host BEFORE `devpod up`.
+  // If a bind-mount source file is missing, Docker creates an empty directory
+  // at the target — silently corrupting shell startup. The bootstrap script
+  // detects this and fails loudly, but stowing first is the real fix.
+  //
+  // .devcontainer.json supports JSONC, so these // comments are valid; remove
+  // them when copying if a stricter parser is in use.
+
+  "mounts": [
+    // Shell + dotfiles config
+    "source=${env:HOME}/.config/xonsh,target=/home/${env:USER}/.config/xonsh,type=bind",
+    "source=${env:HOME}/.config/git,target=/home/${env:USER}/.config/git,type=bind",
+    "source=${env:HOME}/.config/nvim,target=/home/${env:USER}/.config/nvim,type=bind",
+    "source=${env:HOME}/.config/mise,target=/home/${env:USER}/.config/mise,type=bind",
+    "source=${env:HOME}/.config/atuin,target=/home/${env:USER}/.config/atuin,type=bind",
+    "source=${env:HOME}/.config/tmux,target=/home/${env:USER}/.config/tmux,type=bind",
+    "source=${env:HOME}/.config/shell,target=/home/${env:USER}/.config/shell,type=bind",
+
+    // Shell entrypoints
+    "source=${env:HOME}/.bashrc,target=/home/${env:USER}/.bashrc,type=bind",
+    "source=${env:HOME}/.zshrc,target=/home/${env:USER}/.zshrc,type=bind",
+    "source=${env:HOME}/.zshenv,target=/home/${env:USER}/.zshenv,type=bind",
+
+    // Unified host + container shell history
+    "source=${env:HOME}/.local/share/atuin,target=/home/${env:USER}/.local/share/atuin,type=bind",
+
+    // Container-side reachable copy of the dotfiles utils/ dir (read-only).
+    // Used by postCreateCommand below; adjust source path if the dotfiles
+    // repo lives elsewhere on your host.
+    "source=${env:HOME}/projects/my/dotfiles/utils,target=/dotfiles-utils,type=bind,readonly"
+  ],
+
+  "postCreateCommand": "/dotfiles-utils/devpod-container-bootstrap"
+}

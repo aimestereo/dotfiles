@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# xonsh pin tracks PyPI's current stable; review on bump.
+XONSH_VERSION="${XONSH_VERSION:-0.23.7}"
+
+# Sanity-check the shell-rc bind-mounts. Docker creates an empty directory at
+# the mount target when the source file doesn't exist on the host, which would
+# silently break shell startup. Run `make symlinks-fedora` on the host first.
+for rc in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.zshenv"; do
+	if [[ -d "$rc" ]]; then
+		echo "devpod-container-bootstrap: $rc is a directory — host hasn't run 'make symlinks-fedora' yet." >&2
+		exit 1
+	fi
+done
+
+# Install mise into the container if the base image doesn't already ship it.
+command -v mise >/dev/null || curl -fsSL https://mise.run | sh
+
+# Put mise itself plus its shim dir on PATH so the right python/pip win.
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+
+# Realize the bind-mounted mise config inside the container.
+mise install
+
+# xonsh and its xontribs are Python packages — bind-mounting can't substitute
+# for site-packages install, so they go in per-container.
+pip install --user "xonsh==${XONSH_VERSION}"
+xonsh -c 'xpip install --requirement /dotfiles-utils/xontrib-requirements.txt'
