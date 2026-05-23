@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DEVPOD_VERSION="${DEVPOD_VERSION:-v0.6.15}"
+
+workdir=$(mktemp -d)
+trap 'rm -rf "$workdir"' EXIT
+
+curl -fsSL -o "$workdir/devpod" \
+	"https://github.com/loft-sh/devpod/releases/download/${DEVPOD_VERSION}/devpod-linux-amd64"
+
+# /usr/local is a symlink to /var/usrlocal on rpm-ostree systems and writable;
+# /usr itself is read-only.
+sudo install -c -m 0755 "$workdir/devpod" /usr/local/bin/
+
+echo "DevPod ${DEVPOD_VERSION} installed at /usr/local/bin/devpod."

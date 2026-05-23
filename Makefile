@@ -20,6 +20,13 @@ symlinks:
 symlinks-fedora:
 	utils/symlinks-fedora
 
+.PHONY: fedora
+fedora: fedora-after-install
+
+.PHONY: fedora-after-install
+fedora-after-install: symlinks-fedora
+	utils/fedora-after-install
+
 #
 # Nix
 #

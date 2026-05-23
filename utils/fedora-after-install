@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Run from repo root so bare util-script paths resolve regardless of caller CWD.
+cd "$(dirname "$0")/.."
+
+utils/install-flatpaks
+utils/install-amneziavpn
+utils/install-devpod
+
+# xonsh xontribs — same pinned requirements file as Mac (single source of truth).
+if command -v xonsh >/dev/null 2>&1; then
+	(cd utils && xonsh -c 'xpip install --requirement xontrib-requirements.txt')
+fi
+
+# Toolbox: provide a Fedora-userland container for tools that don't belong on
+# the base layer (e.g. password-store).
+toolbox create -y tools || true
+toolbox run -c tools sudo dnf install -y pass

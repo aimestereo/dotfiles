@@ -47,7 +47,8 @@ Commands and skills are symlinked to `.claude/` and `.cursor/` directories withi
 
 ```bash
 make mac              # Full macOS setup
-make symlinks         # Just symlink configs
+make fedora           # Full Fedora post-install (symlinks + flatpaks + amnezia + devpod + toolbox)
+make symlinks         # Just symlink configs (Mac)
 make symlinks-fedora  # Symlink configs (Fedora subset; skips hammerspoon, nix)
 make nix-mac          # Nix/Home Manager (macOS)
 make nix-linux        # Home Manager only (Linux/Fedora)
