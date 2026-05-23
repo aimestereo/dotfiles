@@ -18,8 +18,9 @@ echo "[1/5] Registering Tailscale repo..."
 curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo |
 	sudo tee /etc/yum.repos.d/tailscale.repo >/dev/null
 
+# Skip 'rpm --import' on Atomic: /usr/share/rpm/ is read-only. The .repo file's
+# embedded gpgkey URL is enough — rpm-ostree fetches it at install time.
 echo "[2/5] Registering 1Password repo..."
-sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
 sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<'EOF'
 [1password]
 name=1Password Stable Channel
