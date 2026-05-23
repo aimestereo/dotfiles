@@ -15,8 +15,9 @@ dotfiles/
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim
 │   ├── omarchy/       # Omarchy Linux customization
-│   ├── shell/         # Shell configs (zsh/bash)
-│   └── tmux/          # Tmux
+│   ├── shell/         # Shell configs (zsh/bash) — Mac default
+│   ├── tmux/          # Tmux
+│   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
 ├── nix/               # Nix configuration (separate Makefile)
 └── utils/             # Installation scripts
 ```
@@ -51,6 +52,11 @@ make mac           # Full macOS setup
 make symlinks      # Just symlink configs
 make nix-mac       # Nix/Home Manager only
 ```
+
+## Shells
+
+- **zsh** (Mac default) — `configs/shell/` with p10k via zinit, atuin, zoxide, fzf, mise, direnv, carapace.
+- **xonsh** (opt-in via `xonsh -i`, planned Fedora default) — `configs/xonsh/`. Mirrors zsh's tool integrations; uses starship as the cross-shell prompt. Two xontribs (`xonsh-direnv`, `xontrib-fzf-widgets`) are required and installed by `utils/mac-after-install` via xonsh's bundled pip (`xpip`).
 
 ## Hyper Key
 
