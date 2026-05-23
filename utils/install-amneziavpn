@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+AMNEZIA_VERSION="${AMNEZIA_VERSION:-4.8.15.4}"
+INSTALL_DIR="${HOME}/.local/opt/amnezia"
+BIN_DIR="${HOME}/.local/bin"
+DESKTOP_DIR="${HOME}/.local/share/applications"
+
+tarball="AmneziaVPN_${AMNEZIA_VERSION}_linux_x64.tar"
+url="https://github.com/amnezia-vpn/amnezia-client/releases/download/${AMNEZIA_VERSION}/${tarball}"
+
+workdir=$(mktemp -d)
+trap 'rm -rf "$workdir"' EXIT
+
+# No checksum verification: amnezia-vpn publishes no official hashes alongside
+# releases, so HTTPS from GitHub releases is the available integrity guarantee.
+curl -fsSL -o "$workdir/$tarball" "$url"
+
+extract_dir="$workdir/extracted"
+mkdir -p "$extract_dir"
+tar -xf "$workdir/$tarball" -C "$extract_dir"
+
+rm -rf "$INSTALL_DIR"
+mkdir -p "$INSTALL_DIR" "$BIN_DIR" "$DESKTOP_DIR"
+cp -r "$extract_dir"/. "$INSTALL_DIR/"
+
+# The tarball layout is opaque; locate the launcher heuristically rather than
+# hard-coding a path that may shift between releases.
+bin="$(find "$INSTALL_DIR" -maxdepth 3 -type f \( -name 'AmneziaVPN' -o -name 'AmneziaVPN.AppImage' \) -executable | head -n 1 || true)"
+if [[ -z "$bin" ]]; then
+	echo "install-amneziavpn: launcher binary not found under $INSTALL_DIR — tarball layout changed?" >&2
+	exit 1
+fi
+
+ln -sf "$bin" "$BIN_DIR/amnezia"
+
+cat > "$DESKTOP_DIR/AmneziaVPN.desktop" <<EOF
+[Desktop Entry]
+Name=AmneziaVPN
+Exec=${BIN_DIR}/amnezia
+Type=Application
+Categories=Network;
+EOF
+
+echo "AmneziaVPN ${AMNEZIA_VERSION} installed at ${INSTALL_DIR} (launcher: ${bin})."

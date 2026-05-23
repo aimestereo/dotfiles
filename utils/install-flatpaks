@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+flatpak install -y --user flathub \
+	app.zen_browser.zen \
+	com.slack.Slack \
+	org.telegram.desktop \
+	us.zoom.Zoom \
+	md.obsidian.Obsidian \
+	com.transmissionbt.Transmission \
+	com.calibre_ebook.calibre \
+	io.mpv.Mpv
