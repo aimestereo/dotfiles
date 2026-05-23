@@ -16,6 +16,10 @@ mac-after-install: symlinks
 symlinks:
 	utils/symlinks
 
+.PHONY: symlinks-fedora
+symlinks-fedora:
+	utils/symlinks-fedora
+
 #
 # Nix
 #

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ignored_line='BUG in find_stowed_path? Absolute/relative mismatch'
+
+# hammerspoon is macOS-only; nix holds the Home Manager wrapper and is unused
+# on the (Nix-free) Fedora flow. Extend the pattern for new platform-specific packages.
+cd configs/
+
+ls -d */ |
+	grep -vE '^(hammerspoon|nix)/$' |
+	xargs -I{} bash -c \
+		"stow --restow -t $HOME -v {} 2> >(grep -v '${ignored_line}' 1>&2)"
