@@ -37,11 +37,15 @@ echo "[3/6] Registering keyd COPR repo..."
 curl -fsSL https://copr.fedorainfracloud.org/coprs/alternateved/keyd/repo/fedora-/alternateved-keyd-fedora-.repo |
 	sudo tee /etc/yum.repos.d/keyd.repo >/dev/null
 
+# --idempotent: already-requested packages are skipped instead of erroring,
+# so re-running the script syncs the layer to match the list (Nix-style).
 # --allow-inactive: packages already provided by the base (e.g. gnupg via
 # gnupg2 on Sway Atomic) are recorded as requested but stay inactive instead
-# of failing the transaction. Keeps the script portable across Atomic editions.
+# of failing the transaction.
+# Note: removals are NOT auto-handled. Drop a package from the list AND run
+# `sudo rpm-ostree uninstall <pkg>` once to actually remove it.
 echo "[4/6] Layering rpm-ostree packages (this takes a few minutes)..."
-sudo rpm-ostree install -y --allow-inactive \
+sudo rpm-ostree install -y --idempotent --allow-inactive \
 	kitty \
 	tmux \
 	xonsh \

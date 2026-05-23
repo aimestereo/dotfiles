@@ -10,13 +10,15 @@ curl -fsSL https://raw.githubusercontent.com/aimestereo/dotfiles/main/workstatio
 
 The script:
 
-- Registers the Tailscale and 1Password vendor RPM repos
-- Layers all base packages — `kitty`, `tmux`, `xonsh`, `git`, `gnupg`, `pinentry`, `gcc`, `wl-clipboard`, `tailscale`, `keyd`, `1password`, `1password-cli` — in one `rpm-ostree` transaction
+- Registers the Tailscale, 1Password, and `alternateved/keyd` (COPR) RPM repos
+- Layers all base packages — `kitty`, `tmux`, `xonsh`, `git`, `gnupg`, `pinentry`, `gcc`, `stow`, `wl-clipboard`, `tailscale`, `keyd`, `1password`, `1password-cli` — in one `rpm-ostree` transaction
 - Adds the Flathub remote (user scope)
 - Clones the dotfiles repo into `~/work/my/dotfiles` (HTTPS — no SSH key needed yet)
 - Backs up any pre-existing distro `~/.bashrc` so stow can land its own
 
-It's idempotent: rerunning is safe.
+It's idempotent: re-running syncs the host layer to the manifest in the script. The rpm-ostree call uses `--idempotent` (already-requested packages are no-ops) plus `--allow-inactive` (base-provided packages stay inactive instead of erroring). After the initial curl|bash run, the more ergonomic re-sync path is `make fedora-bootstrap` from inside the dotfiles repo.
+
+**Removals aren't auto-handled.** If you drop a package from the script's manifest, the package stays layered until you run `sudo rpm-ostree uninstall <pkg>` once.
 
 ## Reboot + finish
 

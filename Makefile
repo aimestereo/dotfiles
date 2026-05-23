@@ -23,6 +23,10 @@ symlinks-fedora:
 .PHONY: fedora
 fedora: fedora-after-install
 
+.PHONY: fedora-bootstrap
+fedora-bootstrap:
+	workstation-bootstrap/fedora-bootstrap.sh
+
 .PHONY: fedora-after-install
 fedora-after-install: symlinks-fedora
 	utils/fedora-after-install
