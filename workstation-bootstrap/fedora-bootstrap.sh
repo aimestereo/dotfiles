@@ -55,6 +55,7 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 	gcc \
 	stow \
 	wl-clipboard \
+	qt5-qtwayland \
 	tailscale \
 	keyd \
 	1password \
