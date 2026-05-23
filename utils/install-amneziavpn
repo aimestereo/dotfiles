@@ -3,9 +3,7 @@
 set -euo pipefail
 
 AMNEZIA_VERSION="${AMNEZIA_VERSION:-4.8.15.4}"
-INSTALL_DIR="${HOME}/.local/opt/amnezia"
-BIN_DIR="${HOME}/.local/bin"
-DESKTOP_DIR="${HOME}/.local/share/applications"
+INSTALL_DIR="${INSTALL_DIR:-${HOME}/.local/opt/amnezia}"
 
 tarball="AmneziaVPN_${AMNEZIA_VERSION}_linux_x64.tar"
 url="https://github.com/amnezia-vpn/amnezia-client/releases/download/${AMNEZIA_VERSION}/${tarball}"
@@ -17,30 +15,29 @@ trap 'rm -rf "$workdir"' EXIT
 # releases, so HTTPS from GitHub releases is the available integrity guarantee.
 curl -fsSL -o "$workdir/$tarball" "$url"
 
-extract_dir="$workdir/extracted"
-mkdir -p "$extract_dir"
-tar -xf "$workdir/$tarball" -C "$extract_dir"
-
+# The tarball ships a Qt installer-framework .bin (not a runnable launcher).
+# Drop it in a stable location; the user runs the wizard once to complete the
+# actual install, after which AmneziaVPN owns its own launcher + .desktop entry.
 rm -rf "$INSTALL_DIR"
-mkdir -p "$INSTALL_DIR" "$BIN_DIR" "$DESKTOP_DIR"
-cp -r "$extract_dir"/. "$INSTALL_DIR/"
+mkdir -p "$INSTALL_DIR"
+tar -xf "$workdir/$tarball" -C "$INSTALL_DIR"
 
-# The tarball layout is opaque; locate the launcher heuristically rather than
-# hard-coding a path that may shift between releases.
-bin="$(find "$INSTALL_DIR" -maxdepth 3 -type f \( -name 'AmneziaVPN' -o -name 'AmneziaVPN.AppImage' \) -executable | head -n 1 || true)"
-if [[ -z "$bin" ]]; then
-	echo "install-amneziavpn: launcher binary not found under $INSTALL_DIR — tarball layout changed?" >&2
+installer="$(find "$INSTALL_DIR" -maxdepth 2 -type f -name '*Installer*.bin' | head -n 1 || true)"
+if [[ -z "$installer" ]]; then
+	echo "install-amneziavpn: installer .bin not found under $INSTALL_DIR — tarball layout changed?" >&2
 	exit 1
 fi
 
-ln -sf "$bin" "$BIN_DIR/amnezia"
+chmod +x "$installer"
 
-cat > "$DESKTOP_DIR/AmneziaVPN.desktop" <<EOF
-[Desktop Entry]
-Name=AmneziaVPN
-Exec=${BIN_DIR}/amnezia
-Type=Application
-Categories=Network;
-EOF
+cat <<EOM
 
-echo "AmneziaVPN ${AMNEZIA_VERSION} installed at ${INSTALL_DIR} (launcher: ${bin})."
+AmneziaVPN installer staged at:
+
+    $installer
+
+Run it once to complete installation (Qt wizard). The wizard creates
+its own launcher binary and .desktop entry; this dotfiles script does
+not need to be re-run unless AMNEZIA_VERSION bumps.
+
+EOM

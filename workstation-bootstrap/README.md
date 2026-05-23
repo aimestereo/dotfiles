@@ -30,7 +30,7 @@ make fedora
 This runs `utils/symlinks-fedora` (stows the Fedora-relevant config packages) followed by `utils/fedora-after-install`:
 
 1. Flatpaks: Zen, Slack, Telegram, Zoom, Obsidian, Transmission, Calibre, mpv
-2. AmneziaVPN into `~/.local/opt/amnezia/`
+2. AmneziaVPN Qt installer staged at `~/.local/opt/amnezia/`; run it once to complete install (wizard sets up its own launcher)
 3. DevPod CLI into `/usr/local/bin/`
 4. Pinned xonsh xontribs
 5. Toolbox `tools` container + `pass`
@@ -41,7 +41,7 @@ This runs `utils/symlinks-fedora` (stows the Fedora-relevant config packages) fo
 ```bash
 xonsh -i                          # interactive xonsh works
 tmux new -d                       # tmux session works
-amnezia &                         # AmneziaVPN launchable
+# AmneziaVPN: run ~/.local/opt/amnezia/*Installer*.bin once, then launch from app menu
 devpod --version                  # DevPod on PATH
 toolbox run -c tools pass --help  # pass works inside Toolbox
 systemctl status keyd             # keyd active
