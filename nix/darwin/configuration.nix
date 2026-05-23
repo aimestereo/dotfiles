@@ -53,6 +53,7 @@
       "perl" # Perl interpreter (required by fzf for some features)
       "luarocks" # Lua package manager (for neovim plugins)
       "rust" # Rust compiler and package manager
+      "xonsh" # Python-powered shell (cross-shell config for Fedora; opt-in on Mac via `xonsh -i`)
     ];
 
     casks = [
