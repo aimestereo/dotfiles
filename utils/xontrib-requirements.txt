@@ -1,0 +1,2 @@
+xonsh-direnv==1.6.5
+xontrib-fzf-widgets==0.0.4

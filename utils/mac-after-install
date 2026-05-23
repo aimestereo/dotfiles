@@ -15,8 +15,7 @@ npm config set prefix "${HOME}/.cache/npm/global" &&
 	npm install -g -U pnpm
 
 # xonsh xontribs that have no native shell counterpart in their host tool.
-# Without --upgrade, pip exits 0 on already-installed packages, keeping this
-# step re-runnable offline.
+# pip is idempotent for pinned requirements, so re-runs are offline-safe.
 if command -v xonsh >/dev/null 2>&1; then
-	xonsh -c 'xpip install xonsh-direnv xontrib-fzf-widgets'
+	(cd "$(dirname "$0")" && xonsh -c 'xpip install --requirement xontrib-requirements.txt')
 fi

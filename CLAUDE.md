@@ -55,7 +55,7 @@ make nix-linux     # Home Manager only (Linux/Fedora)
 ## Shells
 
 - **zsh** (Mac default) — `configs/shell/` with p10k via zinit, atuin, zoxide, fzf, mise, direnv, carapace.
-- **xonsh** (opt-in via `xonsh -i`, planned Fedora default) — `configs/xonsh/`. Mirrors zsh's tool integrations; uses starship as the cross-shell prompt. Two xontribs (`xonsh-direnv`, `xontrib-fzf-widgets`) are required and installed by `utils/mac-after-install` via xonsh's bundled pip (`xpip`).
+- **xonsh** (opt-in via `xonsh -i`, planned Fedora default) — `configs/xonsh/`. Mirrors zsh's tool integrations; uses starship as the cross-shell prompt. Two xontribs (`xonsh-direnv`, `xontrib-fzf-widgets`) are required and installed by `utils/mac-after-install` via xonsh's bundled pip (`xpip`); versions are pinned in `utils/xontrib-requirements.txt`.
 
 ## Hyper Key
 
