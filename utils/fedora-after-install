@@ -18,3 +18,10 @@ fi
 # the base layer (e.g. password-store).
 toolbox create -y tools || true
 toolbox run -c tools sudo dnf install -y pass
+
+# keyd: copy the user-managed config into /etc and (re)start the service.
+# Requires the 'keyd' package from the USB Tier-1 rpm-ostree step.
+sudo mkdir -p /etc/keyd
+sudo install -m 0644 "$HOME/.local/share/keyd/default.conf" /etc/keyd/default.conf
+sudo systemctl enable keyd
+sudo systemctl restart keyd

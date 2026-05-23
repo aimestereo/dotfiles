@@ -10,6 +10,8 @@ dotfiles/
 │   ├── agents/        # AI agent commands (Claude, Cursor)
 │   ├── git/           # Git configuration
 │   ├── hammerspoon/   # macOS automation (Hyper key, window mgmt, draw on screen)
+│   ├── keyd/          # CapsLock → Hyper remap (Fedora; sudo-installed to /etc/keyd)
+│   ├── mise/          # mise tool versions (host + bind-mounted into DevPod containers)
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim
