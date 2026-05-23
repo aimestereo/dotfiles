@@ -33,7 +33,6 @@
 
     brews = [
       "ical-buddy" # for tmux calendar plugin
-      "kanata"
       "borders" # Window borders for macOS (replaces jankyborders)
       "mactop" # top-like activity monitor for macOS
 

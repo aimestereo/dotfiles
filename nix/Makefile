@@ -6,8 +6,8 @@ mac:
 mac-initial:
 	sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake .#macOS
 
-.PHONY: arch
-arch:
+.PHONY: linux
+linux:
 	home-manager switch --flake .#main
 
 #

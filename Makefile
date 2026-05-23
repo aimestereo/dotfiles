@@ -23,7 +23,7 @@ symlinks:
 nix-mac:
 	$(MAKE) -C $(NIX_DIR) mac
 
-.PHONY: nix-arch
-nix-arch:
-	$(MAKE) -C $(NIX_DIR) arch
+.PHONY: nix-linux
+nix-linux:
+	$(MAKE) -C $(NIX_DIR) linux
 

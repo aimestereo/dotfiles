@@ -22,7 +22,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Disable LazyVim's automatic checking for plugin order (omarchy theme loads lazyvim plugin)
+-- OS-specific plugins under plugins.linux/macos load after LazyVim base specs
 vim.g.lazyvim_check_order = false
 
 -- Check OS, for macos import plugins.macos, for linux import plugins.linux

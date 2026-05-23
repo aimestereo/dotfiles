@@ -1,5 +1,4 @@
 return {
-  -- Can be used as a backup colorscheme if omarchy theme fails to load.
   {
     "catppuccin/nvim",
     name = "catppuccin",

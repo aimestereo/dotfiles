@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Requirements of Arch Linux installation:
+# Requirements:
 # - wget
 
-# wget -qO- https://raw.githubusercontent.com/aimestereo/dotfiles/refs/heads/main/utils/arch-install | bash
+# wget -qO- https://raw.githubusercontent.com/aimestereo/dotfiles/refs/heads/main/utils/install | bash
 
 # Generate SSH key for GitHub
-ssh-keygen -t ed25519 -C "aimestereo@gmail.com Arch"
+ssh-keygen -t ed25519 -C "aimestereo@gmail.com Linux"
 echo "Register the following SSH public key with GitHub:"
 cat ~/.ssh/id_ed25519.pub
 read -p "Press [Enter] key after registering the SSH key with GitHub..."
@@ -34,7 +34,7 @@ source ~/.bashrc
 
 # Clean up temporary packages, they will be managed via Nix Home Manager
 nix-env -e git stow
-make nix-arch
+make nix-linux
 
 cd "$ROOT_DIR/dotfiles-private"
 make symlinks

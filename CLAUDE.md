@@ -10,11 +10,9 @@ dotfiles/
 │   ├── agents/        # AI agent commands (Claude, Cursor)
 │   ├── git/           # Git configuration
 │   ├── hammerspoon/   # macOS automation (Hyper key, window mgmt, draw on screen)
-│   ├── kanata/        # Keyboard remapping (legacy, unused)
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim
-│   ├── omarchy/       # Omarchy Linux customization
 │   ├── shell/         # Shell configs (zsh/bash) — Mac default
 │   ├── tmux/          # Tmux
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
@@ -50,7 +48,8 @@ Commands and skills are symlinked to `.claude/` and `.cursor/` directories withi
 ```bash
 make mac           # Full macOS setup
 make symlinks      # Just symlink configs
-make nix-mac       # Nix/Home Manager only
+make nix-mac       # Nix/Home Manager (macOS)
+make nix-linux     # Home Manager only (Linux/Fedora)
 ```
 
 ## Shells

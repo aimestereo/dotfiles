@@ -4,8 +4,6 @@ set -euo pipefail
 
 utils/install
 
-git clone git@github.com:basecamp/omarchy.git ~/.local/share/omarchy
-
 # Install homebrew
 git config --global http.version HTTP/1.1
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
