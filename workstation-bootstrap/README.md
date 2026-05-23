@@ -36,6 +36,8 @@ This runs `utils/symlinks-fedora` (stows the Fedora-relevant config packages) fo
 5. Toolbox `tools` container + `pass`
 6. `keyd` config copied to `/etc/keyd/`, service enabled + (re)started
 
+For day-to-day life inside DevPod containers (shell behaviour, nvim first-run, mount design, per-project named volumes, troubleshooting), see `workstation-bootstrap/dev-containers.md`.
+
 ## Smoke test
 
 ```bash

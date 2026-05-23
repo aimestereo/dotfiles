@@ -34,6 +34,14 @@
     // Used by postCreateCommand below; adjust source path if the dotfiles
     // repo lives elsewhere on your host.
     "source=${env:HOME}/work/my/dotfiles/utils,target=/dotfiles-utils,type=bind,readonly"
+
+    // Per-project named volumes — see workstation-bootstrap/dev-containers.md
+    // "Escape hatch" section. Uncomment as needed; entries use leading commas
+    // so any subset can be enabled without editing neighbours.
+    //
+    // ,"source=devpod-${localWorkspaceFolderBasename}-zoxide,target=/home/${env:USER}/.local/share/zoxide,type=volume"
+    // ,"source=devpod-${localWorkspaceFolderBasename}-npm,target=/home/${env:USER}/.npm,type=volume"
+    // ,"source=devpod-${localWorkspaceFolderBasename}-pip-cache,target=/home/${env:USER}/.cache/pip,type=volume"
   ],
 
   "postCreateCommand": "/dotfiles-utils/devpod-container-bootstrap"

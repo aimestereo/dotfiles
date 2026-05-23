@@ -20,7 +20,7 @@ dotfiles/
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
 ├── nix/                    # Nix configuration (separate Makefile)
 ├── utils/                  # Installation scripts
-└── workstation-bootstrap/  # USB-distributable Fedora Tier-1 bootstrap + README
+└── workstation-bootstrap/  # USB-distributable Fedora Tier-1 bootstrap + day-to-day dev container docs
 ```
 
 ## How Stow Works
