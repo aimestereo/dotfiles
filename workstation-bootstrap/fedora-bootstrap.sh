@@ -2,15 +2,23 @@
 
 set -euo pipefail
 
-# Tier 1: register vendor repos (Tailscale, 1Password), layer all base
-# packages in one rpm-ostree transaction, then add the Flathub user remote.
-# Reboot is required afterwards for the layered packages to take effect.
+# Safe to run as:
+#   curl -fsSL https://raw.githubusercontent.com/aimestereo/dotfiles/main/workstation-bootstrap/fedora-bootstrap.sh | bash
+# Idempotent — re-runs skip already-completed steps.
 
-# Tailscale repo — the .repo file embeds the GPG key URL, no separate import.
+dotfiles_repo="https://github.com/aimestereo/dotfiles.git"
+dotfiles_dir="$HOME/work/my/dotfiles"
+
+echo
+echo "=== Fedora Atomic Sway bootstrap ==="
+echo
+
+# Tailscale's .repo file embeds the GPG key URL, so no separate rpm --import.
+echo "[1/5] Registering Tailscale repo..."
 curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo |
 	sudo tee /etc/yum.repos.d/tailscale.repo >/dev/null
 
-# 1Password repo + GPG key.
+echo "[2/5] Registering 1Password repo..."
 sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
 sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<'EOF'
 [1password]
@@ -22,7 +30,7 @@ repo_gpgcheck=1
 gpgkey=https://downloads.1password.com/linux/keys/1password.asc
 EOF
 
-# Single rpm-ostree transaction covers Fedora base packages + both vendor RPMs.
+echo "[3/5] Layering rpm-ostree packages (this takes a few minutes)..."
 sudo rpm-ostree install -y \
 	kitty \
 	tmux \
@@ -37,10 +45,37 @@ sudo rpm-ostree install -y \
 	1password \
 	1password-cli
 
-# Flathub user remote so the post-reboot `make fedora` step can install Tier-2
-# GUI flatpaks without an extra remote-add.
+# Flathub goes in here so the post-reboot `make fedora` step can install
+# Tier-2 GUI flatpaks without a separate remote-add.
+echo "[4/5] Adding Flathub user remote..."
 flatpak remote-add --if-not-exists --user flathub \
 	https://dl.flathub.org/repo/flathub.flatpakrepo
 
-echo
-echo "Tier 1 complete. Reboot now, then clone the dotfiles repo and run 'make fedora'."
+# Clone over HTTPS — no SSH key needed yet. Re-runs are no-ops if the
+# directory is already a git checkout.
+echo "[5/5] Cloning dotfiles into $dotfiles_dir..."
+mkdir -p "$(dirname "$dotfiles_dir")"
+if [[ -d "$dotfiles_dir/.git" ]]; then
+	echo "  ($dotfiles_dir already a git checkout; skipping clone)"
+else
+	git clone "$dotfiles_repo" "$dotfiles_dir"
+fi
+
+# Move any distro-shipped ~/.bashrc out of the way so stow can land its own
+# without a conflict. Skip if it's already a symlink (already stowed) or absent.
+if [[ -f "$HOME/.bashrc" && ! -L "$HOME/.bashrc" ]]; then
+	backup="$HOME/.bashrc.bak.$(date +%s)"
+	mv "$HOME/.bashrc" "$backup"
+	echo "  (backed up existing ~/.bashrc to $backup)"
+fi
+
+cat <<'EOM'
+
+=== Tier 1 complete. ===
+
+REBOOT now to activate the layered packages, then finish setup:
+
+    cd ~/work/my/dotfiles
+    make fedora
+
+EOM

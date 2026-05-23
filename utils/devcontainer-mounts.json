@@ -33,7 +33,7 @@
     // Container-side reachable copy of the dotfiles utils/ dir (read-only).
     // Used by postCreateCommand below; adjust source path if the dotfiles
     // repo lives elsewhere on your host.
-    "source=${env:HOME}/projects/my/dotfiles/utils,target=/dotfiles-utils,type=bind,readonly"
+    "source=${env:HOME}/work/my/dotfiles/utils,target=/dotfiles-utils,type=bind,readonly"
   ],
 
   "postCreateCommand": "/dotfiles-utils/devpod-container-bootstrap"
