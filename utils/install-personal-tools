@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+#
+# install-personal-tools — install commander's personal CLI stack inside the
+# `tools` toolbox or inside a DevPod dev container.
+#
+# Usage:
+#   install-personal-tools toolbox    # run inside the toolbox (via `toolbox run`)
+#   install-personal-tools devpod     # run inside a dev container (postCreateCommand)
+#
+# Idempotent: re-runs upgrade in place where possible, skip otherwise.
+#
+# Single source of truth for "tools I want everywhere" — add a tool once here
+# and it lands in both the toolbox AND every DevPod container the next time
+# its postCreateCommand runs. Project `.devcontainer.json` files stay free of
+# personal-preference noise.
+
+set -euo pipefail
+
+MODE="${1:?usage: $0 {toolbox|devpod}}"
+case "$MODE" in
+	toolbox|devpod) ;;
+	*) echo "install-personal-tools: unknown mode '$MODE' (want toolbox or devpod)" >&2; exit 1 ;;
+esac
+
+# xonsh pin tracks PyPI's current stable; bump after smoke-testing locally.
+XONSH_VERSION="${XONSH_VERSION:-0.23.7}"
+
+# ---------------------------------------------------------------------------
+# devpod-only: bind-mount sanity check
+#
+# Docker silently creates an empty directory at a bind-mount target when the
+# host source is missing, which would break shell startup if .bashrc / .zshrc /
+# .zshenv ended up as directories. Catch that early with a clear message.
+# ---------------------------------------------------------------------------
+if [[ "$MODE" == "devpod" ]]; then
+	for rc in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.zshenv"; do
+		if [[ -d "$rc" ]]; then
+			echo "install-personal-tools: $rc is a directory — host hasn't run 'make symlinks-fedora' yet." >&2
+			exit 1
+		fi
+	done
+fi
+
+# ---------------------------------------------------------------------------
+# Shared: dnf packages from Fedora repos
+#
+# Personal preference stack; non-project-specific. Note tmux is intentionally
+# NOT here — see the toolbox-only block below.
+# ---------------------------------------------------------------------------
+sudo dnf install -y \
+	neovim \
+	git \
+	fzf \
+	ripgrep \
+	fd-find \
+	sd \
+	bat \
+	eza \
+	zoxide \
+	tree \
+	jq \
+	gh \
+	direnv \
+	xonsh
+
+# ---------------------------------------------------------------------------
+# Toolbox-only: outer-layer-only packages
+#
+# tmux belongs in the outer layer (sessions span multiple devpod ssh attaches
+# into per-project containers; no tmux inside containers). flatpak-xdg-utils
+# provides flatpak-spawn for the devpod wrapper. pass is the password store CLI.
+# ---------------------------------------------------------------------------
+if [[ "$MODE" == "toolbox" ]]; then
+	sudo dnf install -y \
+		tmux \
+		pass \
+		flatpak-xdg-utils
+fi
+
+# ---------------------------------------------------------------------------
+# Shared: curl installers (upstream-recommended way per app/org)
+# ---------------------------------------------------------------------------
+
+# mise: upstream-recommended install
+command -v mise >/dev/null || curl -fsSL https://mise.run | sh
+
+# Make mise + ~/.local/bin available for the rest of this run.
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+
+# atuin: upstream install script
+command -v atuin >/dev/null || curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+
+# starship: upstream install script
+command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
+
+# claude: Anthropic-recommended install
+command -v claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash
+
+# ---------------------------------------------------------------------------
+# Shared: xonsh + xontribs into user site-packages
+#
+# pip-install pinned xonsh so xpip behaves identically in toolbox and container.
+# xontribs come from the repo's xontrib-requirements.txt — bind-mounted in
+# containers at /dotfiles-utils/, accessed via the script's own dir in toolbox.
+# ---------------------------------------------------------------------------
+pip install --user "xonsh==${XONSH_VERSION}"
+
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
+
+# ---------------------------------------------------------------------------
+# Toolbox-only: devpod wrapper + Fedora kitty/ghostty shell overrides
+# ---------------------------------------------------------------------------
+if [[ "$MODE" == "toolbox" ]]; then
+	# devpod wrapper. Lives in $HOME (shared with host); transparent on host
+	# (real /usr/local/bin/devpod wins via $PATH order) and hops back to host
+	# via flatpak-spawn when invoked from inside toolbox.
+	mkdir -p "$HOME/.local/bin"
+	cat > "$HOME/.local/bin/devpod" <<'WRAP'
+#!/usr/bin/env bash
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host /usr/local/bin/devpod "$@"
+else
+	exec /usr/local/bin/devpod "$@"
+fi
+WRAP
+	chmod +x "$HOME/.local/bin/devpod"
+
+	# Fedora-only kitty + ghostty overrides land in $HOME (shared with host).
+	# Picked up via globinclude / optional include directives in the main
+	# configs; Mac never sees them.
+	mkdir -p "$HOME/.config/kitty/conf.d" "$HOME/.config/ghostty/local"
+	cat > "$HOME/.config/kitty/conf.d/00-fedora-shell.conf" <<'KCONF'
+# Drop kitty straight into the `tools` toolbox on Fedora (Pattern B).
+shell toolbox enter tools
+KCONF
+	cat > "$HOME/.config/ghostty/local/fedora.conf" <<'GCONF'
+# Drop ghostty straight into the `tools` toolbox on Fedora (Pattern B).
+command = toolbox enter tools
+GCONF
+fi
+
+# ---------------------------------------------------------------------------
+# devpod-only: realise project mise config inside the container
+# ---------------------------------------------------------------------------
+if [[ "$MODE" == "devpod" ]]; then
+	mise install
+fi

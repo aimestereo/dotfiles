@@ -9,15 +9,12 @@ utils/install-flatpaks
 utils/install-amneziavpn
 utils/install-devpod
 
-# xonsh xontribs — same pinned requirements file as Mac (single source of truth).
-if command -v xonsh >/dev/null 2>&1; then
-	(cd utils && xonsh -c 'xpip install --requirement xontrib-requirements.txt')
-fi
-
-# Toolbox: provide a Fedora-userland container for tools that don't belong on
-# the base layer (e.g. password-store).
+# Toolbox: full dev environment per Pattern B (toolbox-as-outer). The
+# `install-personal-tools` script is the single source of truth for the
+# personal CLI stack and is also used as the postCreateCommand inside every
+# per-project DevPod container.
 toolbox create -y tools || true
-toolbox run -c tools sudo dnf install -y pass
+toolbox run -c tools bash "$(pwd)/utils/install-personal-tools" toolbox
 
 # keyd: copy the user-managed config into /etc and (re)start the service.
 # Requires the 'keyd' package from the USB Tier-1 rpm-ostree step.
