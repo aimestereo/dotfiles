@@ -50,16 +50,17 @@ curl -fsSL https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora
 # of failing the transaction.
 # Note: removals are NOT auto-handled. Drop a package from the list AND run
 # `sudo rpm-ostree uninstall <pkg>` once to actually remove it.
+# Host stays minimal per Pattern B (toolbox-as-outer): dev tools live in the
+# `tools` toolbox, not on the host. xonsh, tmux, git, gcc were previously
+# layered here — they now live in the toolbox (installed by
+# `utils/install-personal-tools toolbox`). Existing machines that already
+# have them layered can run `utils/fedora-host-cleanup` to unlayer.
 echo "[5/7] Layering rpm-ostree packages (this takes a few minutes)..."
 sudo rpm-ostree install -y --idempotent --allow-inactive \
 	kitty \
 	ghostty \
-	tmux \
-	xonsh \
-	git \
 	gnupg \
 	pinentry \
-	gcc \
 	stow \
 	wl-clipboard \
 	qt5-qtwayland \
