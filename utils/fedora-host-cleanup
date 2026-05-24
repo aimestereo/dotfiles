@@ -14,20 +14,12 @@ to_unlayer=(xonsh tmux git gcc)
 
 echo "Unlayering dev tools from host (Pattern B): ${to_unlayer[*]}"
 
-# Build a list of packages that are actually layered to avoid noisy errors on
-# already-unlayered hosts. `rpm-ostree status --json` lists requested packages
-# under .deployments[0].requested-packages.
-layered=$(
-	rpm-ostree status --json |
-		grep -oE '"requested-packages":\s*\[[^]]*\]' |
-		grep -oE '"[^"]+"' |
-		tr -d '"' |
-		grep -v '^requested-packages$' || true
-)
-
+# `rpm -q` still works on rpm-ostree systems as a query of the running
+# deployment, and is more robust than parsing `rpm-ostree status --json`
+# (whose array spans multiple lines, defeating line-oriented grep).
 needs_uninstall=()
 for pkg in "${to_unlayer[@]}"; do
-	if grep -qxF "$pkg" <<<"$layered"; then
+	if rpm -q "$pkg" >/dev/null 2>&1; then
 		needs_uninstall+=("$pkg")
 	fi
 done

@@ -44,5 +44,5 @@
     // ,"source=devpod-${localWorkspaceFolderBasename}-pip-cache,target=/home/${env:USER}/.cache/pip,type=volume"
   ],
 
-  "postCreateCommand": "/dotfiles-utils/devpod-container-bootstrap"
+  "postCreateCommand": "/dotfiles-utils/install-personal-tools devpod"
 }

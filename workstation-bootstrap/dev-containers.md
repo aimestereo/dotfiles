@@ -58,11 +58,11 @@ DevPod containers persist across reboots. `devpod up <project>` after a cold sta
 
 ### Shell
 
-`devpod ssh` drops you into bash, which immediately `exec`s into `xonsh -i` (see `configs/shell/.bashrc`). You're in xonsh by default; bash is still available as a sub-shell via `bash`. Login shell stays bash so `/etc/profile` and PAM continue to work.
+`devpod ssh` drops you into bash, which immediately `exec`s into `xonsh -i` (see `configs/shell-fedora/.bashrc`). You're in xonsh by default; bash is still available as a sub-shell via `bash`. Login shell stays bash so `/etc/profile` and PAM continue to work.
 
 ### tmux
 
-`~/.config/tmux/` is bind-mounted with the TPM plugin tree, so `tmux` works inside the container if you want per-project session isolation. The default Pattern A workflow keeps tmux on the host.
+`~/.config/tmux/` is bind-mounted with the TPM plugin tree, so `tmux` works inside the container if you want per-project session isolation. The default Pattern B workflow keeps tmux in the toolbox (the outer layer); containers are attached to via `devpod ssh` and the same toolbox tmux session spans every attach.
 
 ### nvim
 
@@ -88,7 +88,7 @@ By default, zoxide's frecency DB is container-local: starts empty, lost on conta
 
 ### Host-only tools
 
-`~/.local/bin/` is **not** mounted. Host-side scripts (process control, networking, session orchestration, git workspace helpers) stay on the host where they have their dependencies. In Pattern A the container pane runs the project's runtime; git operations and session orchestration happen on the host pane.
+`~/.local/bin/` is **not** mounted. Toolbox-side scripts (process control, networking, session orchestration, git workspace helpers) stay in the toolbox where they have their dependencies. Under Pattern B the container pane runs the project's runtime; git operations and session orchestration happen in the toolbox pane.
 
 ## Mount design principle
 
@@ -135,6 +135,7 @@ The current mount list (`utils/devcontainer-mounts.json`) is the application of 
 **Every rw config bind-mount is a potential container-to-host escalation vector.** A compromised container can rewrite the mounted config; the host runs that config on the next launch of the tool that reads it. The bind-mount model trades container isolation for cross-environment portability — accepted because the threat model assumes images you trust enough to run. Notable specific vectors in the current mount list:
 
 - **Shell rc files + tool configs** (`~/.bashrc`, `~/.zshrc`, `~/.zshenv`, `~/.config/{xonsh,nvim,tmux,shell}/`) — highest severity. Direct arbitrary code execution on the host's next launch of bash, zsh, xonsh, nvim, or tmux; a malicious `init.lua` runs next time you open `nvim` on the host.
+- **Pattern B kitty / ghostty overrides** (`~/.config/kitty/conf.d/`, `~/.config/ghostty/local/`) — same class as shell rc. The Fedora-only `shell` / `command` directives are written by `install-personal-tools toolbox`; a compromised toolbox can rewrite them and intercept the next terminal launch on host.
 - **`~/.config/git/`** — rewrites `core.sshCommand` to a malicious binary, or `url.<base>.insteadOf` to redirect remotes. Auth/transport hijack on the next host `git` operation.
 - **`~/.config/mise/`** — appends tool entries; the host's next `mise install` (or `mise activate` hook on `cd`) pulls malicious shims into `~/.local/share/mise/shims/`.
 - **`~/.local/share/atuin/`** — secret leak (separate class). History is bidirectional; container reads host history and writes its own back. The atuin caveat above applies to every container.

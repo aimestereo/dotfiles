@@ -12,6 +12,7 @@ for _p in [
     f"{$HOME}/.local/bin",
     f"{$HOME}/.cargo/bin",
     f"{$HOME}/.cache/npm/global/bin",
+    f"{$HOME}/.atuin/bin",
 ]:
     if _p not in $PATH:
         $PATH.insert(0, _p)

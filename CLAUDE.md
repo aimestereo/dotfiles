@@ -58,7 +58,7 @@ Commands and skills are symlinked to `.claude/` and `.cursor/` directories withi
 ```bash
 make mac              # Full macOS setup
 make fedora-bootstrap # Sync host (rpm-ostree layer + repos + Flathub remote); idempotent, requires reboot
-make fedora           # Full Fedora post-install: symlinks + flatpaks + amnezia + devpod + toolbox (provisioned with full dev stack via utils/install-personal-tools; Pattern B = toolbox-as-outer, see workstation-bootstrap/dev-containers.md)
+make fedora           # Full Fedora post-install (Pattern B: toolbox-as-outer — see workstation-bootstrap/dev-containers.md)
 make symlinks-mac     # Just symlink configs (Mac; skips shell-fedora)
 make symlinks-fedora  # Symlink configs (Fedora; skips hammerspoon, nix, shell-mac)
 make nix-mac          # Nix/Home Manager (macOS)

@@ -79,16 +79,20 @@ fi
 
 # ---------------------------------------------------------------------------
 # Shared: curl installers (upstream-recommended way per app/org)
+#
+# Set PATH up-front so the `command -v` idempotency checks find binaries
+# installed by a previous run. `toolbox run -c tools bash …` invokes a
+# non-login non-interactive shell, so user profile files don't get sourced
+# and we have to construct PATH explicitly.
 # ---------------------------------------------------------------------------
 
-# mise: upstream-recommended install
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$HOME/.atuin/bin:$PATH"
+
+# mise: upstream-recommended install (drops binary into ~/.local/bin)
 command -v mise >/dev/null || curl -fsSL https://mise.run | sh
 
-# Make mise + ~/.local/bin available for the rest of this run.
-export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
-
-# atuin: upstream install script
-command -v atuin >/dev/null || curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+# atuin: upstream install script (drops binary into ~/.atuin/bin, not ~/.local/bin)
+[[ -x "$HOME/.atuin/bin/atuin" ]] || curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
 # starship: upstream install script
 command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
@@ -112,9 +116,11 @@ xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
 # Toolbox-only: devpod wrapper + Fedora kitty/ghostty shell overrides
 # ---------------------------------------------------------------------------
 if [[ "$MODE" == "toolbox" ]]; then
-	# devpod wrapper. Lives in $HOME (shared with host); transparent on host
-	# (real /usr/local/bin/devpod wins via $PATH order) and hops back to host
-	# via flatpak-spawn when invoked from inside toolbox.
+	# devpod wrapper. Lives in $HOME (shared with host). The wrapper sits on
+	# host's PATH too (xonsh env.xsh prepends ~/.local/bin), but the `else`
+	# branch re-execs the real binary directly via absolute path — transparent
+	# on host, no recursion. Inside toolbox, the `if` branch hops back to host
+	# via flatpak-spawn so the real DevPod CLI runs against host podman.
 	mkdir -p "$HOME/.local/bin"
 	cat > "$HOME/.local/bin/devpod" <<'WRAP'
 #!/usr/bin/env bash
