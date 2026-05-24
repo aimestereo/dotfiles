@@ -9,12 +9,12 @@ mac-install:
 	@echo "Restart shell and run 'make after-install'"
 
 .PHONY: mac-after-install
-mac-after-install: symlinks 
+mac-after-install: symlinks-mac
 	utils/mac-after-install
 
-.PHONY: symlinks
-symlinks:
-	utils/symlinks
+.PHONY: symlinks-mac
+symlinks-mac:
+	utils/symlinks-mac
 
 .PHONY: symlinks-fedora
 symlinks-fedora:

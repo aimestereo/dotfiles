@@ -18,7 +18,9 @@ dotfiles/
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim
-│   ├── shell/         # Shell configs (zsh/bash) — Mac default
+│   ├── shell/         # Cross-platform shell configs (zsh, atuin, generic rc)
+│   ├── shell-fedora/  # Fedora-only `.bashrc` (kept separate from Mac for divergence)
+│   ├── shell-mac/     # macOS-only `.bashrc`
 │   ├── starship/      # Starship cross-shell prompt config
 │   ├── theme/         # `theme-update` / `theme-set-templates` / `theme-set` (palettes pulled from basecamp/omarchy)
 │   ├── tmux/          # Tmux
@@ -37,7 +39,7 @@ configs/git/.config/git/config  →  ~/.config/git/config
 configs/git/.local/bin/gclean   →  ~/.local/bin/gclean
 ```
 
-Run `make symlinks` or `utils/symlinks` to apply all packages.
+Run `make symlinks-mac` or `utils/symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` / `utils/symlinks-fedora` for Fedora).
 
 ## Agent Commands & Skills
 
@@ -57,8 +59,8 @@ Commands and skills are symlinked to `.claude/` and `.cursor/` directories withi
 make mac              # Full macOS setup
 make fedora-bootstrap # Sync host (rpm-ostree layer + repos + Flathub remote); idempotent, requires reboot
 make fedora           # Full Fedora post-install (symlinks + flatpaks + amnezia + devpod + toolbox)
-make symlinks         # Just symlink configs (Mac)
-make symlinks-fedora  # Symlink configs (Fedora subset; skips hammerspoon, nix)
+make symlinks-mac     # Just symlink configs (Mac; skips shell-fedora)
+make symlinks-fedora  # Symlink configs (Fedora; skips hammerspoon, nix, shell-mac)
 make nix-mac          # Nix/Home Manager (macOS)
 make nix-linux        # Home Manager only (Linux/Fedora)
 ```
@@ -89,6 +91,7 @@ Theme content is runtime state under `~/.config/theme/`; it is not tracked in th
 
 ## Key Utilities
 
-- `utils/symlinks` - Stow all config packages to $HOME
+- `utils/symlinks-mac` - Stow Mac config packages to $HOME (excludes shell-fedora)
+- `utils/symlinks-fedora` - Stow Fedora config packages to $HOME (excludes hammerspoon, nix, shell-mac)
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration

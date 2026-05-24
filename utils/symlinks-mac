@@ -4,8 +4,11 @@ set -euo pipefail
 
 ignored_line='BUG in find_stowed_path? Absolute/relative mismatch'
 
+# shell-fedora is Fedora-only and conflicts with shell-mac's .bashrc.
+# Extend the pattern for any new platform-specific packages.
 cd configs/
 
 ls -d */ |
+	grep -vE '^(shell-fedora)/$' |
 	xargs -I{} bash -c \
 		"stow --restow -t $HOME -v {} 2> >(grep -v '${ignored_line}' 1>&2)"
