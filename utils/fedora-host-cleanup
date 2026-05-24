@@ -14,12 +14,25 @@ to_unlayer=(xonsh tmux git gcc)
 
 echo "Unlayering dev tools from host (Pattern B): ${to_unlayer[*]}"
 
-# `rpm -q` still works on rpm-ostree systems as a query of the running
-# deployment, and is more robust than parsing `rpm-ostree status --json`
-# (whose array spans multiple lines, defeating line-oriented grep).
+# Filter to packages that were `rpm-ostree install`-layered, NOT base-image
+# packages (which can't be uninstalled, only overridden). `rpm -q` would match
+# both and `rpm-ostree uninstall` on a base package fails under `set -e`. The
+# `requested-packages` array in `rpm-ostree status --json` is the right list;
+# parse it with python3 (always on Fedora Atomic, handles multi-line JSON
+# correctly, no extra deps).
+layered=$(rpm-ostree status --json | python3 -c '
+import json, sys
+data = json.load(sys.stdin)
+for dep in data.get("deployments", []):
+    if dep.get("booted"):
+        for pkg in dep.get("requested-packages", []):
+            print(pkg)
+        break
+')
+
 needs_uninstall=()
 for pkg in "${to_unlayer[@]}"; do
-	if rpm -q "$pkg" >/dev/null 2>&1; then
+	if grep -qxF "$pkg" <<<"$layered"; then
 		needs_uninstall+=("$pkg")
 	fi
 done
