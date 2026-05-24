@@ -2,29 +2,57 @@
 
 How to live inside per-project DevPod containers without losing the dotfiles experience. Assumes `make fedora` has run successfully on the host (see `workstation-bootstrap/README.md`).
 
-## Mental model — host is the outer environment
+## Mental model — Pattern B: toolbox is the outer environment
 
 ```
-Fedora host  ← always-available tools layer (from `make fedora`)
-  ├─ kitty + xonsh + tmux + tmux-sessionizer + mise + nvim + git + devpod
-  └─ devpod manages one container per project repo:
-       ├─ container: fenix       (multi-stack: Node + Python + Go, hand-authored .devcontainer.json)
-       └─ container: DemoStand   (Compose-based, hand-authored .devcontainer.json)
+Fedora Atomic host  ← MINIMAL launcher (rpm-ostree)
+  ├─ GUI:    kitty, ghostty, flatpaks, 1Password, Tailscale, AmneziaVPN
+  ├─ System: keyd, gnupg, pinentry, ddcutil, wl-clipboard, stow, …
+  ├─ DevPod CLI: /usr/local/bin/devpod (manages the podman containers)
+  └─ kitty/ghostty `command = toolbox enter tools` → drops straight into …
+       │
+       └─ toolbox `tools`  ← DEV ENV (one shared outer)
+            ├─ dnf:  tmux, neovim, git, fzf, ripgrep, fd-find, sd, bat, eza,
+            │        zoxide, tree, jq, gh, direnv, pass, xonsh, flatpak-xdg-utils
+            ├─ curl: mise, atuin, starship, claude
+            ├─ ~/.local/bin/devpod (wrapper → flatpak-spawn --host real binary)
+            └─ devpod manages one container per project repo:
+                 ├─ container: fenix     (multi-stack: Node + Python + Go)
+                 └─ container: DemoStand (Compose-based)
 ```
 
-There is **no "outer dev container"**. The Fedora host already has the full dotfiles toolchain. DevPod spins one container *per project* and you attach to it; you do not nest containers.
+The host is intentionally minimal — no dev shells, no editors, no language toolchains. The `tools` toolbox is the outer dev environment; per-project DevPod containers are inner, project-specific environments. Both the toolbox and every per-project container are provisioned by the same script (`utils/install-personal-tools`) so commander's personal CLI stack is the same everywhere.
+
+> Historical note: an earlier "Pattern A" tried to put the dev toolchain on the host directly. That contradicted the original Fedora Atomic plan ("host minimal, dev in containers") and broke in practice (atuin / eza / bat / fzf / zoxide were assumed-present by the shell config but never installed on host). Pattern B restores the original intent.
 
 ## Workflow
 
-1. Open kitty → host xonsh → already have tmux, mise, nvim, devpod, git on PATH.
-2. `tmux-sessionizer` (host) → pick `fenix` → tmux session `fenix` is created or switched, cwd is the project root.
+1. Open kitty / ghostty → kitty's `shell` directive (or ghostty's `command`) drops you straight into the `tools` toolbox → bashrc execs xonsh → full dev shell, all tools on PATH.
+2. `tmux-sessionizer` (inside toolbox) → pick `fenix` → tmux session is created or switched, cwd is the project root.
 3. In that tmux session:
    - Pane 1: `devpod ssh fenix` → drops into the fenix container → `nvim` runs there with fenix's Node + LSP.
    - Pane 2: `devpod ssh fenix` again → **same container, second SSH session** → `npm run dev`.
-   - Pane 3: stays on host → `gclean`, `git push`, log tailing, ad-hoc shell.
+   - Pane 3: stays in toolbox → `gclean`, `git push`, log tailing, ad-hoc shell. The toolbox is the "host-side" pane in Pattern B.
 4. To switch projects, `tmux-sessionizer` again, pick another project, repeat.
 
+`devpod` invoked from inside toolbox routes through `~/.local/bin/devpod` → `flatpak-spawn --host /usr/local/bin/devpod` so the real DevPod binary on host gets the call (podman lives on host).
+
 DevPod containers persist across reboots. `devpod up <project>` after a cold start resumes the existing container fast; only a config change forces a rebuild.
+
+## What lives where
+
+| Concern | Host | Toolbox `tools` | DevPod container |
+|---|---|---|---|
+| GUI launchers (kitty, ghostty) | ✓ | — | — |
+| DevPod CLI binary | ✓ (`/usr/local/bin/devpod`) | wrapper (`~/.local/bin/devpod` → host) | — |
+| Shell, prompt (xonsh, starship) | — (xonsh unlayered) | ✓ | ✓ |
+| Session orchestration (tmux, tmux-sessionizer) | — | ✓ | — (one tmux session spans all attaches) |
+| Editor (nvim) | — | ✓ | ✓ (per-project LSP / runtime) |
+| Generic CLI (fzf, ripgrep, eza, bat, zoxide, jq, gh) | — | ✓ | ✓ |
+| History (atuin) | — | ✓ (shared DB via $HOME) | ✓ (shared DB via bind-mount) |
+| Language runtimes (Node, Python, Go, …) | — | — | ✓ (via project `.mise.toml`) |
+| System services (keyd, tailscale, podman) | ✓ | — | — |
+| Secrets manager (1Password) | ✓ | — (calls via host) | — (calls via SSH agent forward) |
 
 ## Inside the container — what to expect
 
@@ -138,7 +166,7 @@ The reference snippet in `utils/devcontainer-mounts.json` uses leading-comma aut
 
 `.devcontainer.json` is hand-authored — devenv has no command that emits one from `devenv.nix`. (The container subcommand is `devenv container {build,copy,run}`; there is no `generate`.) Three reasonable starting points:
 
-- **No devenv at runtime** *(default for this dotfiles workflow)* — pin a plain Linux base (`docker.io/library/fedora:<tag>@sha256:<digest>`), install OS packages via `onCreateCommand` (`dnf -y install ...`), and let `mise install` (run by `/dotfiles-utils/devpod-container-bootstrap`) resolve languages and devops tools from a per-project `.mise.toml`. Translate `devenv.nix` env block into `containerEnv`. Fastest to reason about and matches the dotfiles bootstrap script. See `~/projects/ablt/fenix/.devcontainer.json` for a worked example.
+- **No devenv at runtime** *(default for this dotfiles workflow)* — pin a plain Linux base (`docker.io/library/fedora:<tag>@sha256:<digest>`), install OS packages via `onCreateCommand` (`dnf -y install ...`), and let `mise install` (run by `/dotfiles-utils/install-personal-tools devpod`) resolve languages and devops tools from a per-project `.mise.toml`. Translate `devenv.nix` env block into `containerEnv`. Fastest to reason about and matches the dotfiles bootstrap script. See `~/projects/ablt/fenix/.devcontainer.json` for a worked example.
 - **Upstream cachix image** — set `"image": "ghcr.io/cachix/devenv/devcontainer@sha256:<digest>"`. The image ships Nix + devenv preinstalled; inside the container, enter the project's environment with `devenv shell --from path:./<devenv-dir>`. Zero build step, but devenv runs at every shell entry.
 - **Project-specific OCI image** — define `containers.<name>` in `devenv.nix`, then on the build host:
 
@@ -153,7 +181,7 @@ The reference snippet in `utils/devcontainer-mounts.json` uses leading-comma aut
 Either way, merge in the dotfiles bits from `utils/devcontainer-mounts.json`:
 
 - `mounts` block (12 bind mounts + any per-project named volumes)
-- `postCreateCommand: /dotfiles-utils/devpod-container-bootstrap`
+- `postCreateCommand: /dotfiles-utils/install-personal-tools devpod`
 
 Project-specific fields the snippet does not provide:
 
@@ -165,7 +193,7 @@ Project-specific fields the snippet does not provide:
 
 For Compose-based projects (DemoStand-shaped), DevPod supports `dockerComposeFile` + `service` in `.devcontainer.json`; sidecars (Postgres, etc.) start alongside the dev container. See upstream DevPod docs for the exact schema.
 
-**Precondition before `devpod up`:** the host must have run `make symlinks-fedora`. Bind-mount sources must exist as files, not as missing paths — Docker silently creates an empty directory at the target when a source is missing, breaking shell startup. `utils/devpod-container-bootstrap` checks this and fails loudly if it happens, but stowing first is the real fix.
+**Precondition before `devpod up`:** the host must have run `make symlinks-fedora`. Bind-mount sources must exist as files, not as missing paths — Docker silently creates an empty directory at the target when a source is missing, breaking shell startup. `utils/install-personal-tools devpod` checks this and fails loudly if it happens, but stowing first is the real fix.
 
 ## Port routing — no host port collisions across projects
 
@@ -219,7 +247,7 @@ No collisions, no project-aware port numbering, and browser/Postman/curl targets
 
 Per-project `.pre-commit-config.yaml` is owned by whichever environment generates it. The macOS+devenv flow uses devenv's autogenerated version (a symlink into `/nix/store`, gitignored). The container flow ships its own static `.pre-commit-config.container.yaml` (checked in) with the same hook list rewritten to `entry:` lines that resolve via PATH (mise-provided binaries). The two coexist because `.git/hooks/pre-commit` is per-machine and each environment installs its own.
 
-Container bootstrap chains `pre-commit install -c .pre-commit-config.container.yaml` after `devpod-container-bootstrap`, persisting the config path into the generated hook so subsequent `git commit` invocations from the container pick up the container hooks automatically.
+Container bootstrap chains `pre-commit install -c .pre-commit-config.container.yaml` after `install-personal-tools devpod`, persisting the config path into the generated hook so subsequent `git commit` invocations from the container pick up the container hooks automatically.
 
 The container config's first hook refuses commits made from outside the container (checks for `/.dockerenv` / `/run/.containerenv`). `--no-verify` is the documented escape hatch. See `~/projects/ablt/fenix/.pre-commit-config.container.yaml` for a worked example.
 
@@ -227,7 +255,7 @@ The container config's first hook refuses commits made from outside the containe
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `devpod-container-bootstrap: /home/<user>/.bashrc is a directory` (or `.zshrc` / `.zshenv` — any of the three) | Host hasn't stowed; Docker created empty dir at mount target | Run `make symlinks-fedora` on host, recreate container |
+| `install-personal-tools: /home/<user>/.bashrc is a directory` (or `.zshrc` / `.zshenv` — any of the three) | Host hasn't stowed; Docker created empty dir at mount target | Run `make symlinks-fedora` on host, recreate container |
 | First `nvim` hangs 15–60s | Lazy bootstrap + treesitter compile inside container | Wait it out; subsequent launches are fast |
 | `git push` prompts for password | DevPod SSH agent not forwarded | Verify `eval $(ssh-agent)` + `ssh-add` on host; check DevPod ssh-config |
 | Files owned by wrong UID/GID inside container | Host UID ≠ container user UID | Set `remoteUser` in `.devcontainer.json` to match the host user; verify with `id` inside the container. |
