@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#
+# Allocate (or look up) a loopback IP for a DevPod project.
+#
+# Idempotent: if PROJECT is already registered (marker comment present),
+# prints its existing IP and exits 0. Otherwise picks the first free
+# 127.0.0.X (X >= 2), sudo-appends a hosts entry plus a marker comment,
+# and prints the new IP.
+#
+# Marker format (one line each, paired):
+#   # devpod-loopback: PROJECT=127.0.0.X
+#   127.0.0.X  PROJECT
+#
+# Linux: 127.0.0.0/8 routes to lo by default — no ifconfig alias needed.
+# macOS: requires `sudo ifconfig lo0 alias 127.0.0.X up` per IP. The
+#        dotfiles dev-container workflow assumes macOS users stay on
+#        devenv (no container), so this script does not attempt aliasing.
+#
+# Usage:  devpod-allocate-loopback-ip <project>
+# Stdout: chosen IP (e.g. 127.0.0.2). Diagnostics go to stderr.
+
+set -euo pipefail
+
+project="${1:?usage: $0 <project-name>}"
+
+if ! [[ "$project" =~ ^[A-Za-z][A-Za-z0-9_-]*$ ]]; then
+  echo "ERROR: project name must start with a letter and contain only [A-Za-z0-9_-]" >&2
+  exit 1
+fi
+
+hosts_file=/etc/hosts
+marker_prefix='# devpod-loopback:'
+
+# Look up existing registration. awk always exits 0 even if no match.
+existing=$(awk -F= -v pat="^${marker_prefix} ${project}=" '$0 ~ pat { print $2; exit }' "$hosts_file")
+
+if [[ -n "$existing" ]]; then
+  echo "$existing"
+  exit 0
+fi
+
+for i in $(seq 2 254); do
+  ip="127.0.0.$i"
+  # Escape dots so the regex matches an IP literal, not "127a0b0c$i".
+  if ! grep -qE "^${ip//./\\.}([[:space:]]|$)" "$hosts_file"; then
+    echo "Registering $ip for project '$project' (sudo required to edit $hosts_file)" >&2
+    {
+      printf '\n'
+      printf '%s %s=%s\n' "$marker_prefix" "$project" "$ip"
+      printf '%s\t%s\n' "$ip" "$project"
+    } | sudo tee -a "$hosts_file" >/dev/null
+    echo "$ip"
+    exit 0
+  fi
+done
+
+echo "ERROR: no free 127.0.0.X loopback IPs (2..254 all in use)" >&2
+exit 1

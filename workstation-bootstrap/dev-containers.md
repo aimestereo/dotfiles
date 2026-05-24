@@ -8,7 +8,7 @@ How to live inside per-project DevPod containers without losing the dotfiles exp
 Fedora host  ← always-available tools layer (from `make fedora`)
   ├─ kitty + xonsh + tmux + tmux-sessionizer + mise + nvim + git + devpod
   └─ devpod manages one container per project repo:
-       ├─ container: fenix       (Node stack, hand-authored .devcontainer.json)
+       ├─ container: fenix       (multi-stack: Node + Python + Go, hand-authored .devcontainer.json)
        └─ container: DemoStand   (Compose-based, hand-authored .devcontainer.json)
 ```
 
@@ -136,9 +136,10 @@ The reference snippet in `utils/devcontainer-mounts.json` uses leading-comma aut
 
 ## Per-project `.devcontainer.json`
 
-`.devcontainer.json` is hand-authored — devenv has no command that emits one from `devenv.nix`. (The container subcommand is `devenv container {build,copy,run}`; there is no `generate`.) Two reasonable starting points:
+`.devcontainer.json` is hand-authored — devenv has no command that emits one from `devenv.nix`. (The container subcommand is `devenv container {build,copy,run}`; there is no `generate`.) Three reasonable starting points:
 
-- **Upstream image** — set `"image": "ghcr.io/cachix/devenv/devcontainer:latest"`. The image ships Nix + devenv preinstalled; inside the container, enter the project's environment with `devenv shell --from path:./<devenv-dir>`. Zero build step, useful for experimentation.
+- **No devenv at runtime** *(default for this dotfiles workflow)* — pin a plain Linux base (`docker.io/library/fedora:<tag>@sha256:<digest>`), install OS packages via `onCreateCommand` (`dnf -y install ...`), and let `mise install` (run by `/dotfiles-utils/devpod-container-bootstrap`) resolve languages and devops tools from a per-project `.mise.toml`. Translate `devenv.nix` env block into `containerEnv`. Fastest to reason about and matches the dotfiles bootstrap script. See `~/projects/ablt/fenix/.devcontainer.json` for a worked example.
+- **Upstream cachix image** — set `"image": "ghcr.io/cachix/devenv/devcontainer@sha256:<digest>"`. The image ships Nix + devenv preinstalled; inside the container, enter the project's environment with `devenv shell --from path:./<devenv-dir>`. Zero build step, but devenv runs at every shell entry.
 - **Project-specific OCI image** — define `containers.<name>` in `devenv.nix`, then on the build host:
 
   ```bash
@@ -157,14 +158,70 @@ Either way, merge in the dotfiles bits from `utils/devcontainer-mounts.json`:
 Project-specific fields the snippet does not provide:
 
 - `image` or `build` — picked per the choice above
-- `runArgs` — privileged flags, network mode
-- `forwardPorts` — dev server ports auto-forward to host
+- `runArgs` — privileged flags, network mode, and per-port publish lines (see "Port routing" below for the loopback-IP pattern)
+- `forwardPorts` — only if you want DevPod/VS Code to bind to `127.0.0.1`; the loopback-IP pattern uses `runArgs --publish` instead
 - `containerEnv` — project env vars
 - `customizations` — editor settings (skip for neovim users; the bind-mounted `~/.config/nvim/` is the configuration source)
 
 For Compose-based projects (DemoStand-shaped), DevPod supports `dockerComposeFile` + `service` in `.devcontainer.json`; sidecars (Postgres, etc.) start alongside the dev container. See upstream DevPod docs for the exact schema.
 
 **Precondition before `devpod up`:** the host must have run `make symlinks-fedora`. Bind-mount sources must exist as files, not as missing paths — Docker silently creates an empty directory at the target when a source is missing, breaking shell startup. `utils/devpod-container-bootstrap` checks this and fails loudly if it happens, but stowing first is the real fix.
+
+## Port routing — no host port collisions across projects
+
+Multiple projects each spin up their own Postgres on 5432, their own dev server on 3000, etc. With DevPod's default `forwardPorts` (binds to `127.0.0.1`) the second project to launch fails with `address already in use`. The dotfiles workflow solves this by giving each project a private loopback IP and publishing the container's ports on that IP only.
+
+### Mechanism
+
+1. `utils/devpod-allocate-loopback-ip <project>` reads `/etc/hosts`, returns the already-registered IP for `<project>` if present, otherwise sudo-appends a new entry on the first free `127.0.0.X`:
+
+   ```
+   # devpod-loopback: fenix=127.0.0.2
+   127.0.0.2	fenix
+   ```
+
+2. `utils/devpod-up` is a thin wrapper that derives the project name from `$(basename $PWD)`, runs the allocator, exports `LOOPBACK_IP=…`, and execs `devpod up`. Alias it as `dpup` (or symlink into `~/.local/bin`) and use it instead of bare `devpod up`.
+
+3. The project's `.devcontainer.json` publishes ports on the env-substituted IP:
+
+   ```jsonc
+   "runArgs": [
+     "--publish=${localEnv:LOOPBACK_IP}:3000:3000",
+     "--publish=${localEnv:LOOPBACK_IP}:5432:5432"
+     // … one line per port the project exposes
+   ]
+   ```
+
+   Inside the container, services bind to plain `0.0.0.0` on standard ports — no per-project port re-mapping required.
+
+### Result
+
+```
+http://fenix:3000      → 127.0.0.2:3000   → fenix container :3000
+http://fenix:5432      → 127.0.0.2:5432   → fenix container :5432
+http://demostand:3000  → 127.0.0.3:3000   → demostand container :3000
+```
+
+No collisions, no project-aware port numbering, and browser/Postman/curl targets are stable across reboots and rebuilds.
+
+### Platform notes
+
+- **Linux**: `127.0.0.0/8` is fully routed to `lo` by default — no `ifconfig alias` needed. The allocator just appends to `/etc/hosts` and you're done.
+- **macOS**: each extra loopback IP needs `sudo ifconfig lo0 alias 127.0.0.X up` before docker can publish to it. The dotfiles workflow assumes macOS users stay on devenv (no per-project containers); the allocator does not attempt `lo0` aliasing. If you do run dev containers on macOS, write a small launchd plist or run the alias commands manually.
+- **Cleanup**: removing a project means manually deleting both lines (`# devpod-loopback: …` marker + the hosts entry) from `/etc/hosts`. The allocator does not garbage-collect.
+
+### Trade-offs
+
+- VS Code / DevPod auto-list of forwarded ports goes away (those read `forwardPorts`, not `runArgs`). Neovim users don't care; VS Code users keep `forwardPorts` and pay the collision cost, or live without the list.
+- `${localEnv:LOOPBACK_IP}` is unset if the user runs `devpod up` directly (bypassing the wrapper). DevPod will then publish to an empty-string IP and docker errors out — preferable to silently binding to `0.0.0.0`. Treat the wrapper as mandatory.
+
+## Pre-commit inside the container
+
+Per-project `.pre-commit-config.yaml` is owned by whichever environment generates it. The macOS+devenv flow uses devenv's autogenerated version (a symlink into `/nix/store`, gitignored). The container flow ships its own static `.pre-commit-config.container.yaml` (checked in) with the same hook list rewritten to `entry:` lines that resolve via PATH (mise-provided binaries). The two coexist because `.git/hooks/pre-commit` is per-machine and each environment installs its own.
+
+Container bootstrap chains `pre-commit install -c .pre-commit-config.container.yaml` after `devpod-container-bootstrap`, persisting the config path into the generated hook so subsequent `git commit` invocations from the container pick up the container hooks automatically.
+
+The container config's first hook refuses commits made from outside the container (checks for `/.dockerenv` / `/run/.containerenv`). `--no-verify` is the documented escape hatch. See `~/projects/ablt/fenix/.pre-commit-config.container.yaml` for a worked example.
 
 ## Troubleshooting
 
@@ -175,5 +232,7 @@ For Compose-based projects (DemoStand-shaped), DevPod supports `dockerComposeFil
 | `git push` prompts for password | DevPod SSH agent not forwarded | Verify `eval $(ssh-agent)` + `ssh-add` on host; check DevPod ssh-config |
 | Files owned by wrong UID/GID inside container | Host UID ≠ container user UID | Set `remoteUser` in `.devcontainer.json` to match the host user; verify with `id` inside the container. |
 | `mise install` finds no tools | Project lacks `.mise.toml`; global config is empty by design | Add `.mise.toml` to project root with the tool versions you need |
+| `docker: Error response from daemon: invalid containerPort: :3000` on `devpod up` | `LOOPBACK_IP` unset — `devpod up` was called directly, bypassing the `devpod-up` wrapper | Use `devpod-up` (or set `LOOPBACK_IP` manually) so `${localEnv:LOOPBACK_IP}` resolves |
+| `pre-commit` hook fails with "commit from inside the dev container only" | You ran `git commit` from the host on a project whose container config installed the container-only guard | Commit from inside the container, or `git commit --no-verify` to bypass (use sparingly) |
 
 For deeper logs: `journalctl --user -n 50` on host for DevPod issues; `devpod logs <project>` for container build/run logs.
