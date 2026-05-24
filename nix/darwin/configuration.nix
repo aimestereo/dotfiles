@@ -27,8 +27,6 @@
     taps = [
       "beeftornado/rmtree"
       "felixkratz/formulae" # For borders (jankyborders alternative)
-
-      "netbirdio/tap" # For netbird VPN
     ];
 
     brews = [
@@ -37,8 +35,6 @@
       "mactop" # top-like activity monitor for macOS
 
       "worktrunk" # CLI for Worktrunk, a tool for managing workspaces and projects
-
-      "netbirdio/tap/netbird" # netbird VPN CLI
 
       # moved from nix due to closure size
       "hadolint" # Dockerfile linter
@@ -73,11 +69,11 @@
 
       # dev tools
       "zed" # code editor
+      "ghostty"
       "kitty" # GPU-accelerated terminal emulator
       "claude"
       "claude-code"
 
-      "netbirdio/tap/netbird-ui" # GUI for netbird VPN
       # "aws-vpn-client" # AWS VPN client
       "tailscale-app" # Tailscale VPN client
 
