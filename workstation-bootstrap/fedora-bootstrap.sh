@@ -14,13 +14,13 @@ echo "=== Fedora Atomic Sway bootstrap ==="
 echo
 
 # Tailscale's .repo file embeds the GPG key URL, so no separate rpm --import.
-echo "[1/6] Registering Tailscale repo..."
+echo "[1/7] Registering Tailscale repo..."
 curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo |
 	sudo tee /etc/yum.repos.d/tailscale.repo >/dev/null
 
 # Skip 'rpm --import' on Atomic: /usr/share/rpm/ is read-only. The .repo file's
 # embedded gpgkey URL is enough — rpm-ostree fetches it at install time.
-echo "[2/6] Registering 1Password repo..."
+echo "[2/7] Registering 1Password repo..."
 sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<'EOF'
 [1password]
 name=1Password Stable Channel
@@ -33,9 +33,15 @@ EOF
 
 # keyd lives in COPR — the project's own README endorses alternateved/keyd.
 # The .repo file uses $releasever/$basearch so it works across Fedora versions.
-echo "[3/6] Registering keyd COPR repo..."
+echo "[3/7] Registering keyd COPR repo..."
 curl -fsSL https://copr.fedorainfracloud.org/coprs/alternateved/keyd/repo/fedora-/alternateved-keyd-fedora-.repo |
 	sudo tee /etc/yum.repos.d/keyd.repo >/dev/null
+
+# ghostty has no official Fedora repo; the scottames/ghostty COPR is the
+# recommended source for Atomic variants per ghostty.org install docs.
+echo "[4/7] Registering ghostty COPR repo..."
+curl -fsSL https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora-/scottames-ghostty-fedora-.repo |
+	sudo tee /etc/yum.repos.d/ghostty.repo >/dev/null
 
 # --idempotent: already-requested packages are skipped instead of erroring,
 # so re-running the script syncs the layer to match the list (Nix-style).
@@ -44,9 +50,10 @@ curl -fsSL https://copr.fedorainfracloud.org/coprs/alternateved/keyd/repo/fedora
 # of failing the transaction.
 # Note: removals are NOT auto-handled. Drop a package from the list AND run
 # `sudo rpm-ostree uninstall <pkg>` once to actually remove it.
-echo "[4/6] Layering rpm-ostree packages (this takes a few minutes)..."
+echo "[5/7] Layering rpm-ostree packages (this takes a few minutes)..."
 sudo rpm-ostree install -y --idempotent --allow-inactive \
 	kitty \
+	ghostty \
 	tmux \
 	xonsh \
 	git \
@@ -56,6 +63,8 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 	stow \
 	wl-clipboard \
 	qt5-qtwayland \
+	libnotify \
+	ddcutil \
 	tailscale \
 	keyd \
 	1password \
@@ -63,13 +72,13 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 
 # Flathub goes in here so the post-reboot `make fedora` step can install
 # Tier-2 GUI flatpaks without a separate remote-add.
-echo "[5/6] Adding Flathub user remote..."
+echo "[6/7] Adding Flathub user remote..."
 flatpak remote-add --if-not-exists --user flathub \
 	https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Clone over HTTPS — no SSH key needed yet. Re-runs are no-ops if the
 # directory is already a git checkout.
-echo "[6/6] Cloning dotfiles into $dotfiles_dir..."
+echo "[7/7] Cloning dotfiles into $dotfiles_dir..."
 mkdir -p "$(dirname "$dotfiles_dir")"
 if [[ -d "$dotfiles_dir/.git" ]]; then
 	echo "  ($dotfiles_dir already a git checkout; skipping clone)"

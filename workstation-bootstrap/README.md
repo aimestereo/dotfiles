@@ -10,8 +10,8 @@ curl -fsSL https://raw.githubusercontent.com/aimestereo/dotfiles/main/workstatio
 
 The script:
 
-- Registers the Tailscale, 1Password, and `alternateved/keyd` (COPR) RPM repos
-- Layers all base packages — `kitty`, `tmux`, `xonsh`, `git`, `gnupg`, `pinentry`, `gcc`, `stow`, `wl-clipboard`, `tailscale`, `keyd`, `1password`, `1password-cli` — in one `rpm-ostree` transaction
+- Registers the Tailscale, 1Password, `alternateved/keyd` (COPR), and `scottames/ghostty` (COPR) RPM repos
+- Layers all base packages — `kitty`, `ghostty`, `tmux`, `xonsh`, `git`, `gnupg`, `pinentry`, `gcc`, `stow`, `wl-clipboard`, `qt5-qtwayland`, `libnotify`, `ddcutil`, `tailscale`, `keyd`, `1password`, `1password-cli` — in one `rpm-ostree` transaction
 - Adds the Flathub remote (user scope)
 - Clones the dotfiles repo into `~/work/my/dotfiles` (HTTPS — no SSH key needed yet)
 - Backs up any pre-existing distro `~/.bashrc` so stow can land its own

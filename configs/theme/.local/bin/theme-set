@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#
+# theme-set — switch the active terminal theme by retargeting
+# ~/.config/theme/current at one of the themes installed by `theme-update`.
+#
+# Usage:
+#   theme-set <name>   # non-interactive
+#   theme-set          # interactive picker (fzf if available, numbered menu otherwise)
+
+set -euo pipefail
+
+target="$HOME/.config/theme"
+current="$target/current"
+
+err() { printf 'theme-set: %s\n' "$*" >&2; exit 1; }
+
+[[ -d $target ]] || err "no themes installed; run 'theme-update' first"
+
+list_themes() {
+	find "$target" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+}
+
+pick_interactive() {
+	if command -v fzf >/dev/null; then
+		list_themes | fzf --prompt='theme> ' --height=40% || true
+		return
+	fi
+	local themes=() idx choice
+	while IFS= read -r line; do
+		themes+=("$line")
+	done < <(list_themes)
+	[[ ${#themes[@]} -eq 0 ]] && err "no themes installed; run 'theme-update' first"
+	printf 'Available themes:\n' >&2
+	for idx in "${!themes[@]}"; do
+		printf '  %2d) %s\n' $((idx + 1)) "${themes[$idx]}" >&2
+	done
+	read -r -p 'theme> ' choice </dev/tty || true
+	if [[ $choice =~ ^[0-9]+$ ]] && ((choice >= 1 && choice <= ${#themes[@]})); then
+		printf '%s\n' "${themes[$((choice - 1))]}"
+	else
+		printf '%s\n' "$choice"
+	fi
+}
+
+theme=${1:-}
+if [[ -z $theme ]]; then
+	theme=$(pick_interactive)
+fi
+[[ -z $theme ]] && err "no theme selected"
+
+[[ -d $target/$theme ]] || err "theme '$theme' not found under $target/"
+
+ln -sfn "$theme" "$current"
+echo "current theme → $theme"
+
+# Reload running terminals (vendored from omarchy-restart-terminal). Gates use
+# captured `ps -A` + bash pattern matching to avoid two macOS pitfalls:
+# `pgrep -x ghostty` misses the .app-bundled binary in some shell contexts, and
+# `ps -A | grep -q` races with SIGPIPE under `set -o pipefail`.
+procs=$(ps -A)
+if [[ $procs == *kitty* ]]; then
+	killall -SIGUSR1 kitty >/dev/null
+fi
+if [[ $procs == *ghostty* ]]; then
+	killall -SIGUSR2 ghostty
+fi

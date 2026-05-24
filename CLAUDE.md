@@ -8,14 +8,19 @@ MacOS/Linux environment configuration managed with GNU Stow.
 dotfiles/
 ├── configs/           # Stow packages (each subdirectory is a package)
 │   ├── agents/        # AI agent commands (Claude, Cursor)
+│   ├── brightness/    # `brightness-control` (ddcutil-based DDC/CI control; Linux)
+│   ├── ghostty/       # Ghostty terminal (includes ~/.config/theme/current/ghostty.conf)
 │   ├── git/           # Git configuration
 │   ├── hammerspoon/   # macOS automation (Hyper key, window mgmt, draw on screen)
 │   ├── keyd/          # CapsLock → Hyper remap (Fedora; sudo-installed to /etc/keyd)
+│   ├── kitty/         # Kitty terminal (includes ~/.config/theme/current/kitty.conf)
 │   ├── mise/          # mise tool versions (host + bind-mounted into DevPod containers)
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim
 │   ├── shell/         # Shell configs (zsh/bash) — Mac default
+│   ├── starship/      # Starship cross-shell prompt config
+│   ├── theme/         # `theme-update` / `theme-set-templates` / `theme-set` (palettes pulled from basecamp/omarchy)
 │   ├── tmux/          # Tmux
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
 ├── nix/                    # Nix configuration (separate Makefile)
@@ -71,6 +76,16 @@ Two modes available (set `HYPER_MODE` in `configs/hammerspoon/.hammerspoon/init.
 
 - **`quad`** (default) — Karabiner-Elements maps CapsLock → Cmd+Ctrl+Alt+Shift. Bindings in `quad-mapping.lua` are plain `hs.hotkey.bind` calls. No modal, survives sleep.
 - **`f18`** (legacy) — hidutil maps CapsLock → F18. Uses `hs.hotkey.modal` via `hyper/` module. Can break after macOS sleep cycles.
+
+## Terminal Theme
+
+Kitty and Ghostty include their palette from `~/.config/theme/current/`, a symlink managed by three scripts in the `theme` stow package:
+
+- `theme-update` — clones (or `git pull`s) `basecamp/omarchy@dev` into `$OMARCHY_PATH` (default `~/.local/share/omarchy`), then renders every theme's templates into `~/.config/theme/<theme>/`. First run defaults `current → catppuccin`.
+- `theme-set-templates [theme-dir]` — vendored from omarchy. Renders `$OMARCHY_PATH/default/themed/*.tpl` against the theme dir's `colors.toml` (palette via `{{ key }}` / `{{ key_strip }}` / `{{ key_rgb }}` placeholders). User overrides in `~/.config/theme/themed/*.tpl` take precedence over built-in templates.
+- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets the `current` symlink.
+
+Theme content is runtime state under `~/.config/theme/`; it is not tracked in the repo. Switching themes does not require re-stowing.
 
 ## Key Utilities
 
