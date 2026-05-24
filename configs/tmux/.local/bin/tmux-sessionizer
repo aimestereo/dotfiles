@@ -12,7 +12,7 @@ fi
 # space separated list of directories
 # sessionizer will treat all children of these directories as projects
 # to start a new tmux session in
-WORKPLACE_ROOTS=(~/projects ~/Work)
+WORKPLACE_ROOTS=(~/projects ~/Work ~/work)
 
 debug() {
     if [ "$DEBUG_SESSIONIZER" -eq 1 ]; then
