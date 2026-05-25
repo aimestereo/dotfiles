@@ -169,6 +169,19 @@ KCONF
 # Drop ghostty straight into the `tools` toolbox on Fedora (Pattern B).
 command = toolbox enter tools
 GCONF
+
+	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,
+	# but the toolbox base ncurses doesn't carry xterm-kitty/xterm-ghostty, so
+	# entering the toolbox from either terminal errors with "terminfo entry
+	# not found". Copy via host root at /run/host into shared $HOME/.terminfo
+	# (visible to host + every toolbox/devpod that shares $HOME).
+	mkdir -p "$HOME/.terminfo/x"
+	for term in xterm-kitty xterm-ghostty; do
+		src="/run/host/usr/share/terminfo/x/$term"
+		if [[ -f "$src" ]]; then
+			install -m 0644 "$src" "$HOME/.terminfo/x/$term"
+		fi
+	done
 fi
 
 # ---------------------------------------------------------------------------
