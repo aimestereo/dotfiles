@@ -51,14 +51,20 @@ curl -fsSL https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora
 # Note: removals are NOT auto-handled. Drop a package from the list AND run
 # `sudo rpm-ostree uninstall <pkg>` once to actually remove it.
 # Host stays minimal per Pattern B (toolbox-as-outer): dev tools live in the
-# `tools` toolbox, not on the host. xonsh, tmux, git, gcc were previously
-# layered here — they now live in the toolbox (installed by
+# `tools` toolbox, not on the host. xonsh, tmux, gcc were previously layered
+# here — they now live only in the toolbox (installed by
 # `utils/install-personal-tools toolbox`). Existing machines that already
 # have them layered can run `utils/fedora-host-cleanup` to unlayer.
+#
+# `git` stays on host because this script needs it at [7/7] for the initial
+# clone, and `git pull` needs to work without entering the toolbox for repo
+# refreshes. `--allow-inactive` makes the line a no-op if Atomic Sway's base
+# image already provides git.
 echo "[5/7] Layering rpm-ostree packages (this takes a few minutes)..."
 sudo rpm-ostree install -y --idempotent --allow-inactive \
 	kitty \
 	ghostty \
+	git \
 	gnupg \
 	pinentry \
 	stow \

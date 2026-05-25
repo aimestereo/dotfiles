@@ -10,7 +10,10 @@ set -euo pipefail
 # After a successful run, reboot for the layer change to take effect, then
 # `make fedora` to provision the toolbox with the same tools (and more) inside.
 
-to_unlayer=(xonsh tmux git gcc)
+# git is deliberately NOT in this list: the host needs git for `git clone`
+# during bootstrap and for `git pull` to refresh the dotfiles repo. xonsh,
+# tmux, gcc are pure dev tools that moved to the toolbox under Pattern B.
+to_unlayer=(xonsh tmux gcc)
 
 echo "Unlayering dev tools from host (Pattern B): ${to_unlayer[*]}"
 

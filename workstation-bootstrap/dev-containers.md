@@ -7,7 +7,7 @@ How to live inside per-project DevPod containers without losing the dotfiles exp
 ```
 Fedora Atomic host  ← MINIMAL launcher (rpm-ostree)
   ├─ GUI:    kitty, ghostty, flatpaks, 1Password, Tailscale, AmneziaVPN
-  ├─ System: keyd, gnupg, pinentry, ddcutil, wl-clipboard, stow, …
+  ├─ System: keyd, gnupg, pinentry, ddcutil, wl-clipboard, stow, git, …
   ├─ DevPod CLI: /usr/local/bin/devpod (manages the podman containers)
   └─ kitty/ghostty `command = toolbox enter tools` → drops straight into …
        │
@@ -45,6 +45,7 @@ DevPod containers persist across reboots. `devpod up <project>` after a cold sta
 |---|---|---|---|
 | GUI launchers (kitty, ghostty) | ✓ | — | — |
 | DevPod CLI binary | ✓ (`/usr/local/bin/devpod`) | wrapper (`~/.local/bin/devpod` → host) | — |
+| `git` (initial clone + host-side `git pull`) | ✓ | ✓ | ✓ |
 | Shell, prompt (xonsh, starship) | — (xonsh unlayered) | ✓ | ✓ |
 | Session orchestration (tmux, tmux-sessionizer) | — | ✓ | — (one tmux session spans all attaches) |
 | Editor (nvim) | — | ✓ | ✓ (per-project LSP / runtime) |
