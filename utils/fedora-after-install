@@ -2,6 +2,16 @@
 
 set -euo pipefail
 
+# Host-only guard: this target manages host-side state (flatpak install,
+# toolbox/devpod container creation, systemd services). Re-running it from
+# inside the toolbox dies with "flatpak: command not found" deep in
+# install-flatpaks; fail fast at the top instead.
+if [[ -f /run/.toolboxenv ]]; then
+	echo "fedora-after-install: must be run from the host shell, not inside a toolbox." >&2
+	echo "  Exit the toolbox (Ctrl-D), then: cd ~/projects/my/dotfiles && make fedora" >&2
+	exit 1
+fi
+
 # Run from repo root so bare util-script paths resolve regardless of caller CWD.
 cd "$(dirname "$0")/.."
 

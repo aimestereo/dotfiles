@@ -57,13 +57,15 @@ Commands and skills are symlinked to `.claude/` and `.cursor/` directories withi
 
 ```bash
 make mac              # Full macOS setup
-make fedora-bootstrap # Sync host (rpm-ostree layer + repos + Flathub remote); idempotent, requires reboot
-make fedora           # Full Fedora post-install (Pattern B: toolbox-as-outer — see workstation-bootstrap/dev-containers.md)
+make fedora-bootstrap # Host shell only. Sync host (rpm-ostree layer + repos + Flathub remote); idempotent, requires reboot
+make fedora           # Host shell only. Full Fedora post-install (Pattern B: toolbox-as-outer — see workstation-bootstrap/dev-containers.md)
 make symlinks-mac     # Just symlink configs (Mac; skips shell-fedora)
-make symlinks-fedora  # Symlink configs (Fedora; skips hammerspoon, nix, shell-mac)
+make symlinks-fedora  # Symlink configs (Fedora; skips hammerspoon, nix, shell-mac). Runs from host OR toolbox — $HOME is shared.
 make nix-mac          # Nix/Home Manager (macOS)
 make nix-linux        # Home Manager only (Linux/Fedora)
 ```
+
+> Fedora targets that talk to host-only state (flatpak, podman containers, systemd, rpm-ostree) **must** run from the host shell. `make fedora` enforces this with a `/run/.toolboxenv` guard; the others fail naturally when their CLI isn't on the toolbox PATH.
 
 ## Shells
 
