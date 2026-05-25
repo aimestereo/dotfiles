@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-MODE="${1:?usage: $0 {toolbox|devpod}}"
+MODE="${1:?usage: $0 [toolbox|devpod]}"
 case "$MODE" in
 	toolbox|devpod) ;;
 	*) echo "install-personal-tools: unknown mode '$MODE' (want toolbox or devpod)" >&2; exit 1 ;;
