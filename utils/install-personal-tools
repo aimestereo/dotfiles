@@ -157,6 +157,20 @@ fi
 WRAP
 	chmod +x "$HOME/.local/bin/devpod"
 
+	# onhost wrapper: run an arbitrary command on host from inside toolbox via
+	# flatpak-spawn. Named `onhost` (not `host`) to avoid shadowing BIND's host
+	# DNS tool from bind-utils. Idempotent — exec-passes through when run from
+	# host so callers don't need to branch.
+	cat > "$HOME/.local/bin/onhost" <<'WRAP'
+#!/usr/bin/env bash
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host "$@"
+else
+	exec "$@"
+fi
+WRAP
+	chmod +x "$HOME/.local/bin/onhost"
+
 	# Fedora-only kitty + ghostty overrides land in $HOME (shared with host).
 	# Picked up via globinclude / optional include directives in the main
 	# configs; Mac never sees them.
