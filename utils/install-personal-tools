@@ -171,17 +171,44 @@ fi
 WRAP
 	chmod +x "$HOME/.local/bin/onhost"
 
+	# enter-tools: Pattern B terminal-entry shim. Checks for the `tools` toolbox
+	# and enters it; falls back to interactive host bash with a recovery hint if
+	# the container is missing. Makes `toolbox rm tools` a real recovery step
+	# without bricking kitty/ghostty startup.
+	cat > "$HOME/.local/bin/enter-tools" <<'WRAP'
+#!/usr/bin/env bash
+if podman container exists tools 2>/dev/null; then
+	exec toolbox enter tools
+fi
+cat >&2 <<'MSG'
+
+  Toolbox 'tools' not found.
+
+  Recreate (full reprovision): cd ~/work/my/dotfiles && make fedora
+  Or quickly (empty container): toolbox create -y tools
+
+  Dropping into host bash.
+
+MSG
+exec bash -i
+WRAP
+	chmod +x "$HOME/.local/bin/enter-tools"
+
 	# Fedora-only kitty + ghostty overrides land in $HOME (shared with host).
 	# Picked up via globinclude / optional include directives in the main
-	# configs; Mac never sees them.
+	# configs; Mac never sees them. Unquoted heredoc so $HOME interpolates —
+	# kitty/ghostty don't do shell-style env expansion in config values.
 	mkdir -p "$HOME/.config/kitty/conf.d" "$HOME/.config/ghostty/local"
-	cat > "$HOME/.config/kitty/conf.d/00-fedora-shell.conf" <<'KCONF'
-# Drop kitty straight into the `tools` toolbox on Fedora (Pattern B).
-shell toolbox enter tools
+	cat > "$HOME/.config/kitty/conf.d/00-fedora-shell.conf" <<KCONF
+# Drop kitty into the \`tools\` toolbox on Fedora (Pattern B). The enter-tools
+# shim falls back to host bash if the toolbox has been removed, so recovery
+# doesn't require editing this file.
+shell $HOME/.local/bin/enter-tools
 KCONF
-	cat > "$HOME/.config/ghostty/local/fedora.conf" <<'GCONF'
-# Drop ghostty straight into the `tools` toolbox on Fedora (Pattern B).
-command = toolbox enter tools
+	cat > "$HOME/.config/ghostty/local/fedora.conf" <<GCONF
+# Drop ghostty into the \`tools\` toolbox on Fedora (Pattern B), with the same
+# graceful fallback as kitty.
+command = $HOME/.local/bin/enter-tools
 GCONF
 
 	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,

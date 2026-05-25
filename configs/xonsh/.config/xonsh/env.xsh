@@ -2,7 +2,11 @@ import shutil
 
 $EDITOR = 'nvim'
 $VISUAL = 'nvim'
-$BROWSER = 'zen-browser'
+# xdg-open dispatches via MIME assoc on host (resolves to zen-browser flatpak);
+# inside toolbox, flatpak-xdg-utils' xdg-open hops back to host xdg-open.
+# Hardcoding a flatpak app name (e.g. 'zen-browser') breaks because the flatpak
+# binary isn't on PATH on either side.
+$BROWSER = 'xdg-open'
 $PAGER = 'less -R'
 $LANG = 'en_US.UTF-8'
 
