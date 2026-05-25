@@ -67,7 +67,8 @@ sudo dnf install -y --skip-unavailable \
 	jq \
 	gh \
 	direnv \
-	xonsh
+	xonsh \
+	python3-pip
 
 # ---------------------------------------------------------------------------
 # Toolbox-only: outer-layer-only packages
