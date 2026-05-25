@@ -57,6 +57,7 @@ fi
 sudo dnf install -y --skip-unavailable \
 	neovim \
 	git \
+	git-delta \
 	fzf \
 	ripgrep \
 	fd-find \
