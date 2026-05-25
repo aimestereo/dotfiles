@@ -1,5 +1,3 @@
-$VI_MODE = True
-
 @events.on_ptk_create
 def _custom_keybindings(bindings, **kw):
     from prompt_toolkit.keys import Keys

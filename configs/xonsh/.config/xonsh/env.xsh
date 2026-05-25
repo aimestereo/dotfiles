@@ -1,5 +1,11 @@
 import shutil
 
+# Set vi mode here (not in keybinds.xsh) so it's in effect BEFORE tools.xsh
+# runs `atuin init xonsh` — atuin's @events.on_ptk_create registers Ctrl-R
+# bindings; toggling $VI_MODE later forces xonsh to rebuild key bindings,
+# which drops atuin's earlier registration.
+$VI_MODE = True
+
 $EDITOR = 'nvim'
 $VISUAL = 'nvim'
 # xdg-open dispatches via MIME assoc on host (resolves to zen-browser flatpak);

@@ -4,3 +4,10 @@
 if [[ $- == *i* ]] && [[ -x "$HOME/.local/bin/xonsh" ]]; then
 	exec "$HOME/.local/bin/xonsh" -i
 fi
+
+# Reached only if the xonsh exec was skipped (xonsh not installed / not
+# executable). Wire up atuin in bash so Ctrl-R still hits the atuin TUI
+# rather than readline's reverse-i-search.
+if [[ $- == *i* ]] && [[ -x "$HOME/.atuin/bin/atuin" ]]; then
+	eval "$($HOME/.atuin/bin/atuin init bash)"
+fi
