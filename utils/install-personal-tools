@@ -76,12 +76,16 @@ sudo dnf install -y --skip-unavailable \
 # tmux belongs in the outer layer (sessions span multiple devpod ssh attaches
 # into per-project containers; no tmux inside containers). flatpak-xdg-utils
 # provides flatpak-spawn for the devpod wrapper. pass is the password store CLI.
+# stow is needed inside the toolbox because commander runs `make symlinks-fedora`
+# from there; devpod containers receive stowed configs via bind mount and don't
+# invoke stow themselves.
 # ---------------------------------------------------------------------------
 if [[ "$MODE" == "toolbox" ]]; then
 	sudo dnf install -y --skip-unavailable \
 		tmux \
 		pass \
-		flatpak-xdg-utils
+		flatpak-xdg-utils \
+		stow
 fi
 
 # ---------------------------------------------------------------------------
