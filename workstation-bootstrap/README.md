@@ -55,14 +55,39 @@ If anything fails, `journalctl --user -n 50` (or the specific service's logs) an
 
 ## Enable git push (SSH)
 
-The bootstrap clones over HTTPS, which is read-only against your repo. To push:
+The bootstrap clones over HTTPS — read-only. Set up an SSH key to push.
+
+**Always do this on the host**, never inside the toolbox or a devpod container. Two reasons:
+
+- Keys must outlive container recreates. The `tools` toolbox is treated as ephemeral (`toolbox rm tools` is a normal recovery step); a key written there evaporates with it.
+- `~/.ssh` is **not** bind-mounted into any container. Containers reach the agent over its UNIX socket (see below), so they never need filesystem access to the keys.
+
+### Generate + register the key (host)
 
 ```bash
-ssh-keygen -t ed25519 -C "$USER@$(hostname)"
-cat ~/.ssh/id_ed25519.pub  # register at https://github.com/settings/keys
+ssh-keygen -t ed25519 -C "$USER@$(hostname)" -f ~/.ssh/id_ed25519
+ssh-add ~/.ssh/id_ed25519                    # load into host ssh-agent
+gh auth login --git-protocol ssh             # only if gh not yet authed
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)"
+# switch dotfiles to ssh (any other repo: same idiom)
 cd ~/work/my/dotfiles
 git remote set-url origin git@github.com:aimestereo/dotfiles.git
+ssh -T git@github.com                        # expect: "Hi <username>!"
 ```
+
+### How the key reaches toolbox / devpod
+
+Keys stay on host. What flows into containers is the **ssh-agent socket** at `$SSH_AUTH_SOCK`, which on Fedora lives under `/run/user/$UID/` (gnome-keyring or systemd-managed). Toolbox bind-mounts `/run/user/$UID` by default and `$SSH_AUTH_SOCK` passes through the environment, so `git push` from inside `tools` authenticates against the host agent transparently. DevPod's `devpod ssh` forwards the host agent into the per-project container the same way.
+
+Verify after key creation, from inside `tools` or a devpod container:
+
+```bash
+echo "$SSH_AUTH_SOCK"                        # non-empty, /run/user/<uid>/...
+ssh-add -l                                   # lists your host-side key
+ssh -T git@github.com                        # "Hi <username>!"
+```
+
+If `ssh-add -l` returns "Could not open a connection to your authentication agent", the host agent wasn't running when the toolbox/container started. Exit + re-enter (the env var refreshes on each new attach).
 
 ## Forks
 
