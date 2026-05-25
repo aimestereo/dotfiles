@@ -264,5 +264,6 @@ The container config's first hook refuses commits made from outside the containe
 | `mise install` finds no tools | Project lacks `.mise.toml`; global config is empty by design | Add `.mise.toml` to project root with the tool versions you need |
 | `docker: Error response from daemon: invalid containerPort: :3000` on `devpod up` | `LOOPBACK_IP` unset — `devpod up` was called directly, bypassing the `devpod-up` wrapper | Use `devpod-up` (or set `LOOPBACK_IP` manually) so `${localEnv:LOOPBACK_IP}` resolves |
 | `pre-commit` hook fails with "commit from inside the dev container only" | You ran `git commit` from the host on a project whose container config installed the container-only guard | Commit from inside the container, or `git commit --no-verify` to bypass (use sparingly) |
+| `mise: installing mise... 0.1%` (or other curl-fetched installer) hangs early during `make fedora` | Cloudflare-fronted upstream (mise.jdx.dev, claude.ai, GitHub release CDN, etc.) geo-blocks your IP | Connect VPN before re-running `make fedora`; IPv4/IPv6 precedence tweaks don't help — it's an IP-level block, not a routing issue |
 
 For deeper logs: `journalctl --user -n 50` on host for DevPod issues; `devpod logs <project>` for container build/run logs.
