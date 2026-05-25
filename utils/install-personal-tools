@@ -138,7 +138,7 @@ script_dir="$(cd "$(dirname "$0")" && pwd)"
 xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
 
 # ---------------------------------------------------------------------------
-# Toolbox-only: devpod wrapper + Fedora kitty/ghostty shell overrides
+# Toolbox-only: devpod wrapper + host terminfo mirror
 # ---------------------------------------------------------------------------
 if [[ "$MODE" == "toolbox" ]]; then
 	# devpod wrapper. Lives in $HOME (shared with host). The wrapper sits on
@@ -157,59 +157,13 @@ fi
 WRAP
 	chmod +x "$HOME/.local/bin/devpod"
 
-	# onhost wrapper: run an arbitrary command on host from inside toolbox via
-	# flatpak-spawn. Named `onhost` (not `host`) to avoid shadowing BIND's host
-	# DNS tool from bind-utils. Idempotent — exec-passes through when run from
-	# host so callers don't need to branch.
-	cat > "$HOME/.local/bin/onhost" <<'WRAP'
-#!/usr/bin/env bash
-if [[ -f /run/.toolboxenv ]]; then
-	exec flatpak-spawn --host "$@"
-else
-	exec "$@"
-fi
-WRAP
-	chmod +x "$HOME/.local/bin/onhost"
-
-	# enter-tools: Pattern B terminal-entry shim. Checks for the `tools` toolbox
-	# and enters it; falls back to interactive host bash with a recovery hint if
-	# the container is missing. Makes `toolbox rm tools` a real recovery step
-	# without bricking kitty/ghostty startup.
-	cat > "$HOME/.local/bin/enter-tools" <<'WRAP'
-#!/usr/bin/env bash
-if podman container exists tools 2>/dev/null; then
-	exec toolbox enter tools
-fi
-cat >&2 <<'MSG'
-
-  Toolbox 'tools' not found.
-
-  Recreate (full reprovision): cd ~/work/my/dotfiles && make fedora
-  Or quickly (empty container): toolbox create -y tools
-
-  Dropping into host bash.
-
-MSG
-exec bash -i
-WRAP
-	chmod +x "$HOME/.local/bin/enter-tools"
-
-	# Fedora-only kitty + ghostty overrides land in $HOME (shared with host).
-	# Picked up via globinclude / optional include directives in the main
-	# configs; Mac never sees them. Unquoted heredoc so $HOME interpolates —
-	# kitty/ghostty don't do shell-style env expansion in config values.
-	mkdir -p "$HOME/.config/kitty/conf.d" "$HOME/.config/ghostty/local"
-	cat > "$HOME/.config/kitty/conf.d/00-fedora-shell.conf" <<KCONF
-# Drop kitty into the \`tools\` toolbox on Fedora (Pattern B). The enter-tools
-# shim falls back to host bash if the toolbox has been removed, so recovery
-# doesn't require editing this file.
-shell $HOME/.local/bin/enter-tools
-KCONF
-	cat > "$HOME/.config/ghostty/local/fedora.conf" <<GCONF
-# Drop ghostty into the \`tools\` toolbox on Fedora (Pattern B), with the same
-# graceful fallback as kitty.
-command = $HOME/.local/bin/enter-tools
-GCONF
+	# Idempotent cleanup: an earlier installer wrote these files; remove so
+	# the revert takes effect on machines that ran `make fedora` from inside
+	# the toolbox before this change.
+	rm -f "$HOME/.local/bin/onhost" \
+		"$HOME/.local/bin/enter-tools" \
+		"$HOME/.config/kitty/conf.d/00-fedora-shell.conf" \
+		"$HOME/.config/ghostty/local/fedora.conf"
 
 	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,
 	# but the toolbox base ncurses doesn't carry xterm-kitty/xterm-ghostty, so

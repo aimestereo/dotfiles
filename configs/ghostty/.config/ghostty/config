@@ -1,10 +1,6 @@
 # Dynamic theme colors
 config-file = ?"~/.config/theme/current/ghostty.conf"
 
-# Platform overrides land here. Optional include — Mac has no file at this path,
-# Fedora drops a `command = toolbox enter tools` directive to enter the toolbox.
-config-file = ?"~/.config/ghostty/local/fedora.conf"
-
 # Font
 font-family = "CaskaydiaMono Nerd Font"
 font-style = Regular

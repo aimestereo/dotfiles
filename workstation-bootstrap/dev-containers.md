@@ -9,7 +9,7 @@ Fedora Atomic host  ← MINIMAL launcher (rpm-ostree)
   ├─ GUI:    kitty, ghostty, flatpaks, 1Password, Tailscale, AmneziaVPN
   ├─ System: keyd, gnupg, pinentry, ddcutil, wl-clipboard, stow, git, …
   ├─ DevPod CLI: /usr/local/bin/devpod (manages the podman containers)
-  └─ kitty/ghostty `command = toolbox enter tools` → drops straight into …
+  └─ kitty/ghostty open a host shell (default zsh/bash); `toolbox enter tools` to step into:
        │
        └─ toolbox `tools`  ← DEV ENV (one shared outer)
             ├─ dnf:  tmux, neovim, git, fzf, ripgrep, fd-find, sd, bat, eza,
@@ -27,7 +27,7 @@ The host is intentionally minimal — no dev shells, no editors, no language too
 
 ## Workflow
 
-1. Open kitty / ghostty → kitty's `shell` directive (or ghostty's `command`) drops you straight into the `tools` toolbox → bashrc execs xonsh → full dev shell, all tools on PATH.
+1. Open kitty / ghostty → host shell (zsh/bash). Type `toolbox enter tools` → bashrc execs xonsh → full dev shell, all tools on PATH. (Bind it to a shell alias / keyboard shortcut if you want single-keystroke entry — not shipped here.)
 2. `tmux-sessionizer` (inside toolbox) → pick `fenix` → tmux session is created or switched, cwd is the project root.
 3. In that tmux session:
    - Pane 1: `devpod ssh fenix` → drops into the fenix container → `nvim` runs there with fenix's Node + LSP.
@@ -79,7 +79,7 @@ By default, zoxide's frecency DB is container-local: starts empty, lost on conta
 
 ### git
 
-`~/.config/git/` is bind-mounted (rw) so identity and ignore rules carry over. `git push` works via DevPod's SSH agent forward — provided the host has `ssh-agent` running with the key loaded (`ssh-add -l` to verify; see Troubleshooting). The key itself never enters the container, and the container image must never bake one in.
+`~/.config/git/` is bind-mounted (rw) so identity and ignore rules carry over. `git push` works via DevPod's SSH agent forward when the host runs `ssh-agent` with the key loaded; with a passphrase-less key (the default in this setup) SSH reads `~/.ssh/id_ed25519` directly and no agent is needed. The key itself never enters the container, and the container image must never bake one in.
 
 ### atuin
 
@@ -131,12 +131,11 @@ The current mount list (`utils/devcontainer-mounts.json`) is the application of 
 
 ### Security boundary
 
-`~/.ssh/` and `~/.gnupg/` are **never** bind-mounted. SSH auth flows through DevPod's SSH agent forwarding (host `ssh-agent` socket exposed to the container — no key on disk). GPG is **not** auto-forwarded by DevPod; signed-commit and pinentry operations stay on the host by default. If a project specifically needs gpg-agent inside the container, configure socket forwarding explicitly (out of scope for this doc).
+`~/.ssh/` and `~/.gnupg/` are **never** bind-mounted into devpod containers. The key on host is `~/.ssh/id_ed25519` — passphrase-less by default, read directly by SSH via IdentityFile; with a passphrase, the host ssh-agent socket forwards into the container instead. Either way, no private-key material crosses the container boundary. GPG is **not** auto-forwarded by DevPod; signed-commit and pinentry operations stay on the host by default. If a project specifically needs gpg-agent inside the container, configure socket forwarding explicitly (out of scope for this doc).
 
 **Every rw config bind-mount is a potential container-to-host escalation vector.** A compromised container can rewrite the mounted config; the host runs that config on the next launch of the tool that reads it. The bind-mount model trades container isolation for cross-environment portability — accepted because the threat model assumes images you trust enough to run. Notable specific vectors in the current mount list:
 
 - **Shell rc files + tool configs** (`~/.bashrc`, `~/.zshrc`, `~/.zshenv`, `~/.config/{xonsh,nvim,tmux,shell}/`) — highest severity. Direct arbitrary code execution on the host's next launch of bash, zsh, xonsh, nvim, or tmux; a malicious `init.lua` runs next time you open `nvim` on the host.
-- **Pattern B kitty / ghostty overrides** (`~/.config/kitty/conf.d/`, `~/.config/ghostty/local/`) — same class as shell rc. The Fedora-only `shell` / `command` directives are written by `install-personal-tools toolbox`; a compromised toolbox can rewrite them and intercept the next terminal launch on host.
 - **`~/.config/git/`** — rewrites `core.sshCommand` to a malicious binary, or `url.<base>.insteadOf` to redirect remotes. Auth/transport hijack on the next host `git` operation.
 - **`~/.config/mise/`** — appends tool entries; the host's next `mise install` (or `mise activate` hook on `cd`) pulls malicious shims into `~/.local/share/mise/shims/`.
 - **`~/.local/share/atuin/`** — secret leak (separate class). History is bidirectional; container reads host history and writes its own back. The atuin caveat above applies to every container.
@@ -259,7 +258,7 @@ The container config's first hook refuses commits made from outside the containe
 |---|---|---|
 | `install-personal-tools: /home/<user>/.bashrc is a directory` (or `.zshrc` / `.zshenv` — any of the three) | Host hasn't stowed; Docker created empty dir at mount target | Run `make symlinks-fedora` on host, recreate container |
 | First `nvim` hangs 15–60s | Lazy bootstrap + treesitter compile inside container | Wait it out; subsequent launches are fast |
-| `git push` prompts for password | DevPod SSH agent not forwarded | Verify `eval $(ssh-agent)` + `ssh-add` on host; check DevPod ssh-config |
+| `git push` prompts for password | DevPod SSH agent not forwarded (only relevant if you set a passphrase) | Passphrase-less key (default here) reads directly — re-check the key exists at `~/.ssh/id_ed25519`. If you set a passphrase: verify `eval $(ssh-agent)` + `ssh-add` on host, check DevPod ssh-config |
 | Files owned by wrong UID/GID inside container | Host UID ≠ container user UID | Set `remoteUser` in `.devcontainer.json` to match the host user; verify with `id` inside the container. |
 | `mise install` finds no tools | Project lacks `.mise.toml`; global config is empty by design | Add `.mise.toml` to project root with the tool versions you need |
 | `docker: Error response from daemon: invalid containerPort: :3000` on `devpod up` | `LOOPBACK_IP` unset — `devpod up` was called directly, bypassing the `devpod-up` wrapper | Use `devpod-up` (or set `LOOPBACK_IP` manually) so `${localEnv:LOOPBACK_IP}` resolves |

@@ -59,20 +59,14 @@ The bootstrap clones over HTTPS — read-only. Set up an SSH key to push.
 
 ### Where to run the commands
 
-Run from inside the `tools` toolbox (where you live by default under Pattern B). Everything you need is in **shared `$HOME`**, so "host vs toolbox" doesn't matter for the data:
-
-- `~/.ssh/` is bind-mounted host↔toolbox — keys written in one show up in the other.
-- `~/.config/gh/` (gh's auth state) is shared too.
-- `$SSH_AUTH_SOCK` passes through the env, and `/run/user/$UID/` (where the gnome-keyring or systemd ssh-agent socket lives) is bind-mounted into the toolbox. So `ssh-add`, `ssh -T git@github.com`, and `git push` from inside `tools` all talk to the host agent.
-
-The `onhost` wrapper is **not** needed here. It belongs on commands that touch genuinely host-only state — flatpak, podman, systemd, rpm-ostree.
+Either side works — `~/.ssh/` and `~/.config/gh/` live in **shared `$HOME`**, so a key generated on host is visible inside the toolbox and vice versa. `gh auth login` is easier from the side where a browser is reachable (host on Fedora Sway Atomic, since GUI apps live there). Everything else (`ssh-keygen`, `ssh -T`, `git push`) works from either side.
 
 ### Generate, register, verify
 
 ```bash
 ssh-keygen -t ed25519 -C "$USER@$(hostname)" -f ~/.ssh/id_ed25519
-ssh-add ~/.ssh/id_ed25519                    # adds to host agent over the shared socket
-gh auth login --git-protocol ssh             # if gh not yet authed (browser auto-launches via xdg-open → host)
+# leave the passphrase empty — SSH reads the key file directly via IdentityFile
+gh auth login --git-protocol ssh             # easier from host (GUI lives there)
 gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)"
 ssh -T git@github.com                        # expect: "Hi <username>!"
 # switch dotfiles to ssh (apply the same idiom to other repos)
@@ -80,9 +74,9 @@ cd ~/work/my/dotfiles
 git remote set-url origin git@github.com:aimestereo/dotfiles.git
 ```
 
-### If `ssh-add -l` reports no agent
+### Passphrase or no?
 
-Means the host agent wasn't running when this toolbox session started. Exit and re-enter `tools` — `$SSH_AUTH_SOCK` refreshes on each new attach. If still empty, start the agent on host (`systemctl --user start ssh-agent` or unlock gnome-keyring) and try again.
+No passphrase keeps things simple: SSH reads `~/.ssh/id_ed25519` directly each time, no ssh-agent involved, `ssh -T git@github.com` and `git push` Just Work from both host and toolbox. If you later add a passphrase, enable an agent (`systemctl --user enable --now ssh-agent`, add `eval $(ssh-agent -s); ssh-add ~/.ssh/id_ed25519` to shell init) — the agent socket at `$SSH_AUTH_SOCK` is exposed via `/run/user/$UID/` into the toolbox automatically.
 
 ## Forks
 
