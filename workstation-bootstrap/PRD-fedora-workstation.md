@@ -291,7 +291,6 @@ For non-trivial code we'd test functions with actual logic. For dotfiles, the on
 
 Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed items have moved into the relevant "Implementation Decisions" section; their commit / DOT references are listed there.)
 
-- **Fix atuin `Ctrl-R` not firing in fresh toolbox session (DOT-37)** — likely resolved by DOT-46. The diagnostic on commit `7daf76d` revealed `shutil.which('atuin')` in `tools.xsh` was returning None because `os.environ['PATH']` was out of sync with xonsh's `$PATH` (see Known fragility surface entry). So `atuin init xonsh` was never executed in the bash-exec'd xonsh, hence no Ctrl-R binding was ever registered — not a PTK rebuild issue, just a missing init. Re-test after DOT-46 lands.
 - **xonsh sanity script** — load rc files in headless mode and assert binding presence (`Keys.ControlR`, `Keys.ControlP`, `$VI_MODE` true, eager Up). Catches binding-pipeline regressions without manual keystroke testing. Deferred — manual checklist sufficient until rc files grow.
 - **Sway WM bringup + theming** — Sway config, waybar (or alternative), application launcher (walker / rofi / fuzzel), notification daemon, swaylock/swayidle. Currently undecided; this PRD lists Sway as the WM but doesn't enumerate the config files.
 - **Tailscale-to-Headscale** — if/when self-hosted Headscale becomes desirable, switch from public Tailscale coordination to private.
