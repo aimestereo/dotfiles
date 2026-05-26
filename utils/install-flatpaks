@@ -9,7 +9,16 @@ flatpak install -y --user flathub \
 	com.slack.Slack \
 	org.telegram.desktop \
 	us.zoom.Zoom \
+	org.localsend.localsend_app \
 	md.obsidian.Obsidian \
 	com.transmissionbt.Transmission \
 	com.calibre_ebook.calibre \
 	io.mpv.Mpv
+
+# Without this, xdg-open (host directly, or via the toolbox xdg-open wrapper)
+# falls back to Firefox / the base-image default. The XDG_DATA_DIRS prepend
+# makes xdg-settings resolve the user-flatpak-exported desktop file even when
+# /etc/profile.d/flatpak.sh hasn't been sourced (non-login shells, fresh-boot
+# TTY bootstrap).
+export XDG_DATA_DIRS="${HOME}/.local/share/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+xdg-settings set default-web-browser app.zen_browser.zen.desktop
