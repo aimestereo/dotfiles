@@ -24,3 +24,12 @@ flatpak install -y --user flathub \
 # $BROWSER=xdg-open, which inherits when `make fedora` runs from xonsh.
 export XDG_DATA_DIRS="${HOME}/.local/share/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 env -u BROWSER xdg-settings set default-web-browser app.zen_browser.zen.desktop
+
+# LocalSend wants TCP 53317 (transfers) + UDP 53317 (mDNS discovery) reachable
+# from LAN peers. Without these, Fedora can SEND to other devices but other
+# devices can't SEND to Fedora (Mac→Fedora hits ConnectionRefused). Guarded on
+# firewalld being active so this is a no-op on systems without it.
+if systemctl is-active --quiet firewalld; then
+	sudo firewall-cmd --add-port=53317/tcp --add-port=53317/udp --permanent
+	sudo firewall-cmd --reload
+fi
