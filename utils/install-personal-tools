@@ -67,6 +67,7 @@ sudo dnf install -y --skip-unavailable \
 	tree \
 	jq \
 	gh \
+	awscli2 \
 	direnv \
 	xonsh \
 	python3-pip
@@ -157,6 +158,20 @@ else
 fi
 WRAP
 	chmod +x "$HOME/.local/bin/devpod"
+
+	# xdg-open wrapper. Same shape as the devpod wrapper above. No browser
+	# lives inside toolbox, so gh auth login / aws sso login / URL clicks
+	# hop to host. On host the wrapper shadows /usr/bin/xdg-open via PATH;
+	# the else branch falls through by absolute path — no recursion.
+	cat > "$HOME/.local/bin/xdg-open" <<'WRAP'
+#!/usr/bin/env bash
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host /usr/bin/xdg-open "$@"
+else
+	exec /usr/bin/xdg-open "$@"
+fi
+WRAP
+	chmod +x "$HOME/.local/bin/xdg-open"
 
 	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,
 	# but the toolbox base ncurses doesn't carry xterm-kitty/xterm-ghostty, so

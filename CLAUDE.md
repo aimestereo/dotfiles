@@ -8,7 +8,9 @@ MacOS/Linux environment configuration managed with GNU Stow.
 dotfiles/
 ├── configs/           # Stow packages (each subdirectory is a package)
 │   ├── agents/        # AI agent commands (Claude, Cursor)
+│   ├── aws/           # AWS CLI helpers (stow package; currently a placeholder)
 │   ├── brightness/    # `brightness-control` (ddcutil-based DDC/CI control; Linux)
+│   ├── direnv/        # Direnv global config (`direnv.toml` whitelist + settings)
 │   ├── ghostty/       # Ghostty terminal (includes ~/.config/theme/current/ghostty.conf)
 │   ├── git/           # Git configuration
 │   ├── hammerspoon/   # macOS automation (Hyper key, window mgmt, draw on screen)
