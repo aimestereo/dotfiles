@@ -27,7 +27,7 @@ The host is intentionally minimal — no dev shells, no editors, no language too
 
 ## Workflow
 
-1. Open kitty / ghostty → host shell (bash). Type `toolbox enter tools` → lands directly in xonsh (login shell = xonsh via chsh by `install-personal-tools`) → full dev shell, all tools on PATH. (Bind it to a shell alias / keyboard shortcut if you want single-keystroke entry — not shipped here.)
+1. Open kitty / ghostty → host shell (bash). Type `toolbox enter tools` → bash inside the container immediately `exec`s into xonsh via the container-gated block in `configs/shell-fedora/.bashrc` → full dev shell, all tools on PATH. (The gate is `/run/.containerenv` / `/.dockerenv` — see containers/toolbox#908 for why chsh inside the container does not work for `toolbox enter`.) Bind it to a shell alias / keyboard shortcut if you want single-keystroke entry — not shipped here.
 2. `tmux-sessionizer` (inside toolbox) → pick `fenix` → tmux session is created or switched, cwd is the project root.
 3. In that tmux session:
    - Pane 1: `devpod ssh fenix` → drops into the fenix container → `nvim` runs there with fenix's Node + LSP.
@@ -59,7 +59,7 @@ DevPod containers persist across reboots. `devpod up <project>` after a cold sta
 
 ### Shell
 
-`devpod ssh` (and `toolbox enter tools`) lands you directly in xonsh. `install-personal-tools` chsh's the container user's login shell to `~/.local/bin/xonsh` at provision time, so the container's `/etc/passwd` records xonsh as the shell — no bash → xonsh exec dance via `.bashrc`. Bash is still available as a sub-shell via `bash` if you need `/etc/profile` or PAM behaviour.
+`devpod ssh` (and `toolbox enter tools`) drops you into bash, which immediately `exec`s into `xonsh -i` via the container-gated block in `configs/shell-fedora/.bashrc` (gate: `/run/.containerenv` or `/.dockerenv`). The gate keeps host bash unaffected — `.bashrc` is in shared `$HOME` but the exec only fires inside containers. Why bash → xonsh rather than xonsh-as-login-shell: `toolbox enter` ignores the container's `/etc/passwd` shell field and uses the host's `$SHELL` env var instead — containers/toolbox#908, open since 2021. Bash is still available as a sub-shell via `bash` if you need `/etc/profile` or PAM behaviour.
 
 ### tmux
 
