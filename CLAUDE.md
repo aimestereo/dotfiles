@@ -67,6 +67,10 @@ make nix-linux        # Home Manager only (Linux/Fedora)
 
 > Fedora targets that talk to host-only state (flatpak, podman containers, systemd, rpm-ostree) **must** run from the host shell. `make fedora` enforces this with a `/run/.toolboxenv` guard; the others fail naturally when their CLI isn't on the toolbox PATH.
 
+## Fedora Workstation
+
+The end-to-end spec for the Fedora Atomic Sway workstation — USB Tier-1 bootstrap, host package layer, terminals + theme, keyd Hyper-key remap, Pattern B toolbox-as-outer topology, xonsh interactive ergonomics (Mac zsh parity), per-project devpod containers, direnv/mise/devenv translation, Tailscale + AmneziaVPN networking, Flatpak GUI apps — lives in **[workstation-bootstrap/PRD-fedora-workstation.md](workstation-bootstrap/PRD-fedora-workstation.md)**. Read it before making non-trivial Fedora-side changes. Mac, Nix, devenv, and zsh are referenced only as baseline sources for replicated configs; they are not modified by the PRD.
+
 ## Shells
 
 - **zsh** (Mac default) — `configs/shell/` with p10k via zinit, atuin, zoxide, fzf, mise, direnv, carapace.

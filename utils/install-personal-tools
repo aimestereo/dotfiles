@@ -158,14 +158,6 @@ fi
 WRAP
 	chmod +x "$HOME/.local/bin/devpod"
 
-	# Idempotent cleanup: an earlier installer wrote these files; remove so
-	# the revert takes effect on machines that ran `make fedora` from inside
-	# the toolbox before this change.
-	rm -f "$HOME/.local/bin/onhost" \
-		"$HOME/.local/bin/enter-tools" \
-		"$HOME/.config/kitty/conf.d/00-fedora-shell.conf" \
-		"$HOME/.config/ghostty/local/fedora.conf"
-
 	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,
 	# but the toolbox base ncurses doesn't carry xterm-kitty/xterm-ghostty, so
 	# entering the toolbox from either terminal errors with "terminfo entry

@@ -53,8 +53,7 @@ curl -fsSL https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora
 # Host stays minimal per Pattern B (toolbox-as-outer): dev tools live in the
 # `tools` toolbox, not on the host. xonsh, tmux, gcc were previously layered
 # here — they now live only in the toolbox (installed by
-# `utils/install-personal-tools toolbox`). Existing machines that already
-# have them layered can run `utils/fedora-host-cleanup` to unlayer.
+# `utils/install-personal-tools toolbox`).
 #
 # `git` stays on host because this script needs it at [7/7] for the initial
 # clone, and `git pull` needs to work without entering the toolbox for repo
