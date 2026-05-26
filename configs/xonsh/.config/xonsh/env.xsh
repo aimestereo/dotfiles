@@ -27,6 +27,17 @@ for _p in [
     if _p not in $PATH:
         $PATH.insert(0, _p)
 
+# `$PATH.insert()` mutates xonsh's Env value in place and bypasses
+# Env.__setitem__, so os.environ['PATH'] stays at whatever the parent
+# process had (bash via `exec ~/.local/bin/xonsh -i` only sets the base
+# /usr/local/bin:/usr/bin in non-login shells). Python-side path lookups —
+# every `shutil.which()` in tools.xsh + prompt.xsh — read os.environ
+# directly, so without this sync none of zoxide / mise / carapace / atuin /
+# starship initialise in the bash-exec'd xonsh. Manual `xonsh -i` from inside
+# xonsh works because subprocess.Popen passes the parent's Env via env=.
+import os as _os
+_os.environ['PATH'] = _os.pathsep.join($PATH)
+
 if shutil.which('id'):
     $DOCKER_USER = f"{$(id -u).strip()}:{$(id -g).strip()}"
 
@@ -37,4 +48,4 @@ $FZF_DEFAULT_OPTS = (
     '--bind="ctrl-y:accept"'
 )
 
-del _p, shutil
+del _p, _os, shutil
