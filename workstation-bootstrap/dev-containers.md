@@ -27,7 +27,7 @@ The host is intentionally minimal — no dev shells, no editors, no language too
 
 ## Workflow
 
-1. Open kitty / ghostty → host shell (zsh/bash). Type `toolbox enter tools` → bashrc execs xonsh → full dev shell, all tools on PATH. (Bind it to a shell alias / keyboard shortcut if you want single-keystroke entry — not shipped here.)
+1. Open kitty / ghostty → host shell (bash). Type `toolbox enter tools` → lands directly in xonsh (login shell = xonsh via chsh by `install-personal-tools`) → full dev shell, all tools on PATH. (Bind it to a shell alias / keyboard shortcut if you want single-keystroke entry — not shipped here.)
 2. `tmux-sessionizer` (inside toolbox) → pick `fenix` → tmux session is created or switched, cwd is the project root.
 3. In that tmux session:
    - Pane 1: `devpod ssh fenix` → drops into the fenix container → `nvim` runs there with fenix's Node + LSP.
@@ -59,7 +59,7 @@ DevPod containers persist across reboots. `devpod up <project>` after a cold sta
 
 ### Shell
 
-`devpod ssh` drops you into bash, which immediately `exec`s into `xonsh -i` (see `configs/shell-fedora/.bashrc`). You're in xonsh by default; bash is still available as a sub-shell via `bash`. Login shell stays bash so `/etc/profile` and PAM continue to work.
+`devpod ssh` (and `toolbox enter tools`) lands you directly in xonsh. `install-personal-tools` chsh's the container user's login shell to `~/.local/bin/xonsh` at provision time, so the container's `/etc/passwd` records xonsh as the shell — no bash → xonsh exec dance via `.bashrc`. Bash is still available as a sub-shell via `bash` if you need `/etc/profile` or PAM behaviour.
 
 ### tmux
 

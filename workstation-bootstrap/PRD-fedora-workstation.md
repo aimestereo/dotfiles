@@ -94,7 +94,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 
 - **Host post-install** — `utils/fedora-after-install` (orchestrator) + `utils/install-flatpaks` (Tier-2 GUI apps + Zen default-browser binding) + `utils/install-amneziavpn` (Qt-installer tarball) + `utils/install-devpod` (vendor static binary to `/usr/local/bin/devpod`). Enforced host-only via `/run/.toolboxenv` guard.
 
-- **Toolbox entry shell shim** — `configs/shell-fedora/.bashrc`. Bash entry hook: absolute-path exec to `~/.local/bin/xonsh`; atuin bash init as fallback if exec is skipped. Non-login-shell aware (toolbox enters bash without sourcing `/etc/profile.d/`).
+- **Host bash startup** — `configs/shell-fedora/.bashrc`. Host-only file, atuin init for Ctrl-R parity. Toolbox + devpod containers never source it because their login shell is xonsh (set via chsh by `install-personal-tools`, see below). The file is still in shared `$HOME` but inert outside host bash.
 
 - **xonsh interactive shell bundle** — `configs/xonsh/.config/xonsh/`:
    - `rc.xsh` — loader; iterates fixed sequence: `env.xsh → aliases.xsh → functions.xsh → tools.xsh → keybinds.xsh → prompt.xsh`. Load order is timing-sensitive. Uses `$XONSH_CONFIG_DIR` (XDG-aware). Each `source` wrapped in `_load` for fault isolation.
@@ -106,7 +106,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
    - `prompt.xsh` — starship integration.
 
 - **Shared toolset provisioning** — `utils/install-personal-tools <toolbox|devpod>`. ONE script, two modes. Single source of truth for "tools I want everywhere":
-   - **Shared (both modes)**: dnf package list (`git-delta`, `python3-pip`, `eza`, `bat`, `fzf`, `ripgrep`, `fd-find`, `zoxide`, `direnv`, `tmux`, `gh`, `awscli2`, `--skip-unavailable` for Fedora-version drift); curl installers (mise, atuin, starship, claude — via `curl -fsSL https://claude.ai/install.sh | bash`); upstream-binary install for `sd` (not in Fedora repos); xonsh user-pin + `xpip install -r utils/xontrib-requirements.txt`; idempotency check uses python3 + absolute paths (avoids the `command -v` before `export PATH` race).
+   - **Shared (both modes)**: dnf package list (`git-delta`, `python3-pip`, `eza`, `bat`, `fzf`, `ripgrep`, `fd-find`, `zoxide`, `direnv`, `tmux`, `gh`, `awscli2`, `--skip-unavailable` for Fedora-version drift); curl installers (mise, atuin, starship, claude — via `curl -fsSL https://claude.ai/install.sh | bash`); upstream-binary install for `sd` (not in Fedora repos); `pip install --user "xonsh[ptk]==..."` + `xpip install -r utils/xontrib-requirements.txt`; chsh user's login shell to `~/.local/bin/xonsh` (DOT-43); idempotency check uses python3 + absolute paths (avoids the `command -v` before `export PATH` race).
    - **Toolbox-only**: `stow` (so `make symlinks-fedora` runs from inside toolbox), `flatpak-xdg-utils` (provides `flatpak-spawn` for the `devpod` wrapper), `pass`, terminfo mirror (`~/.terminfo/x/{xterm-kitty,xterm-ghostty}` copied from `/run/host/usr/share/terminfo` — DOT-28), `~/.local/bin/devpod` wrapper (`flatpak-spawn --host /usr/local/bin/devpod`), `~/.local/bin/xdg-open` wrapper (`flatpak-spawn --host /usr/bin/xdg-open "$@"` — absolute path mirrors the devpod wrapper's same-shape pattern) so any tool calling `xdg-open` opens URLs in the host browser.
    - **Devpod-only**: nothing yet; the shared baseline is sufficient.
 
@@ -150,8 +150,8 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 
 #### Shell stack on Fedora
 
-- **bash → xonsh exec, not native xonsh**. Toolbox login shell stays bash (per `/etc/passwd`). `.bashrc` does an absolute-path exec into `~/.local/bin/xonsh` when present. Considered + rejected: `chsh` the user's shell to xonsh inside the toolbox image (toolbox is recreated frequently; chsh would couple shell-default to image-build flow).
-- **Absolute-path test in `.bashrc`** (`[[ -x "$HOME/.local/bin/xonsh" ]]`), not `command -v xonsh` (DOT-36). `toolbox enter tools` spawns bash non-login, so `/etc/profile.d/local-bin.sh` doesn't run → `~/.local/bin` not on PATH → `command -v xonsh` returns non-zero → exec skipped.
+- **Toolbox + devpod login shell = xonsh** (DOT-43). `install-personal-tools` runs `sudo chsh -s ~/.local/bin/xonsh $USER` inside each container after the pip install completes, appending `~/.local/bin/xonsh` to `/etc/shells` first (chsh validates against it). `toolbox enter tools` and `devpod ssh <project>` then land in xonsh directly via the container's own `/etc/passwd`. No `.bashrc` exec dance — host's `.bashrc` is shared via `$HOME` but inert in containers because their login shell isn't bash. Earlier rejection of chsh ("would couple shell-default to image-build flow") doesn't apply here: chsh runs inside the container at provision time, not at image build, so a fresh `toolbox create -y tools` followed by `install-personal-tools toolbox` re-establishes it.
+- **Host bash stays bash**. Host's `/etc/passwd` is untouched by the chsh inside containers. New host terminals land in bash. `.bashrc` does atuin init for Ctrl-R parity; no other shell magic.
 - **`$VI_MODE = True` set in `env.xsh`, not `keybinds.xsh`**. Hypothesis was that toggling `$VI_MODE` AFTER `atuin init xonsh` registers its `Ctrl-R` binding (via `@events.on_ptk_create`) forces a PTK rebuild that drops atuin's handler — so setting `$VI_MODE` early would let atuin's binding survive. **Status: hypothesis did not fix the issue.** Atuin `Ctrl-R` still does not fire on first keypress in a fresh toolbox session. Root cause unknown; tracked as outstanding work.
 - **xonsh load order**: `env.xsh → aliases.xsh → functions.xsh → tools.xsh → keybinds.xsh → prompt.xsh`. Tool inits run AFTER env (PATH includes `~/.atuin/bin`, `~/.local/bin`) and BEFORE custom keybindings (our `Ctrl-P` / `Ctrl-N` register last and win their slots; tools' bindings for other keys remain).
 - **Within `tools.xsh`: fzf-widgets loads BEFORE atuin** (DOT-34). Both bind `Ctrl-R`. Last registered wins.
@@ -159,7 +159,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 - **Prefix-aware history search for `Ctrl-P` / `Ctrl-N` / `Up` / `Down`** (DOT-39) via custom prompt_toolkit binding in `keybinds.xsh`. prompt_toolkit's `Buffer.history_backward()` only does prefix matching when `buf.enable_history_search()` returns True (xonsh's default is False). Implementation: flip `buf.enable_history_search` to `Always()` for the call, set `buf.history_search_text = None` so `_set_history_search` recomputes the prefix from the current cursor position on each keypress, delegate to `history_backward()` / `history_forward()`, then restore the filter, the saved `history_search_text`, and cursor position (the call jumps cursor to end-of-line; zsh's `up-line-or-beginning-search` keeps it in place). `Up` / `Down` carry `eager=True` plus a `_can_prefix_nav` Condition that mirrors atuin's `should_search` (`buf.complete_state is None and '\n' not in buf.text`). prompt_toolkit collapses to the eager set before applying last-registered-wins, so our binding wins over atuin's non-eager `Keys.Up` registration; with the filter False (active completion menu or multi-line buffer), Up/Down fall through to the default cursor / menu navigation.
 - **Vi-command-mode `Ctrl-V` opens current buffer in `$EDITOR`** (DOT-39). `@bindings.add(Keys.ControlV, filter=vi_navigation_mode)` calling `Buffer.open_in_editor()`. Mirrors Mac zsh `bindkey -M vicmd '^v' edit-command-line`. Replaces the prompt_toolkit default vi visual-block binding (acceptable; visual block was never wired in the zsh side).
 - **Autosuggest + syntax highlighting** rely on xonsh defaults (`$AUTO_SUGGEST = True`, `$COLOR_INPUT = True`). Not explicitly set in `env.xsh` — trusting framework defaults per the project's "don't add features beyond what's required" convention.
-- **Atuin bash fallback** in `.bashrc` AFTER the xonsh exec block (DOT-37). Runs only if exec was skipped (xonsh missing / not executable). Provides `Ctrl-R` via `atuin init bash` so failure mode is degraded-but-usable rather than broken.
+- **Atuin bash init in `.bashrc`** (DOT-37) — wires Ctrl-R on host bash to atuin's TUI instead of readline reverse-i-search. Now the only content of the file (DOT-43 dropped the xonsh-exec block).
 
 #### `install-personal-tools` script
 
@@ -169,6 +169,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 - **`python3-pip` and `stow` in toolbox dnf list**. pip needed for xonsh user-pin and xpip xontribs. stow needed so `make symlinks-fedora` can run from inside toolbox (host and toolbox share `$HOME`; convenient to be able to re-stow from either).
 - **`flatpak-xdg-utils` in toolbox dnf list** — provides `flatpak-spawn` for the devpod + xdg-open host wrappers.
 - **`awscli2` in shared dnf list** (DOT-39). With the xdg-open wrapper in place, `aws sso login` runs entirely inside toolbox; sessions land in `~/.aws/sso/cache/` and are auto-shared with host via shared `$HOME` and bind-mounted rw into every devpod.
+- **`xonsh[ptk]` pip install with chsh** (DOT-43). The `[ptk]` extra pulls `prompt_toolkit` as a hard dependency (`xontrib-fzf-widgets` imports it at load time; plain `pip install xonsh` leaves it off and load fails with `ModuleNotFoundError`). After install, the script appends `~/.local/bin/xonsh` to `/etc/shells` (idempotent: `grep -qxF` guard) and runs `sudo chsh -s ~/.local/bin/xonsh $USER` (idempotent: skipped when `getent passwd | cut -d:f7` already matches). Affects only the container's `/etc/passwd`; host is untouched.
 - **`git-delta` from dnf** (F42+). `--skip-unavailable` makes it a no-op on older Fedora; user falls back to plain `less`.
 
 #### Devpod bind-mount policy
@@ -194,7 +195,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 #### xontrib pinning
 
 - **`utils/xontrib-requirements.txt`** (`xonsh-direnv==1.6.5`, `xontrib-fzf-widgets==0.0.4`) is the single source of truth, used by both `utils/mac-after-install` and `utils/install-personal-tools`. Pinned to prevent silent breakage when xontribs publish breaking releases.
-- **xonsh itself is NOT in the requirements file** — Mac installs xonsh via brew; Fedora installs it via `pip install --user` pinned inline in `install-personal-tools`.
+- **xonsh itself is NOT in the requirements file** — Mac installs xonsh via brew; Fedora installs it via `pip install --user "xonsh[ptk]==..."` pinned inline in `install-personal-tools`.
 
 #### Networking + GUI apps
 
@@ -202,7 +203,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 - **AmneziaVPN** — `utils/install-amneziavpn` extracts the Qt-installer tarball to `~/.local/opt/amnezia/` and writes a `.desktop` file. Forced workaround for a vendor that doesn't provide rpm/flatpak; not a template for other apps.
 - **Cloudflare geo-block gotcha** — `mise.jdx.dev`, `claude.ai`, GH release CDN are Cloudflare-fronted and can geo-block from certain residential / ISP IPs (Russia in particular). Symptom: installer hangs indefinitely. Workaround: VPN. IPv4/IPv6 routing tweaks don't help.
 - **Flatpak GUI** — `utils/install-flatpaks` runs `flatpak install --user flathub <id>` for: `app.zen_browser.zen`, `com.slack.Slack`, `org.telegram.desktop`, `us.zoom.Zoom`, `org.localsend.localsend_app`, `md.obsidian.Obsidian`, `com.transmissionbt.Transmission`, `com.calibre_ebook.calibre`, `io.mpv.Mpv`. Categorised as browser → communication → productivity → utilities.
-- **Default web browser = Zen** (DOT-40). After the flatpak install, the script runs `xdg-settings set default-web-browser app.zen_browser.zen.desktop`. Without it, host MIME defaults resolve to Firefox / base-image default, which both `xdg-open` on host and the toolbox `xdg-open` wrapper inherit. The script prepends `~/.local/share/flatpak/exports/share` to `XDG_DATA_DIRS` immediately before the `xdg-settings` call so it can find Zen's desktop file in non-login shells where `/etc/profile.d/flatpak.sh` hasn't been sourced (a real scenario during fresh-boot TTY bootstrap).
+- **Default web browser = Zen** (DOT-40). After the flatpak install, the script runs `env -u BROWSER xdg-settings set default-web-browser app.zen_browser.zen.desktop` (the `env -u BROWSER` is required because `xdg-settings` refuses to mutate MIME defaults while `$BROWSER` is set — `env.xsh` sets `$BROWSER=xdg-open`, which inherits when `make fedora` runs from xonsh). Without the binding, host MIME defaults resolve to Firefox / base-image default, which both `xdg-open` on host and the toolbox `xdg-open` wrapper inherit. The script also prepends `~/.local/share/flatpak/exports/share` to `XDG_DATA_DIRS` so `xdg-settings` finds Zen's desktop file in non-login shells (`/etc/profile.d/flatpak.sh` not sourced).
 - **LocalSend** (DOT-40) — Flatpak on host (`org.localsend.localsend_app`). LAN clipboard + file send between machines, used to move stacktraces / ad-hoc files between Mac and Fedora. Host-side because it requires Wayland clipboard, mDNS, and notifications. Mac symmetry is brew `--cask localsend`.
 
 #### Make targets and host/toolbox enforcement
@@ -240,7 +241,7 @@ toolbox create tools && toolbox enter tools  # → bash prompt on host; toolbox 
 
 # Tier 2 — Fresh toolbox recreation
 make fedora-recreate-tools      # → stops + removes + re-provisions the `tools` toolbox
-toolbox enter tools             # → bash → execs xonsh
+toolbox enter tools             # → lands in xonsh directly (login shell = xonsh per chsh)
 # keystroke checklist:
 #   Ctrl-R                           → atuin TUI opens
 #   (type "git c") then Ctrl-P       → previous history entry starting with "git c"
@@ -257,7 +258,7 @@ toolbox enter tools             # → bash → execs xonsh
 #   xdg-open https://github.com      → opens Zen on host
 
 # Tier 3 — Fresh devpod
-devpod up fenix && devpod ssh fenix   # → bash → execs xonsh
+devpod up fenix && devpod ssh fenix   # → lands in xonsh directly
 # Same keystroke checklist; plus:
 #   atuin history visible (unified with host)
 #   zoxide DB empty (container-local; expected)
@@ -285,8 +286,7 @@ For non-trivial code we'd test functions with actual logic. For dotfiles, the on
 
 Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed items have moved into the relevant "Implementation Decisions" section; their commit / DOT references are listed there.)
 
-- **Fix atuin `Ctrl-R` not firing in fresh toolbox session (DOT-37 still in QA)** — moving `$VI_MODE = True` to `env.xsh` and adding the bash atuin fallback did not resolve it. Need a different diagnostic: trace what bindings PTK actually holds on first `@events.on_ptk_create` fire vs after the first prompt; check whether atuin's init even ran (script error swallowed?); test if a manual `execx($(atuin init xonsh))` from the live prompt installs the binding.
-- **Switch toolbox login shell to xonsh** — `chsh` (or set in the toolbox image) so toolbox enters xonsh directly without the bash-exec dance. May resolve DOT-37 by removing the bash → xonsh transition entirely. Planned; not yet executed.
+- **Fix atuin `Ctrl-R` not firing in fresh toolbox session (DOT-37 still in QA)** — may already be resolved by DOT-43 (toolbox login shell = xonsh removes the bash → xonsh exec transition entirely). Re-test on hardware after DOT-43 lands.
 - **xonsh sanity script** — load rc files in headless mode and assert binding presence (`Keys.ControlR`, `Keys.ControlP`, `$VI_MODE` true, eager Up). Catches binding-pipeline regressions without manual keystroke testing. Deferred — manual checklist sufficient until rc files grow.
 - **Sway WM bringup + theming** — Sway config, waybar (or alternative), application launcher (walker / rofi / fuzzel), notification daemon, swaylock/swayidle. Currently undecided; this PRD lists Sway as the WM but doesn't enumerate the config files.
 - **Tailscale-to-Headscale** — if/when self-hosted Headscale becomes desirable, switch from public Tailscale coordination to private.
@@ -312,7 +312,9 @@ Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed i
 - **xonsh's env-var system** has subtle effects: changing `$VI_MODE`, `$SHELL_TYPE`, `$XONSH_INTERACTIVE` mid-session may rebuild the PTK shell.
 - **bash's `.bashrc`** runs in different contexts (login vs non-login, interactive vs not) with different PATH states. Absolute paths are the robust idiom.
 - **`pip install --user`** puts binaries in `~/.local/bin`, which is on PATH only via `/etc/profile.d/local-bin.sh` (login shells). Non-login interactive bash misses this.
+- **`pip install xonsh` without `[ptk]` extra** leaves `prompt_toolkit` uninstalled. xontribs that import prompt_toolkit at load time (e.g. `xontrib-fzf-widgets`) then fail with `ModuleNotFoundError`. Always install `xonsh[ptk]`.
 - **`command -v <tool>` idempotency checks** in `install-personal-tools` run before `export PATH=...` later in the script → false negatives → re-install on every run. Use absolute paths.
+- **`xdg-settings` and `$BROWSER`** — `xdg-settings set default-web-browser` refuses to mutate MIME defaults while `$BROWSER` is set in the environment (it considers the env var an active override). Strip BROWSER for the single call: `env -u BROWSER xdg-settings set ...`.
 - **`xdg-settings` and `XDG_DATA_DIRS`** — `xdg-settings set default-web-browser <id>.desktop` validates `<id>` against the desktop-file search path. For user-flatpak-installed apps that path is `~/.local/share/flatpak/exports/share`, added to `XDG_DATA_DIRS` only by `/etc/profile.d/flatpak.sh` at login. Non-login shells (fresh-boot TTY bootstrap, `bash <(curl ...)`) miss this and `xdg-settings` fails with "no such desktop file". Scripts that bind a Flatpak app as the default must prepend the path explicitly.
 - **rpm-ostree atomic** — `--allow-inactive`, `--idempotent`, virtual-package resolution all matter; non-Atomic Fedora intuitions mislead.
 - **Cloudflare geo-block** — `mise.jdx.dev`, `claude.ai`, GH release CDN can hang indefinitely from blocked IPs; VPN required.
@@ -322,19 +324,20 @@ Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed i
 
 - **Move to bash + atuin bash + readline keybindings** (skip xonsh entirely on Fedora). Simpler stack, but loses xonsh's Python integration (`listening` / `pyclean` helpers, future-extensibility). Rejected.
 - **Use zsh on Fedora too** (perfect Mac parity). Requires installing zsh in toolbox + every devpod container, and maintaining two parallel shell configs. Rejected — preserves the existing xonsh investment.
-- **Build a custom toolbox image with xonsh as the user's login shell**. Cleanest from a "shell lifecycle" perspective; removes the bash-exec dance. Deferred until other toolbox-image needs accumulate.
+- **Build a custom toolbox image with xonsh as the user's login shell**. Cleanest from a "shell lifecycle" perspective. Superseded by DOT-43 (chsh inside `install-personal-tools` at provision time) — same observable effect without maintaining a custom image. Still available if other toolbox-image needs accumulate.
 - **Pattern A (host as outer)** — install dev tools on host, devpods optional. Rejected on hardware: missing atuin/fzf/zoxide/eza/bat on bare host gave a degraded shell experience; host-as-laboratory creates rpm-ostree pollution.
 - **chezmoi instead of stow**. Stow's directory-as-package model maps directly to the `configs/*` layout. Rejected chezmoi.
 - **Nix on Fedora** — declarative store appeal vs the Atomic host's own atomic upgrade story. Rejected; would double-manage what rpm-ostree already does.
 - **Drop `Up` / `Down` from prefix-aware history nav** (Option A from DOT-39 review). Simpler — only `Ctrl-P` / `Ctrl-N` carry the binding, no eager+filter dance. Rejected in favour of Option B (eager + `should_search`-mirror filter) because Up/Down are explicit User Stories items and atuin's Up TUI is a distinct UX from inline prefix nav.
 - **LocalSend in a dedicated toolbox container** (DOT-40 question from commander). Toolboxes don't expose Wayland clipboard, mDNS, or notifications without extra wiring; LocalSend's killer features would be broken. Rejected in favour of host-Flatpak (sandboxed via Flatpak, native desktop integration).
 - **`xdg-settings` move to `fedora-after-install`** (suggestion from DOT-40 conventions lens). Architecturally cleaner separation, but splits the Zen-related host state across two scripts. Rejected in favour of locality — re-running `install-flatpaks` alone produces a complete, working setup.
+- **Bash `.bashrc` execs xonsh on entry** (was the toolbox-shell approach until DOT-43). Worked but had a sharp edge: shared `$HOME` between host and toolbox meant the host's `.bashrc` also saw `~/.local/bin/xonsh` and exec'd it, pulling host bash into a xonsh missing its in-toolbox dependencies (direnv, prompt_toolkit). Replaced by chsh inside the container, which keeps the architecture cleanly bash-on-host, xonsh-in-container.
 
 ### Out-of-band knowledge captured here
 
 These facts are referenced in the implementation but worth surfacing once at the PRD level:
 
-- The toolbox base image is Fedora; `toolbox enter` spawns bash from `/etc/passwd`'s shell field, **non-login**.
+- The toolbox base image is Fedora; `toolbox enter` spawns the user's login shell from `/etc/passwd`'s shell field, **non-login**. DOT-43 chsh's that field to `~/.local/bin/xonsh` inside the container.
 - `/etc/profile.d/local-bin.sh` adds `~/.local/bin` to PATH for login shells; non-login interactive shells inherit only the parent's PATH.
 - `/etc/profile.d/flatpak.sh` adds `~/.local/share/flatpak/exports/share` to `XDG_DATA_DIRS` for login shells; non-login shells miss it. Any host script that calls `xdg-settings set default-web-browser <flatpak-app>.desktop` must prepend the path explicitly to be safe in fresh-bootstrap contexts.
 - Atuin's xonsh init binds `Ctrl-R` without any vi/emacs filter AND `Keys.Up` with a `should_search` filter (`complete_state is None and '\n' not in buffer.text`) — verified at `https://github.com/atuinsh/atuin/blob/main/crates/atuin/src/shell/atuin.xsh`. Any custom Up binding must use `eager=True` + a matching filter to take precedence without breaking completion-menu navigation.
@@ -342,6 +345,6 @@ These facts are referenced in the implementation but worth surfacing once at the
 - `sd` is not in any Fedora repo; install from chmln/sd GitHub release.
 - The DOT-28 terminfo mirror (`~/.terminfo/x/{xterm-kitty,xterm-ghostty}` copied from host `/run/host/usr/share/terminfo`) is required because the toolbox base image's ncurses lacks these entries.
 - DevPod is installed as a vendor static binary to `/usr/local/bin/devpod`. `/usr/local` is a symlink to `/var/usrlocal` on rpm-ostree — no rpm-ostree layering needed, writable on a live system, persists across base-image upgrades.
-- Toolbox shares `$HOME` with host. Files created in either context are visible from the other.
+- Toolbox shares `$HOME` with host. Files created in either context are visible from the other. This is the reason for the chsh-inside-container approach: anything in shared `$HOME` (including `.bashrc`) is read by both contexts and can't be physically separated.
 - AmneziaVPN ships only as a Qt-installer tarball; `utils/install-amneziavpn` extracts and writes a `.desktop` shortcut.
 - `xdg-utils` (providing `/usr/bin/xdg-open` and `/usr/bin/xdg-settings`) is part of every Fedora Atomic variant's base image as a desktop-stack dependency; the host-side dispatch path for the xdg-open wrapper and the default-browser binding are therefore reliable on all targeted hosts.

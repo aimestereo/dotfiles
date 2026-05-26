@@ -130,14 +130,31 @@ fi
 # ---------------------------------------------------------------------------
 # Shared: xonsh + xontribs into user site-packages
 #
-# pip-install pinned xonsh so xpip behaves identically in toolbox and container.
-# xontribs come from the repo's xontrib-requirements.txt — bind-mounted in
-# containers at /dotfiles-utils/, accessed via the script's own dir in toolbox.
+# pip-install pinned xonsh[ptk] (the [ptk] extra pulls prompt_toolkit, which
+# xontrib-fzf-widgets imports at load time; plain `xonsh` install leaves it
+# off and load fails with ModuleNotFoundError). xontribs come from the repo's
+# xontrib-requirements.txt — bind-mounted in containers at /dotfiles-utils/,
+# accessed via the script's own dir in toolbox.
 # ---------------------------------------------------------------------------
-pip install --user "xonsh==${XONSH_VERSION}"
+pip install --user "xonsh[ptk]==${XONSH_VERSION}"
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
+
+# ---------------------------------------------------------------------------
+# Shared: make xonsh the login shell
+#
+# `toolbox enter tools` / `devpod ssh <project>` then lands in xonsh directly
+# — no bash → xonsh exec dance via .bashrc, no risk of .bashrc accidentally
+# firing on host (where $HOME is shared with the toolbox and ~/.local/bin/xonsh
+# is visible). Acts on the container's /etc/passwd only; host /etc/passwd
+# is untouched. Idempotent: re-runs no-op when the shell is already xonsh.
+# ---------------------------------------------------------------------------
+xonsh_path="$HOME/.local/bin/xonsh"
+if [[ "$(getent passwd "$USER" | cut -d: -f7)" != "$xonsh_path" ]]; then
+	grep -qxF "$xonsh_path" /etc/shells || echo "$xonsh_path" | sudo tee -a /etc/shells >/dev/null
+	sudo chsh -s "$xonsh_path" "$USER"
+fi
 
 # ---------------------------------------------------------------------------
 # Toolbox-only: devpod wrapper + host terminfo mirror
