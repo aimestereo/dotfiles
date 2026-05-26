@@ -101,7 +101,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 
 - **xonsh interactive shell bundle** — `configs/xonsh/.config/xonsh/`:
    - `rc.xsh` — loader; iterates fixed sequence: `env.xsh → aliases.xsh → functions.xsh → tools.xsh → keybinds.xsh → prompt.xsh`. Load order is timing-sensitive. Uses `$XONSH_CONFIG_DIR` (XDG-aware). Each `source` wrapped in `_load` for fault isolation.
-   - `env.xsh` — env vars, `$PATH` prepends, `$VI_MODE = True`, `$BROWSER = 'xdg-open'`.
+   - `env.xsh` — env vars, `$PATH` prepends, `$VI_MODE = True`, `$BROWSER = 'xdg-open'`. After `$PATH.insert()`, explicit `os.environ['PATH'] = os.pathsep.join($PATH)` sync (DOT-46) so Python-side `shutil.which()` calls in subsequent rc files see the prepended entries.
    - `aliases.xsh` — Mac zsh alias parity (`l`, `ll`, `g`, `gst`, etc.).
    - `functions.xsh` — `pyclean`, `listening` (two-stage `subprocess.run` with `errors='replace'` to survive multi-byte truncation).
    - `tools.xsh` — tool integrations in order: zoxide → mise → carapace → direnv (xontrib) → fzf-widgets (xontrib) → atuin. Atuin loads last among prompt_toolkit-binding-affecting tools so its `Ctrl-R` binding wins (last registration wins in prompt_toolkit).
@@ -157,7 +157,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
   - **DOT-43 tried chsh inside the container** (`sudo chsh -s ~/.local/bin/xonsh $USER` inside toolbox). Defeated by containers/toolbox#908: `toolbox enter` reads the host's `$SHELL` and uses it verbatim, ignoring the container's `/etc/passwd` shell field. Open upstream since 2021. chsh removed in DOT-44.
   - **Pre-DOT-43 ungated exec** also failed: `.bashrc` is in shared `$HOME`, so host bash also saw `~/.local/bin/xonsh` and exec'd it — pulling host bash into a xonsh missing in-container dependencies (direnv, prompt_toolkit). The DOT-44 gate cures both directions.
 - **Host bash stays bash**. New host terminals land in bash with atuin init + `~/.atuin/bin` on PATH (so PROMPT_COMMAND and Ctrl-R bind can find the atuin binary).
-- **`$VI_MODE = True` set in `env.xsh`, not `keybinds.xsh`**. Hypothesis was that toggling `$VI_MODE` AFTER `atuin init xonsh` registers its `Ctrl-R` binding (via `@events.on_ptk_create`) forces a PTK rebuild that drops atuin's handler — so setting `$VI_MODE` early would let atuin's binding survive. **Status: hypothesis was wrong.** The real cause of the missing atuin Ctrl-R in bash-exec'd xonsh was the `$PATH` ↔ `os.environ['PATH']` sync gap (DOT-46): `shutil.which('atuin')` in `tools.xsh` returned None, so `atuin init xonsh` never ran and no Ctrl-R binding was ever registered. Setting `$VI_MODE` in `env.xsh` is still the right place architecturally (separation of concerns: env vars in env.xsh, bindings in keybinds.xsh) and is kept.
+- **`$VI_MODE = True` set in `env.xsh`, not `keybinds.xsh`**. The original hypothesis (that toggling `$VI_MODE` AFTER `atuin init xonsh` registers its `Ctrl-R` binding via `@events.on_ptk_create` forces a PTK rebuild that drops atuin's handler) turned out to be wrong. The real cause of the missing atuin `Ctrl-R` in bash-exec'd xonsh was the `$PATH` ↔ `os.environ['PATH']` sync gap (DOT-46): `shutil.which('atuin')` in `tools.xsh` returned None, so `atuin init xonsh` never ran and no `Ctrl-R` binding was ever registered. Setting `$VI_MODE` in `env.xsh` is still the right place architecturally (separation of concerns: env vars in env.xsh, bindings in keybinds.xsh) and is kept.
 - **xonsh load order**: `env.xsh → aliases.xsh → functions.xsh → tools.xsh → keybinds.xsh → prompt.xsh`. Tool inits run AFTER env (PATH includes `~/.atuin/bin`, `~/.local/bin`) and BEFORE custom keybindings (our `Ctrl-P` / `Ctrl-N` register last and win their slots; tools' bindings for other keys remain).
 - **Within `tools.xsh`: fzf-widgets loads BEFORE atuin** (DOT-34). Both bind `Ctrl-R`. Last registered wins.
 - **Atuin Ctrl-R via the atuin-emitted code, not custom**. `execx($(atuin init xonsh))` is canonical; emitted code uses `@events.on_ptk_create` + `bindings.add(Keys.ControlR)` with no vi/emacs filter (verified against atuin's `crates/atuin/src/shell/atuin.xsh`).
@@ -222,7 +222,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 
 - **`.bashrc`** contract: must work as both a login bash and a non-login interactive bash. Absolute paths only for binary references.
 - **`rc.xsh`** contract: file list `('env.xsh', 'aliases.xsh', 'functions.xsh', 'tools.xsh', 'keybinds.xsh', 'prompt.xsh')` is the ordered load sequence; any new file added is appended (don't reorder existing entries without auditing tool-init timing).
-- **`env.xsh`** contract: env vars and `$PATH` prepends only; no prompt_toolkit binding registrations. `$VI_MODE` set here.
+- **`env.xsh`** contract: env vars and `$PATH` prepends only; no prompt_toolkit binding registrations. `$VI_MODE` set here. After any `$PATH` mutation via `.insert()` / `.append()`, sync `os.environ['PATH']` explicitly (DOT-46) — xonsh's `Env.__setitem__` does not run for in-place mutations.
 - **`tools.xsh`** contract: tool-specific init in dependency order (PATH-providers first, prompt_toolkit-binding-providers last). Atuin must be the final `Ctrl-R` claimant.
 - **`keybinds.xsh`** contract: custom bindings inside `@events.on_ptk_create`; never set `$VI_MODE` here.
 - **`install-personal-tools`** contract: idempotent on re-run; cleans up any artifact previous versions wrote; uses absolute paths for tool-presence checks; `--skip-unavailable` on dnf install.
@@ -248,7 +248,7 @@ toolbox create tools && toolbox enter tools  # → bash prompt on host; toolbox 
 make fedora-recreate-tools      # → stops + removes + re-provisions the `tools` toolbox
 toolbox enter tools             # → bash sources .bashrc → exec's into xonsh via container-marker gate
 # keystroke checklist:
-#   Ctrl-R                           → atuin TUI opens
+#   Ctrl-R                           → atuin TUI opens on the first keypress
 #   (type "git c") then Ctrl-P       → previous history entry starting with "git c"
 #   (empty buffer) then Ctrl-P / N   → prev/next history entry
 #   (empty buffer) then Up / Down    → prev/next history entry
