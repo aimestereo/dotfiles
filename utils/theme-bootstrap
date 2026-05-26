@@ -14,3 +14,11 @@ current="$HOME/.config/theme/current"
 if [[ ! -L $current && ! -e $current ]]; then
 	"$HOME/.local/bin/theme-set" catppuccin >/dev/null
 fi
+
+# Seed the wallpaper symlink so sway/swaylock have a valid target on first
+# boot. Re-stows preserve any wallpaper the commander has set via theme-bg-set.
+bg_symlink="$HOME/.config/theme/current-background-image"
+default_bg="$HOME/backgrounds/car-with-full-moon-background.jpg"
+if [[ ! -L $bg_symlink && ! -e $bg_symlink && -f $default_bg ]]; then
+	ln -sfn "$default_bg" "$bg_symlink"
+fi

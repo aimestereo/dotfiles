@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+# theme-bg-set — set the active wallpaper by retargeting
+# ~/.config/theme/current-background-image at an image file.
+#
+# Sway's `output bg` directive and swaylock's `-i` flag both reference this
+# symlink, so any consumer follows it freshly with no config edit. After
+# retargeting, the script pushes a runtime `swaymsg "output * bg …"` if sway
+# is running; swaylock picks up the change at the next lock invocation.
+#
+# Usage:
+#   theme-bg-set <name>           # basename under ~/backgrounds/
+#   theme-bg-set /abs/path/x.jpg  # arbitrary absolute or relative path
+#   theme-bg-set                  # interactive picker (fzf if available,
+#                                 # numbered menu otherwise)
+
+set -euo pipefail
+
+backgrounds_dir="$HOME/backgrounds"
+symlink="$HOME/.config/theme/current-background-image"
+
+err() { printf 'theme-bg-set: %s\n' "$*" >&2; exit 1; }
+
+list_images() {
+	fd --base-directory "$backgrounds_dir" --type f --max-depth 1 \
+		-e jpg -e jpeg -e png -e gif -e bmp -e webp \
+		--format '{/}' | sort
+}
+
+pick_interactive() {
+	[[ -d $backgrounds_dir ]] || err "no backgrounds dir at $backgrounds_dir (run 'make symlinks-*' first)"
+	local images=() idx choice
+	while IFS= read -r line; do
+		images+=("$line")
+	done < <(list_images)
+	[[ ${#images[@]} -eq 0 ]] && err "no images under $backgrounds_dir"
+	if command -v fzf >/dev/null; then
+		printf '%s\n' "${images[@]}" | fzf --prompt='background> ' --height=40% || true
+		return
+	fi
+	printf 'Available backgrounds:\n' >&2
+	for idx in "${!images[@]}"; do
+		printf '  %2d) %s\n' $((idx + 1)) "${images[$idx]}" >&2
+	done
+	read -r -p 'background> ' choice </dev/tty || true
+	[[ -z $choice ]] && return
+	if [[ $choice =~ ^[0-9]+$ ]] && ((choice >= 1 && choice <= ${#images[@]})); then
+		printf '%s\n' "${images[$((choice - 1))]}"
+	else
+		err "invalid selection: $choice (enter a number 1–${#images[@]})"
+	fi
+}
+
+arg=${1:-}
+if [[ -z $arg ]]; then
+	arg=$(pick_interactive)
+fi
+[[ -z $arg ]] && err "no background selected"
+
+# Resolve arg to a file. Check arg-as-given first (covers absolute and
+# cwd-relative paths) before falling back to a basename lookup under
+# ~/backgrounds/.
+if [[ -f $arg ]]; then
+	target=$arg
+elif [[ -f $backgrounds_dir/$arg ]]; then
+	target=$backgrounds_dir/$arg
+else
+	err "image not found: $arg"
+fi
+
+target=$(cd "$(dirname "$target")" && printf '%s/%s\n' "$PWD" "$(basename "$target")")
+
+ln -sfn "$target" "$symlink"
+echo "background → $target"
+
+# Push to a running sway, if any. swaylock follows the symlink at lock time
+# (no signal needed). On Mac or when sway isn't running, both checks below
+# short-circuit and the script exits cleanly after the symlink update.
+if command -v swaymsg >/dev/null && swaymsg -t get_version >/dev/null 2>&1; then
+	swaymsg "output * bg $symlink fill" >/dev/null
+fi
