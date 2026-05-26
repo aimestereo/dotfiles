@@ -1,31 +1,52 @@
 #!/usr/bin/env bash
 #
-# theme-update — sync the omarchy upstream install and render every theme
-# into ~/.config/theme/<theme>/ using the vendored theme-set-templates.
+# theme-update — refresh in-repo theme sources from basecamp/omarchy@dev,
+# then re-render runtime themes under ~/.config/theme/rendered/.
 #
-# Theme + template source: $OMARCHY_PATH (default ~/.local/share/omarchy).
-# On first run (no clone present) the upstream is shallow-cloned. Subsequent
-# runs git-pull the existing clone. A pre-existing non-git install (e.g.
-# omarchy's own tarball install) is used read-only.
+# This script writes INTO the dotfiles repo (configs/theme/.config/theme/themes/
+# and configs/theme/.config/theme/themed/). Renders under
+# ~/.config/theme/rendered/ are runtime state and never tracked.
 #
-# On first run (no ~/.config/theme/current yet) the active theme is
-# defaulted to catppuccin.
+# UPSTREAM-MIRROR POLICY: configs/theme/.config/theme/themes/<name>/ is a
+# mirror of basecamp/omarchy@dev's themes/<name>/ (minus backgrounds/).
+# Files added under themes/<name>/ that are NOT in upstream WILL be deleted
+# on the next theme-update run (rsync --delete). Put custom overrides in
+# configs/theme/.config/theme/themed/*.tpl instead — that directory is also
+# upstream-mirrored, but editing a vendored .tpl is the supported extension
+# point (your edit persists until the next theme-update overwrites it; then
+# you re-apply via git).
+#
+# SECURITY GATE: upstream omarchy is not pinned and templates render straight
+# into terminal/window-manager config files honored on the next live reload.
+# Always inspect `git diff configs/theme/.config/theme/` before committing —
+# the diff review is the only check between a compromised upstream and the
+# next SIGUSR1/SIGUSR2 reload.
+#
+# Omarchy clone path: $OMARCHY_PATH (default ~/.local/share/omarchy). Cloned on
+# first run, git-pulled afterwards. Required only when running theme-update.
 
 set -euo pipefail
 
 OMARCHY_PATH="${OMARCHY_PATH:-$HOME/.local/share/omarchy}"
 repo_url="https://github.com/basecamp/omarchy.git"
 branch="dev"
-target="$HOME/.config/theme"
-default_theme="catppuccin"
 
 err() { printf 'theme-update: %s\n' "$*" >&2; exit 1; }
 
 command -v git >/dev/null || err "missing 'git'"
+command -v rsync >/dev/null || err "missing 'rsync'"
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-templates_script="$script_dir/theme-set-templates"
-[[ -x $templates_script ]] || err "vendored theme-set-templates missing: $templates_script"
+script_path=$(readlink -f "${BASH_SOURCE[0]}")
+script_dir=$(cd "$(dirname "$script_path")" && pwd)
+# configs/theme/.local/bin/theme-update -> repo root is 4 levels up
+repo_root=$(cd "$script_dir/../../../.." && pwd)
+themes_dst="$repo_root/configs/theme/.config/theme/themes"
+themed_dst="$repo_root/configs/theme/.config/theme/themed"
+render_script="$script_dir/theme-render"
+
+[[ -d $themes_dst ]] || err "expected $themes_dst — wrong repo root?"
+[[ -d $themed_dst ]] || err "expected $themed_dst — wrong repo root?"
+[[ -x $render_script ]] || err "vendored theme-render missing: $render_script"
 
 if [[ -d $OMARCHY_PATH/.git ]]; then
 	echo "Pulling $OMARCHY_PATH..."
@@ -45,40 +66,18 @@ templates_src="$OMARCHY_PATH/default/themed"
 [[ -d $themes_src ]] || err "$OMARCHY_PATH missing themes/ directory"
 [[ -d $templates_src ]] || err "$OMARCHY_PATH missing default/themed/ directory"
 
-mkdir -p "$target"
+echo
+echo "Refreshing theme sources under $themes_dst (excluding backgrounds/)..."
+rsync -a --delete --exclude='backgrounds/' "$themes_src/" "$themes_dst/"
 
-for theme_dir in "$themes_src"/*/; do
-	theme=$(basename "$theme_dir")
-	printf '  %s ... ' "$theme"
-	if [[ ! -f $theme_dir/colors.toml ]]; then
-		echo "skipped (no colors.toml)"
-		continue
-	fi
-	if ! grep -qE '^[[:space:]]*[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*=[[:space:]]*"#[0-9a-fA-F]+"' "$theme_dir/colors.toml"; then
-		echo "skipped (no parseable colors)"
-		continue
-	fi
-	out="$target/$theme"
-	mkdir -p "$out"
-	# Pre-clear prior template renders so updated palettes propagate; theme-specific
-	# upstream overrides are restored by the cp -R below, then preserved by the
-	# vendored renderer's skip-if-exists guard. Guarded against the case where an
-	# upstream theme ships a directory whose name matches a template basename.
-	for tpl in "$templates_src"/*.tpl; do
-		stale="$out/$(basename "$tpl" .tpl)"
-		[[ -f $stale ]] && rm -f "$stale"
-	done
-	cp -R "$theme_dir"/. "$out"/
-	OMARCHY_PATH="$OMARCHY_PATH" "$templates_script" "$out"
-	echo "ok"
-done
-
-if [[ ! -e $target/current && ! -L $target/current && -d $target/$default_theme ]]; then
-	ln -sfn "$default_theme" "$target/current"
-	echo
-	echo "current theme → $default_theme (first-run default)"
-fi
+echo "Refreshing templates under $themed_dst..."
+rsync -a --delete "$templates_src/" "$themed_dst/"
 
 echo
-echo "Themes installed under $target/"
-echo "Switch the active theme with: theme-set <name>"
+echo "Re-rendering runtime themes..."
+"$render_script"
+
+echo
+echo "Done. Review changes in the repo:"
+echo "  git -C $repo_root status configs/theme/.config/theme/"
+echo "  git -C $repo_root diff configs/theme/.config/theme/"

@@ -24,7 +24,7 @@ dotfiles/
 │   ├── shell-fedora/  # Fedora-only `.bashrc` (kept separate from Mac for divergence)
 │   ├── shell-mac/     # macOS-only `.bashrc`
 │   ├── starship/      # Starship cross-shell prompt config
-│   ├── theme/         # `theme-update` / `theme-set-templates` / `theme-set` (palettes pulled from basecamp/omarchy)
+│   ├── theme/         # Vendored omarchy theme sources + templates; `theme-render` / `theme-set` / `theme-update` scripts
 │   ├── tmux/          # Tmux
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
 ├── nix/                    # Nix configuration (separate Makefile)
@@ -41,7 +41,7 @@ configs/git/.config/git/config  →  ~/.config/git/config
 configs/git/.local/bin/gclean   →  ~/.local/bin/gclean
 ```
 
-Run `make symlinks-mac` or `utils/symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` / `utils/symlinks-fedora` for Fedora).
+Run `make symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` for Fedora). Both targets are two-line recipes that invoke `utils/stow-packages` (with the per-platform exclude regex) followed by `utils/theme-bootstrap`.
 
 ## Agent Commands & Skills
 
@@ -90,17 +90,20 @@ Two modes available (set `HYPER_MODE` in `configs/hammerspoon/.hammerspoon/init.
 
 ## Terminal Theme
 
-Kitty and Ghostty include their palette from `~/.config/theme/current/`, a symlink managed by three scripts in the `theme` stow package:
+Kitty and Ghostty include their palette from `~/.config/theme/current/`, a symlink at one of the rendered themes under `~/.config/theme/rendered/`. The theme catalog is vendored in the repo — palettes (`colors.toml`) and upstream per-theme overrides under `configs/theme/.config/theme/themes/<name>/`, omarchy renderer templates under `configs/theme/.config/theme/themed/*.tpl`. Backgrounds are not vendored.
 
-- `theme-update` — clones (or `git pull`s) `basecamp/omarchy@dev` into `$OMARCHY_PATH` (default `~/.local/share/omarchy`), then renders every theme's templates into `~/.config/theme/<theme>/`. First run defaults `current → catppuccin`.
-- `theme-set-templates [theme-dir]` — vendored from omarchy. Renders `$OMARCHY_PATH/default/themed/*.tpl` against the theme dir's `colors.toml` (palette via `{{ key }}` / `{{ key_strip }}` / `{{ key_rgb }}` placeholders). User overrides in `~/.config/theme/themed/*.tpl` take precedence over built-in templates.
-- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets the `current` symlink.
+Stow uses `--no-folding` for the `theme/` package so `~/.config/theme/` stays a real directory (`themes/` and `themed/` are per-file symlinks; `rendered/` and `current` are runtime-only and never touch the repo).
 
-Theme content is runtime state under `~/.config/theme/`; it is not tracked in the repo. Switching themes does not require re-stowing.
+- `theme-render [<name>]` — renders runtime themes under `~/.config/theme/rendered/<name>/` (all themes by default) by copying sources from `~/.config/theme/themes/<name>/` then applying `theme-set-templates`. Per-theme upstream override files win over template renders (skip-if-exists guard).
+- `theme-set-templates [theme-dir]` — vendored from omarchy. Renders `~/.config/theme/themed/*.tpl` against the theme dir's `colors.toml` (palette via `{{ key }}` / `{{ key_strip }}` / `{{ key_rgb }}` placeholders).
+- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets `~/.config/theme/current → rendered/<name>` and live-reloads running terminals (`SIGUSR1` kitty, `SIGUSR2` ghostty). Renders on demand if missing. Defaults to `catppuccin` on a host with no `current` symlink yet.
+- `theme-update` — refreshes the in-repo sources from `basecamp/omarchy@dev` (clones/pulls into `$OMARCHY_PATH`, default `~/.local/share/omarchy`), `rsync --delete`s upstream `themes/*/` (excluding `backgrounds/`) into the repo's `configs/theme/.config/theme/themes/`, copies `default/themed/*.tpl` into `configs/theme/.config/theme/themed/`, then re-runs `theme-render`. Review with `git status` / `git diff` and commit the refreshed sources.
+
+`make symlinks-mac` / `make symlinks-fedora` run `theme-render` and seed the default `current` symlink at the end, so a fresh stow produces a working theme system with no extra steps. Switching themes does not require re-stowing.
 
 ## Key Utilities
 
-- `utils/symlinks-mac` - Stow Mac config packages to $HOME (excludes shell-fedora)
-- `utils/symlinks-fedora` - Stow Fedora config packages to $HOME (excludes hammerspoon, nix, shell-mac)
+- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme` package with `--no-folding`. Used by `make symlinks-mac` (excludes `shell-fedora`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
+- `utils/theme-bootstrap` - Renders all themes (`theme-render`) and seeds `~/.config/theme/current → rendered/catppuccin` if missing. Invoked by both `make symlinks-*` targets.
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration

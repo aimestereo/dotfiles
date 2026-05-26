@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 #
-# theme-set — switch the active terminal theme by retargeting
-# ~/.config/theme/current at one of the themes installed by `theme-update`.
+# theme-set — switch the active theme by retargeting ~/.config/theme/current
+# at one of the rendered themes under ~/.config/theme/rendered/.
+#
+# Theme catalog (sources) lives at ~/.config/theme/themes/ (stow-managed,
+# tracked in the dotfiles repo). Renders are produced on demand by
+# theme-render; theme-set will render-on-miss for the selected theme.
 #
 # Usage:
 #   theme-set <name>   # non-interactive
@@ -10,14 +14,24 @@
 set -euo pipefail
 
 target="$HOME/.config/theme"
+themes_src="$target/themes"
+rendered_dst="$target/rendered"
 current="$target/current"
+default_theme="catppuccin"
 
 err() { printf 'theme-set: %s\n' "$*" >&2; exit 1; }
 
-[[ -d $target ]] || err "no themes installed; run 'theme-update' first"
+[[ -d $themes_src ]] || err "no theme sources at $themes_src (run 'make symlinks-*' first)"
+
+script_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
+render_script="$script_dir/theme-render"
+[[ -x $render_script ]] || err "vendored theme-render missing: $render_script"
 
 list_themes() {
-	find "$target" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+	# --format '{/}' returns bare basenames; fd's default appends a trailing
+	# slash to directory matches, which would break $out.new staging in
+	# theme-render and skew sort order vs. the prior find-based listing.
+	fd --base-directory "$themes_src" --type d --min-depth 1 --max-depth 1 --format '{/}' | sort
 }
 
 pick_interactive() {
@@ -44,13 +58,22 @@ pick_interactive() {
 
 theme=${1:-}
 if [[ -z $theme ]]; then
-	theme=$(pick_interactive)
+	if [[ ! -e $current && ! -L $current && -d $themes_src/$default_theme ]]; then
+		theme=$default_theme
+	else
+		theme=$(pick_interactive)
+	fi
 fi
 [[ -z $theme ]] && err "no theme selected"
 
-[[ -d $target/$theme ]] || err "theme '$theme' not found under $target/"
+[[ -d $themes_src/$theme ]] || err "theme '$theme' not found under $themes_src/"
 
-ln -sfn "$theme" "$current"
+# Render on demand if missing or stale-by-absence.
+if [[ ! -d $rendered_dst/$theme ]]; then
+	"$render_script" "$theme" >/dev/null
+fi
+
+ln -sfn "rendered/$theme" "$current"
 echo "current theme → $theme"
 
 # Reload running terminals (vendored from omarchy-restart-terminal). Gates use
@@ -62,5 +85,5 @@ if [[ $procs == *kitty* ]]; then
 	killall -SIGUSR1 kitty >/dev/null
 fi
 if [[ $procs == *ghostty* ]]; then
-	killall -SIGUSR2 ghostty
+	killall -SIGUSR2 ghostty >/dev/null
 fi

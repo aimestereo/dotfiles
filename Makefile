@@ -14,11 +14,13 @@ mac-after-install: symlinks-mac
 
 .PHONY: symlinks-mac
 symlinks-mac:
-	utils/symlinks-mac
+	utils/stow-packages '^(shell-fedora)$$'
+	utils/theme-bootstrap
 
 .PHONY: symlinks-fedora
 symlinks-fedora:
-	utils/symlinks-fedora
+	utils/stow-packages '^(hammerspoon|nix|shell-mac)$$'
+	utils/theme-bootstrap
 
 .PHONY: fedora
 fedora: fedora-after-install

@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 #
 # Vendored from basecamp/omarchy@dev:bin/omarchy-theme-set-templates.
-# Renders default/themed/*.tpl files against a theme's colors.toml.
-# Adaptations: shebang is /usr/bin/env bash; path constants point at
-# ~/.config/theme/ instead of ~/.config/omarchy/; tempfile cleanup uses a trap.
+# Renders ~/.config/theme/themed/*.tpl files against a theme's colors.toml.
+# Adaptations: templates source is the stow-managed ~/.config/theme/themed/
+# (the omarchy default/themed/*.tpl files are vendored into the dotfiles repo);
+# tempfile cleanup uses a trap; set -euo pipefail so sed errors surface
+# instead of silently leaving {{ placeholder }} literals in rendered output.
 # Usage: theme-set-templates [theme-dir]
-#   theme-dir defaults to ~/.config/theme/current.
+#   theme-dir defaults to ~/.config/theme/rendered/<current>.
 
-OMARCHY_PATH="${OMARCHY_PATH:-$HOME/.local/share/omarchy}"
-TEMPLATES_DIR="$OMARCHY_PATH/default/themed"
-USER_TEMPLATES_DIR="$HOME/.config/theme/themed"
+set -euo pipefail
+
+TEMPLATES_DIR="$HOME/.config/theme/themed"
 THEME_DIR="${1:-$HOME/.config/theme/current}"
 COLORS_FILE="$THEME_DIR/colors.toml"
 
@@ -40,8 +42,7 @@ if [[ -f $COLORS_FILE ]]; then
 
   shopt -s nullglob
 
-  # Process user templates first, then built-in templates (user overrides built-in)
-  for tpl in "$USER_TEMPLATES_DIR"/*.tpl "$TEMPLATES_DIR"/*.tpl; do
+  for tpl in "$TEMPLATES_DIR"/*.tpl; do
     filename=$(basename "$tpl" .tpl)
     output_path="$THEME_DIR/$filename"
 

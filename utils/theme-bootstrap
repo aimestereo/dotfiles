@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# Render all themes and seed the default ~/.config/theme/current symlink.
+# Invoked at the end of the symlinks-* Make targets so a fresh stow yields a
+# working theme system with no extra commands. The default-seed step runs
+# only when ~/.config/theme/current doesn't already exist — re-stows preserve
+# the commander's active theme choice.
+
+set -euo pipefail
+
+"$HOME/.local/bin/theme-render"
+
+current="$HOME/.config/theme/current"
+if [[ ! -L $current && ! -e $current ]]; then
+	"$HOME/.local/bin/theme-set" catppuccin >/dev/null
+fi

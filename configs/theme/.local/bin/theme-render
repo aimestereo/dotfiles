@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+#
+# theme-render — render in-repo theme sources into runtime state.
+#
+# Reads sources from ~/.config/theme/themes/<name>/ (stow-managed, points at
+# configs/theme/.config/theme/themes/<name>/ in the repo) and templates from
+# ~/.config/theme/themed/*.tpl, writes the rendered theme into
+# ~/.config/theme/rendered/<name>/.
+#
+# Per-theme upstream overrides (files shipped under themes/<name>/ that match a
+# template basename) win over template renders — theme-set-templates skips
+# already-existing files in the output dir.
+#
+# Each theme renders into <name>.new and is mv'd into <name> only after the
+# render succeeds, so a partial/failed render never leaves a half-populated
+# rendered/<name>/ that would fool theme-set's existence guard.
+#
+# Usage:
+#   theme-render            # render all themes
+#   theme-render <name>     # render one theme
+
+set -euo pipefail
+
+themes_src="$HOME/.config/theme/themes"
+rendered_dst="$HOME/.config/theme/rendered"
+
+err() { printf 'theme-render: %s\n' "$*" >&2; exit 1; }
+
+[[ -d $themes_src ]] || err "no theme sources at $themes_src (run 'make symlinks-*' first)"
+
+script_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
+templates_script="$script_dir/theme-set-templates"
+[[ -x $templates_script ]] || err "vendored theme-set-templates missing: $templates_script"
+
+render_one() {
+	local name="$1"
+	local src="$themes_src/$name"
+	local out="$rendered_dst/$name"
+	local staging="$out.new"
+	[[ -d $src ]] || err "theme '$name' has no source dir at $src"
+	[[ -f $src/colors.toml ]] || { printf '  %s: skipped (no colors.toml)\n' "$name"; return; }
+
+	rm -rf "$staging"
+	mkdir -p "$staging"
+	# -L: dereference stow symlinks so renders sit alongside real copies.
+	cp -RL "$src"/. "$staging"/
+	"$templates_script" "$staging" >/dev/null
+	rm -rf "$out"
+	mv "$staging" "$out"
+	printf '  %s: ok\n' "$name"
+}
+
+if [[ $# -ge 1 ]]; then
+	render_one "$1"
+	exit 0
+fi
+
+mkdir -p "$rendered_dst"
+for d in "$themes_src"/*/; do
+	render_one "$(basename "$d")"
+done

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# Stow every package under configs/ to $HOME, except those matching the
+# extended-regex passed as $1 (matched against the package name; default:
+# never matches). Must be run from the repo root (Make targets are, and
+# direct invocations are expected to cd in first). The `theme` package gets
+# --no-folding so ~/.config/theme/ stays a real directory — theme-render
+# writes runtime state there and folded stow would put those writes inside
+# the repo. Add per-package flags to the case block as needed.
+
+set -euo pipefail
+
+ignored_line='BUG in find_stowed_path? Absolute/relative mismatch'
+exclude_re="${1:-^$}"
+
+cd configs/
+
+stow_pkg() {
+	local pkg="$1" flags=("--restow" "-t" "$HOME" "-v")
+	case "$pkg" in
+	theme) flags+=("--no-folding") ;;
+	esac
+	# grep -v over rg: this is bootstrap-tier code that runs before brew/dnf
+	# install rg, so rg is not guaranteed on PATH. Filtering a known stderr
+	# noise string against a fixed pattern is well-served by grep -v.
+	stow "${flags[@]}" "$pkg" 2> >(grep -v "${ignored_line}" 1>&2)
+}
+
+for d in */; do
+	pkg="${d%/}"
+	[[ $pkg =~ $exclude_re ]] && continue
+	stow_pkg "$pkg"
+done
