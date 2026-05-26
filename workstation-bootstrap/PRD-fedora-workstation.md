@@ -27,7 +27,7 @@ A coherent, three-tier Fedora workstation that mirrors my Mac developer experien
 - **Tier 2 — Toolbox `tools` (outer dev env):** ad-hoc shell work happens inside `toolbox enter tools` (manual; not auto-entered). A single `utils/install-personal-tools toolbox` script provisions all dev tools (mise, atuin, starship, claude, sd, git-delta, xonsh + xontribs, the `devpod` host wrapper). xonsh is the interactive shell, replicating Mac zsh reflexes. `pass` lives here.
 - **Tier 3 — Devpod containers (per-project):** `devpod ssh fenix` from inside a toolbox tmux pane lands in the same xonsh interactive experience. `utils/install-personal-tools devpod` (same script, different mode) provisions the per-container personal stack. Project-specific tooling is handled by mise + direnv (devenv-on-Mac → mise-on-Fedora-devpod).
 
-Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and from a fresh `devpod up <project>` for any project. No manual second-step setup.
+Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a fresh `devpod up <project>` for any project. No manual second-step setup.
 
 ## User Stories
 
@@ -35,8 +35,8 @@ Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and fro
 
 - Bootstrap the whole workstation from a USB stick via one `curl | bash` line, with no manual rpm-ostree pre-config.
 - Re-running `make fedora-bootstrap` on an already-bootstrapped machine is idempotent — no errors on "already installed", no destructive rewrites.
-- `toolbox rm tools && make fedora` gives first entry the same shell experience as a fresh install — no manual second-step setup.
-- Host-only targets (`make fedora`, `make fedora-bootstrap`) refuse to run from inside the toolbox with a clear message.
+- `make fedora-recreate-tools` rebuilds the `tools` toolbox from scratch and gives first entry the same shell experience as a fresh install — no manual second-step setup.
+- Host-only targets (`make fedora`, `make fedora-bootstrap`, `make fedora-recreate-tools`) refuse to run from inside the toolbox with a clear message.
 
 **Input, terminal, theme:**
 
@@ -63,8 +63,13 @@ Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and fro
 **Browser dispatch from inside toolbox:**
 
 - Any tool inside toolbox calling `xdg-open <url>` (gh, aws sso, slack URL clicks) opens the URL in the host browser via a `~/.local/bin/xdg-open` wrapper that shells out to `flatpak-spawn --host /usr/bin/xdg-open "$@"`.
+- The host's default web browser is **Zen Browser**, bound declaratively by `utils/install-flatpaks` via `xdg-settings set default-web-browser app.zen_browser.zen.desktop`. Without that binding, host MIME defaults fall back to Firefox / the base-image default and URLs from toolbox open in the wrong browser.
 - `gh auth login` inside toolbox completes via host browser (DOT-32).
 - `aws sso login` inside toolbox completes via host browser; resulting `~/.aws/sso/cache/` session is visible to the toolbox (shared `$HOME`) and to every devpod (bind-mounted `~/.aws/`).
+
+**Cross-machine clipboard + file send (Mac ↔ Fedora):**
+
+- **LocalSend** (Flatpak) runs on host. LAN discovery + clipboard / file send between machines. Used for copying stacktraces and ad-hoc files from one machine to the other without a cloud round-trip. Lives on host (not toolbox) because it needs native Wayland clipboard, mDNS discovery, and notifications.
 
 **Devpod per-project containers:**
 
@@ -79,7 +84,7 @@ Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and fro
 - `git diff` / `git log` paginate via delta — matching Mac's `[core] pager = delta`.
 - `git push` works without ssh-agent inside the toolbox (passphrase-less SSH key).
 - Tailscale on host for mesh networking; AmneziaVPN as a separate native installer for geo-restricted access.
-- Flatpak GUI apps (Zen, Slack, Telegram, Zoom, Obsidian, Transmission, Calibre, mpv) installed declaratively via `utils/install-flatpaks`.
+- Flatpak GUI apps (Zen, Slack, Telegram, Zoom, LocalSend, Obsidian, Transmission, Calibre, mpv) installed declaratively via `utils/install-flatpaks`. Zen is bound as the default web browser as part of that script.
 
 ## Implementation Decisions
 
@@ -87,7 +92,7 @@ Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and fro
 
 - **USB Tier-1 bootstrap** — `workstation-bootstrap/`. `fedora-bootstrap.sh` + `README.md` + SSH key. `curl | bash` one-liner clones the dotfiles repo to `~/work/my/dotfiles`, registers COPRs, installs Tier-1 rpm-ostree packages, sets up Flathub remote, exits before reboot.
 
-- **Host post-install** — `utils/fedora-after-install` (orchestrator) + `utils/install-flatpaks` (Tier-2 GUI apps) + `utils/install-amneziavpn` (Qt-installer tarball) + `utils/install-devpod` (vendor static binary to `/usr/local/bin/devpod`). Enforced host-only via `/run/.toolboxenv` guard.
+- **Host post-install** — `utils/fedora-after-install` (orchestrator) + `utils/install-flatpaks` (Tier-2 GUI apps + Zen default-browser binding) + `utils/install-amneziavpn` (Qt-installer tarball) + `utils/install-devpod` (vendor static binary to `/usr/local/bin/devpod`). Enforced host-only via `/run/.toolboxenv` guard.
 
 - **Toolbox entry shell shim** — `configs/shell-fedora/.bashrc`. Bash entry hook: absolute-path exec to `~/.local/bin/xonsh`; atuin bash init as fallback if exec is skipped. Non-login-shell aware (toolbox enters bash without sourcing `/etc/profile.d/`).
 
@@ -115,7 +120,7 @@ Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and fro
 
 - **Networking** — Tailscale (host rpm-ostree layer from Tailscale's RPM repo); AmneziaVPN (`utils/install-amneziavpn` — Qt-installer tarball extracted to `~/.local/opt/amnezia/` with `.desktop` shortcut).
 
-- **Flatpak GUI apps** — `utils/install-flatpaks` (Tier-2): Zen, Slack, Telegram, Zoom, Obsidian, Transmission, Calibre, mpv.
+- **Flatpak GUI apps** — `utils/install-flatpaks` (Tier-2): Zen (default web browser, bound via `xdg-settings`), Slack, Telegram, Zoom, LocalSend, Obsidian, Transmission, Calibre, mpv.
 
 - **Cross-shell baseline reference** — `configs/shell/` (Mac zsh + cross-platform shell files); not modified by this PRD. The Mac zsh keybinding set is the spec; the Fedora xonsh bundle must mirror its visible behaviour.
 
@@ -196,11 +201,14 @@ Reproducible from a fresh `toolbox rm tools && make fedora` on the host, and fro
 - **Tailscale** — host rpm-ostree layer (registered via Tailscale's RPM repo).
 - **AmneziaVPN** — `utils/install-amneziavpn` extracts the Qt-installer tarball to `~/.local/opt/amnezia/` and writes a `.desktop` file. Forced workaround for a vendor that doesn't provide rpm/flatpak; not a template for other apps.
 - **Cloudflare geo-block gotcha** — `mise.jdx.dev`, `claude.ai`, GH release CDN are Cloudflare-fronted and can geo-block from certain residential / ISP IPs (Russia in particular). Symptom: installer hangs indefinitely. Workaround: VPN. IPv4/IPv6 routing tweaks don't help.
-- **Flatpak GUI** — `utils/install-flatpaks` runs `flatpak install --user flathub <id>` for: `app.zen_browser.zen`, `com.slack.Slack`, `org.telegram.desktop`, `us.zoom.Zoom`, `md.obsidian.Obsidian`, `com.transmissionbt.Transmission`, `com.calibre_ebook.calibre`, `io.mpv.Mpv`.
+- **Flatpak GUI** — `utils/install-flatpaks` runs `flatpak install --user flathub <id>` for: `app.zen_browser.zen`, `com.slack.Slack`, `org.telegram.desktop`, `us.zoom.Zoom`, `org.localsend.localsend_app`, `md.obsidian.Obsidian`, `com.transmissionbt.Transmission`, `com.calibre_ebook.calibre`, `io.mpv.Mpv`. Categorised as browser → communication → productivity → utilities.
+- **Default web browser = Zen** (DOT-40). After the flatpak install, the script runs `xdg-settings set default-web-browser app.zen_browser.zen.desktop`. Without it, host MIME defaults resolve to Firefox / base-image default, which both `xdg-open` on host and the toolbox `xdg-open` wrapper inherit. The script prepends `~/.local/share/flatpak/exports/share` to `XDG_DATA_DIRS` immediately before the `xdg-settings` call so it can find Zen's desktop file in non-login shells where `/etc/profile.d/flatpak.sh` hasn't been sourced (a real scenario during fresh-boot TTY bootstrap).
+- **LocalSend** (DOT-40) — Flatpak on host (`org.localsend.localsend_app`). LAN clipboard + file send between machines, used to move stacktraces / ad-hoc files between Mac and Fedora. Host-side because it requires Wayland clipboard, mDNS, and notifications. Mac symmetry is brew `--cask localsend`.
 
 #### Make targets and host/toolbox enforcement
 
-- **Host-only targets** (`make fedora`, `make fedora-bootstrap`, anything touching flatpak / rpm-ostree / systemd / podman) — refuse to run from inside toolbox via `/run/.toolboxenv` guard.
+- **Host-only targets** (`make fedora`, `make fedora-bootstrap`, `make fedora-recreate-tools`, anything touching flatpak / rpm-ostree / systemd / podman) — refuse to run from inside toolbox via `/run/.toolboxenv` guard.
+- **`make fedora-recreate-tools`** (DOT-41) — convenience for the toolbox-rebuild loop while iterating on `install-personal-tools` and the xonsh bundle. Sequence: host-only guard → `-podman rm --force tools` (Make `-` prefix tolerates absent container but keeps stderr for daemon failures; `--force` handles stop+remove in one) → `$(MAKE) fedora`. Goes directly to podman rather than `toolbox rm` because toolbox-metadata desync is the exact failure mode this target exists to recover from. Replaces the previous manual `toolbox rm tools && make fedora` pattern in the verification checklist.
 - **Cross-context targets** (`make symlinks-fedora`) — runs from host OR toolbox (shared `$HOME`).
 - **CLAUDE.md Installation table** annotates which target needs which context.
 
@@ -226,10 +234,12 @@ Dotfiles config is not unit-testable in the traditional sense; the "system under
 curl <bootstrap-url> | bash     # → idempotent; --idempotent for rerun
 reboot                          # for rpm-ostree layer
 make fedora                     # → host post-install (flatpaks, keyd, amnezia, devpod)
+xdg-settings get default-web-browser   # → app.zen_browser.zen.desktop
+flatpak list --user | grep localsend   # → org.localsend.localsend_app present
 toolbox create tools && toolbox enter tools  # → bash prompt on host; toolbox provisions on first entry
 
 # Tier 2 — Fresh toolbox recreation
-toolbox rm tools && make fedora
+make fedora-recreate-tools      # → stops + removes + re-provisions the `tools` toolbox
 toolbox enter tools             # → bash → execs xonsh
 # keystroke checklist:
 #   Ctrl-R                           → atuin TUI opens
@@ -242,8 +252,9 @@ toolbox enter tools             # → bash → execs xonsh
 #   git diff HEAD~1                  → delta paginates
 #   ssh -T git@github.com            → works without ssh-add
 #   z <known-dir>                    → jumps (history preserved across toolbox rm)
-#   gh auth login                    → host browser opens
-#   aws sso login                    → host browser opens; ~/.aws/sso/cache populated
+#   gh auth login                    → opens Zen (not Firefox) on host
+#   aws sso login                    → opens Zen on host; ~/.aws/sso/cache populated
+#   xdg-open https://github.com      → opens Zen on host
 
 # Tier 3 — Fresh devpod
 devpod up fenix && devpod ssh fenix   # → bash → execs xonsh
@@ -264,6 +275,7 @@ For non-trivial code we'd test functions with actual logic. For dotfiles, the on
 ### Modules to test
 
 - **`install-personal-tools`** — `bash -n` syntax + idempotency.
+- **`install-flatpaks`** — `bash -n` syntax + idempotency (flatpak install -y is no-op when present; xdg-settings set overwrites).
 - **`workstation-bootstrap/fedora-bootstrap.sh`** — `bash -n` syntax + `--idempotent` re-run.
 - **`fedora-after-install`** — host-only guard (`/run/.toolboxenv` check refuses execution from toolbox).
 - **xonsh bundle** — no automated tests; manual keystroke checklist.
@@ -301,6 +313,7 @@ Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed i
 - **bash's `.bashrc`** runs in different contexts (login vs non-login, interactive vs not) with different PATH states. Absolute paths are the robust idiom.
 - **`pip install --user`** puts binaries in `~/.local/bin`, which is on PATH only via `/etc/profile.d/local-bin.sh` (login shells). Non-login interactive bash misses this.
 - **`command -v <tool>` idempotency checks** in `install-personal-tools` run before `export PATH=...` later in the script → false negatives → re-install on every run. Use absolute paths.
+- **`xdg-settings` and `XDG_DATA_DIRS`** — `xdg-settings set default-web-browser <id>.desktop` validates `<id>` against the desktop-file search path. For user-flatpak-installed apps that path is `~/.local/share/flatpak/exports/share`, added to `XDG_DATA_DIRS` only by `/etc/profile.d/flatpak.sh` at login. Non-login shells (fresh-boot TTY bootstrap, `bash <(curl ...)`) miss this and `xdg-settings` fails with "no such desktop file". Scripts that bind a Flatpak app as the default must prepend the path explicitly.
 - **rpm-ostree atomic** — `--allow-inactive`, `--idempotent`, virtual-package resolution all matter; non-Atomic Fedora intuitions mislead.
 - **Cloudflare geo-block** — `mise.jdx.dev`, `claude.ai`, GH release CDN can hang indefinitely from blocked IPs; VPN required.
 - **kitty `globinclude` requires relative paths** (`globinclude conf.d/*.conf`, not `~/.config/kitty/conf.d/*.conf`). Now moot for the shell entry path (DOT-31 reverted the auto-enter) but the lesson lives in kitty.conf.
@@ -314,6 +327,8 @@ Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed i
 - **chezmoi instead of stow**. Stow's directory-as-package model maps directly to the `configs/*` layout. Rejected chezmoi.
 - **Nix on Fedora** — declarative store appeal vs the Atomic host's own atomic upgrade story. Rejected; would double-manage what rpm-ostree already does.
 - **Drop `Up` / `Down` from prefix-aware history nav** (Option A from DOT-39 review). Simpler — only `Ctrl-P` / `Ctrl-N` carry the binding, no eager+filter dance. Rejected in favour of Option B (eager + `should_search`-mirror filter) because Up/Down are explicit User Stories items and atuin's Up TUI is a distinct UX from inline prefix nav.
+- **LocalSend in a dedicated toolbox container** (DOT-40 question from commander). Toolboxes don't expose Wayland clipboard, mDNS, or notifications without extra wiring; LocalSend's killer features would be broken. Rejected in favour of host-Flatpak (sandboxed via Flatpak, native desktop integration).
+- **`xdg-settings` move to `fedora-after-install`** (suggestion from DOT-40 conventions lens). Architecturally cleaner separation, but splits the Zen-related host state across two scripts. Rejected in favour of locality — re-running `install-flatpaks` alone produces a complete, working setup.
 
 ### Out-of-band knowledge captured here
 
@@ -321,6 +336,7 @@ These facts are referenced in the implementation but worth surfacing once at the
 
 - The toolbox base image is Fedora; `toolbox enter` spawns bash from `/etc/passwd`'s shell field, **non-login**.
 - `/etc/profile.d/local-bin.sh` adds `~/.local/bin` to PATH for login shells; non-login interactive shells inherit only the parent's PATH.
+- `/etc/profile.d/flatpak.sh` adds `~/.local/share/flatpak/exports/share` to `XDG_DATA_DIRS` for login shells; non-login shells miss it. Any host script that calls `xdg-settings set default-web-browser <flatpak-app>.desktop` must prepend the path explicitly to be safe in fresh-bootstrap contexts.
 - Atuin's xonsh init binds `Ctrl-R` without any vi/emacs filter AND `Keys.Up` with a `should_search` filter (`complete_state is None and '\n' not in buffer.text`) — verified at `https://github.com/atuinsh/atuin/blob/main/crates/atuin/src/shell/atuin.xsh`. Any custom Up binding must use `eager=True` + a matching filter to take precedence without breaking completion-menu navigation.
 - `git-delta` binary subpackage exists in Fedora repos from F42 onwards; older Fedora has only the `rust-git-delta` source package.
 - `sd` is not in any Fedora repo; install from chmln/sd GitHub release.
@@ -328,4 +344,4 @@ These facts are referenced in the implementation but worth surfacing once at the
 - DevPod is installed as a vendor static binary to `/usr/local/bin/devpod`. `/usr/local` is a symlink to `/var/usrlocal` on rpm-ostree — no rpm-ostree layering needed, writable on a live system, persists across base-image upgrades.
 - Toolbox shares `$HOME` with host. Files created in either context are visible from the other.
 - AmneziaVPN ships only as a Qt-installer tarball; `utils/install-amneziavpn` extracts and writes a `.desktop` shortcut.
-- `xdg-utils` (providing `/usr/bin/xdg-open`) is part of every Fedora Atomic variant's base image as a desktop-stack dependency; the host-side dispatch path for the xdg-open wrapper is therefore reliable on all targeted hosts.
+- `xdg-utils` (providing `/usr/bin/xdg-open` and `/usr/bin/xdg-settings`) is part of every Fedora Atomic variant's base image as a desktop-stack dependency; the host-side dispatch path for the xdg-open wrapper and the default-browser binding are therefore reliable on all targeted hosts.
