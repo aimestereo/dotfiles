@@ -26,7 +26,7 @@ dotfiles/
 │   ├── starship/      # Starship cross-shell prompt config
 │   ├── theme/         # Vendored omarchy theme sources + templates; `theme-render` / `theme-set` / `theme-update` scripts
 │   ├── tmux/          # Tmux
-│   ├── toolbox/       # `toolbox-run` host→toolbox wrapper for invoking scripts that need toolbox-only deps
+│   ├── toolbox/       # Stowed host↔toolbox wrappers: toolbox-run, devpod, xdg-open, swaymsg. Fedora-only (excluded from Mac stow).
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
 ├── nix/                    # Nix configuration (separate Makefile)
 ├── utils/                  # Installation scripts
@@ -63,7 +63,7 @@ make mac                   # Full macOS setup
 make fedora-bootstrap      # Host shell only. Sync host (rpm-ostree layer + repos + Flathub remote); idempotent, requires reboot
 make fedora                # Host shell only. Full Fedora post-install (Pattern B: toolbox-as-outer — see workstation-bootstrap/dev-containers.md)
 make fedora-recreate-tools # Host shell only. Stop + remove + re-provision the `tools` toolbox from scratch (then re-runs `make fedora`).
-make symlinks-mac          # Just symlink configs (Mac; skips shell-fedora)
+make symlinks-mac          # Just symlink configs (Mac; skips shell-fedora, toolbox)
 make symlinks-fedora       # Symlink configs (Fedora; skips hammerspoon, nix, shell-mac). Runs from host OR toolbox — $HOME is shared.
 make nix-mac               # Nix/Home Manager (macOS)
 make nix-linux             # Home Manager only (Linux/Fedora)
@@ -105,7 +105,7 @@ Stow uses `--no-folding` for the `theme/` package so `~/.config/theme/` stays a 
 
 ## Key Utilities
 
-- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme` package with `--no-folding`. Used by `make symlinks-mac` (excludes `shell-fedora`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
+- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme` package with `--no-folding`. Used by `make symlinks-mac` (excludes `shell-fedora|toolbox`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
 - `utils/theme-bootstrap` - Renders all themes (`theme-render`) and seeds `~/.config/theme/current → rendered/catppuccin` if missing. Invoked by both `make symlinks-*` targets.
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# devpod — toolbox→host DevPod CLI bridge. When invoked inside the `tools`
+# toolbox, hops to host via flatpak-spawn so the real DevPod binary runs
+# against host podman. On host, the fallthrough exec uses the same absolute
+# path — bypasses PATH, so the wrapper at ~/.local/bin/devpod can't recurse
+# into itself.
+
+set -euo pipefail
+
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host /usr/local/bin/devpod "$@"
+fi
+
+exec /usr/local/bin/devpod "$@"

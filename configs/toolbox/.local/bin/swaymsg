@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# swaymsg — toolbox→host sway IPC bridge. sway runs on host; tools inside
+# the toolbox (theme-bg-set, etc.) push to host sway's IPC via flatpak-spawn,
+# which carries the host's SWAYSOCK env so the call lands against the running
+# compositor. On host, the fallthrough exec uses the same absolute path —
+# bypasses PATH, so the wrapper can't recurse into itself.
+
+set -euo pipefail
+
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host /usr/bin/swaymsg "$@"
+fi
+
+exec /usr/bin/swaymsg "$@"

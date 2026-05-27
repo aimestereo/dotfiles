@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# xdg-open — toolbox→host URL/MIME dispatch bridge. No browser lives inside
+# the toolbox, so gh auth login / aws sso login / URL clicks hop to host via
+# flatpak-spawn. On host, this wrapper shadows /usr/bin/xdg-open via PATH;
+# the fallthrough exec uses the same absolute path — bypasses PATH, so the
+# wrapper can't recurse into itself.
+
+set -euo pipefail
+
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host /usr/bin/xdg-open "$@"
+fi
+
+exec /usr/bin/xdg-open "$@"

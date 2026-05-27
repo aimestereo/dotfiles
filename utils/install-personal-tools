@@ -77,7 +77,9 @@ sudo dnf install -y --skip-unavailable \
 #
 # tmux belongs in the outer layer (sessions span multiple devpod ssh attaches
 # into per-project containers; no tmux inside containers). flatpak-xdg-utils
-# provides flatpak-spawn for the devpod wrapper. pass is the password store CLI.
+# provides flatpak-spawn — runtime dep for the stowed toolbox→host wrappers
+# (devpod, xdg-open, swaymsg under configs/toolbox/.local/bin/). pass is the
+# password store CLI.
 # stow is needed inside the toolbox because commander runs `make symlinks-fedora`
 # from there; devpod containers receive stowed configs via bind mount and don't
 # invoke stow themselves. rsync is needed by `theme-update`, which refreshes
@@ -150,54 +152,13 @@ script_dir="$(cd "$(dirname "$0")" && pwd)"
 xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
 
 # ---------------------------------------------------------------------------
-# Toolbox-only: devpod wrapper + host terminfo mirror
+# Toolbox-only: host terminfo mirror
+#
+# The host→toolbox and toolbox→host wrappers (toolbox-run, devpod, xdg-open,
+# swaymsg) live as stowed files under configs/toolbox/.local/bin/. They land
+# in $HOME via `make symlinks-fedora` — no install-time work needed here.
 # ---------------------------------------------------------------------------
 if [[ "$MODE" == "toolbox" ]]; then
-	# devpod wrapper. Lives in $HOME (shared with host). The wrapper sits on
-	# host's PATH too (xonsh env.xsh prepends ~/.local/bin), but the `else`
-	# branch re-execs the real binary directly via absolute path — transparent
-	# on host, no recursion. Inside toolbox, the `if` branch hops back to host
-	# via flatpak-spawn so the real DevPod CLI runs against host podman.
-	mkdir -p "$HOME/.local/bin"
-	cat > "$HOME/.local/bin/devpod" <<'WRAP'
-#!/usr/bin/env bash
-if [[ -f /run/.toolboxenv ]]; then
-	exec flatpak-spawn --host /usr/local/bin/devpod "$@"
-else
-	exec /usr/local/bin/devpod "$@"
-fi
-WRAP
-	chmod +x "$HOME/.local/bin/devpod"
-
-	# xdg-open wrapper. Same shape as the devpod wrapper above. No browser
-	# lives inside toolbox, so gh auth login / aws sso login / URL clicks
-	# hop to host. On host the wrapper shadows /usr/bin/xdg-open via PATH;
-	# the else branch falls through by absolute path — no recursion.
-	cat > "$HOME/.local/bin/xdg-open" <<'WRAP'
-#!/usr/bin/env bash
-if [[ -f /run/.toolboxenv ]]; then
-	exec flatpak-spawn --host /usr/bin/xdg-open "$@"
-else
-	exec /usr/bin/xdg-open "$@"
-fi
-WRAP
-	chmod +x "$HOME/.local/bin/xdg-open"
-
-	# swaymsg wrapper. Same shape. sway runs on host; theme-bg-set runs inside
-	# this toolbox (routed by the ~/.local/bin/toolbox-run wrapper that the
-	# sway bindsym invokes — DOT-54), and from there it needs to push the
-	# wallpaper to host sway's IPC. flatpak-spawn carries the host's SWAYSOCK
-	# env so the call lands against the running compositor.
-	cat > "$HOME/.local/bin/swaymsg" <<'WRAP'
-#!/usr/bin/env bash
-if [[ -f /run/.toolboxenv ]]; then
-	exec flatpak-spawn --host /usr/bin/swaymsg "$@"
-else
-	exec /usr/bin/swaymsg "$@"
-fi
-WRAP
-	chmod +x "$HOME/.local/bin/swaymsg"
-
 	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,
 	# but the toolbox base ncurses doesn't carry xterm-kitty/xterm-ghostty, so
 	# entering the toolbox from either terminal errors with "terminfo entry
