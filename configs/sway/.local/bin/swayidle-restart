@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+#
+# swayidle-restart — kill any running swayidle and exec a fresh one with the
+# timeouts/actions declared by the dotfiles.
+#
+# Invoked from configs/sway/.config/sway/config.d/20-swayidle.conf via
+# `exec_always`, so every sway startup AND every `swaymsg reload` spawns a
+# fresh swayidle with the current args. The `pkill -x` guard prevents the
+# duplicate-process hazard that pure `exec_always` would otherwise create.
+#
+# `theme-bg-set` does NOT need to call this — the wallpaper symlink it
+# retargets is resolved by swaylock at lock-open time, not cached by
+# swayidle, so image swaps land automatically on the next lock.
+
+set -euo pipefail
+
+# pkill returns before the target actually exits, so a sub-millisecond window
+# exists where the old swayidle is still alive when `exec swayidle` starts.
+# The overlap is harmless — swayidle's only side effect is firing the action
+# script on timeout, and our actions (swaylock, swaymsg output power) are
+# idempotent. A `wait`-based barrier is not available since we don't own the
+# old PID.
+pkill -x swayidle 2>/dev/null || true
+
+exec swayidle -w \
+	timeout 900 'swaylock -f -i $HOME/.config/theme/current-background-image --scaling fill' \
+	timeout 1800 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+	before-sleep 'swaylock -f -i $HOME/.config/theme/current-background-image --scaling fill'
