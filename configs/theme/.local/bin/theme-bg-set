@@ -16,14 +16,6 @@
 
 set -euo pipefail
 
-# Fedora host: re-exec inside the `tools` toolbox where fd / fzf / chafa live.
-# Pattern mirrors ~/.local/bin/{devpod,xdg-open} (toolbox→host) in the opposite
-# direction (host→toolbox). Mac: `toolbox` is absent → skip. Inside toolbox or
-# devpod: /run/.toolboxenv is set → skip.
-if [[ ! -f /run/.toolboxenv ]] && command -v toolbox >/dev/null; then
-	exec toolbox run --container tools "$0" "$@"
-fi
-
 backgrounds_dir="$HOME/backgrounds"
 symlink="$HOME/.config/theme/current-background-image"
 

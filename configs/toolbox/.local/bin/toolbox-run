@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# toolbox-run — invoke a command inside the `tools` toolbox when running on
+# a Fedora host. Falls through (direct exec) on Mac, inside the toolbox, and
+# inside a devpod container. Mirrors the toolbox→host wrappers (devpod,
+# xdg-open, swaymsg) in the opposite direction — host→toolbox.
+#
+# Usage:
+#   toolbox-run <command> [args...]
+#
+# Sway bindsyms and any caller needing toolbox-only tools (fd, fzf, chafa,
+# rg, sd, …) wrap their invocation; the called script stays context-agnostic.
+
+set -euo pipefail
+
+if [[ $# -eq 0 ]]; then
+	echo "toolbox-run: missing command" >&2
+	exit 64
+fi
+
+if [[ ! -f /run/.toolboxenv ]] && command -v toolbox >/dev/null; then
+	exec toolbox run --container tools "$@"
+fi
+
+exec "$@"
