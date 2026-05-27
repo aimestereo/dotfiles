@@ -22,3 +22,13 @@ default_bg="$HOME/backgrounds/car-with-full-moon-background.jpg"
 if [[ ! -L $bg_symlink && ! -e $bg_symlink && -f $default_bg ]]; then
 	ln -sfn "$default_bg" "$bg_symlink"
 fi
+
+# Tell a running sway to re-read its config so freshly-stowed sway changes
+# (output bg / config.d/ bindings / swayidle override) apply without a logout.
+# No-op on Mac or when sway isn't running. swayidle is started via `exec`
+# (not `exec_always`), so its timeout/lock-bg changes are NOT picked up by
+# swaymsg reload — those need a manual `pkill -x swayidle` (then a fresh
+# login spawns it with the new args) or a logout/reboot.
+if command -v swaymsg >/dev/null && swaymsg -t get_version >/dev/null 2>&1; then
+	swaymsg reload >/dev/null
+fi

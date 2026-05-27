@@ -301,6 +301,7 @@ Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed i
 - **Tailscale-to-Headscale** — if/when self-hosted Headscale becomes desirable, switch from public Tailscale coordination to private.
 - **pinentry flavor** — GTK vs Qt vs curses for GPG inside toolbox; currently using base-image default.
 - **DemoStand `.devcontainer.json` export** — DOT-24 leftover; deferred until needed.
+- **keyd CapsLock → Hyper remap not active on Fedora** — installed via `sudo cp configs/keyd/.local/share/keyd/default.conf /etc/keyd/default.conf` per `fedora-after-install`, but CapsLock is firing as CapsLock instead of `Mod4+Mod1+Ctrl+Shift`. Sway-side keybindings depending on `$mod` (Mod4) still work because keyboards typically expose Super directly; what doesn't work is the chord-mapping side of the Hyper key. Likely-suspects: keyd daemon not enabled/running (`systemctl status keyd`), or `/etc/keyd/default.conf` content mismatch with the installed-via-sudo copy, or keyd version vs. config syntax. Investigation needed.
 
 ## Explicit non-goals (will NOT do)
 
