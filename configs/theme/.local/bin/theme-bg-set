@@ -43,7 +43,15 @@ pick_interactive() {
 	done < <(list_images)
 	[[ ${#images[@]} -eq 0 ]] && err "no images under $backgrounds_dir"
 	if command -v fzf >/dev/null; then
-		printf '%s\n' "${images[@]}" | fzf --prompt='background> ' --height=40% || true
+		# chafa renders the focused candidate via the terminal graphics protocol
+		# (kitty graphics in ghostty / sixel elsewhere). $HOME expands in fzf's
+		# preview subshell, same as $FZF_PREVIEW_COLUMNS / $FZF_PREVIEW_LINES.
+		printf '%s\n' "${images[@]}" | fzf \
+			--prompt='background> ' \
+			--height=80% \
+			--preview-window=right:60% \
+			--preview 'chafa -s "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" "$HOME/backgrounds/{}"' \
+			|| true
 		return
 	fi
 	printf 'Available backgrounds:\n' >&2

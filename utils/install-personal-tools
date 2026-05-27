@@ -89,7 +89,8 @@ if [[ "$MODE" == "toolbox" ]]; then
 		pass \
 		flatpak-xdg-utils \
 		stow \
-		rsync
+		rsync \
+		chafa
 fi
 
 # ---------------------------------------------------------------------------
