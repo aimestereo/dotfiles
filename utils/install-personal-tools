@@ -183,8 +183,9 @@ fi
 WRAP
 	chmod +x "$HOME/.local/bin/xdg-open"
 
-	# swaymsg wrapper. Same shape. sway runs on host; theme-bg-set re-execs
-	# itself into this toolbox to reach fd/fzf/chafa, then needs to push the
+	# swaymsg wrapper. Same shape. sway runs on host; theme-bg-set runs inside
+	# this toolbox (routed by the ~/.local/bin/toolbox-run wrapper that the
+	# sway bindsym invokes — DOT-54), and from there it needs to push the
 	# wallpaper to host sway's IPC. flatpak-spawn carries the host's SWAYSOCK
 	# env so the call lands against the running compositor.
 	cat > "$HOME/.local/bin/swaymsg" <<'WRAP'
