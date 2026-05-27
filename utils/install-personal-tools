@@ -182,6 +182,20 @@ fi
 WRAP
 	chmod +x "$HOME/.local/bin/xdg-open"
 
+	# swaymsg wrapper. Same shape. sway runs on host; theme-bg-set re-execs
+	# itself into this toolbox to reach fd/fzf/chafa, then needs to push the
+	# wallpaper to host sway's IPC. flatpak-spawn carries the host's SWAYSOCK
+	# env so the call lands against the running compositor.
+	cat > "$HOME/.local/bin/swaymsg" <<'WRAP'
+#!/usr/bin/env bash
+if [[ -f /run/.toolboxenv ]]; then
+	exec flatpak-spawn --host /usr/bin/swaymsg "$@"
+else
+	exec /usr/bin/swaymsg "$@"
+fi
+WRAP
+	chmod +x "$HOME/.local/bin/swaymsg"
+
 	# Terminfo from host: kitty/ghostty ship terminfo with their host packages,
 	# but the toolbox base ncurses doesn't carry xterm-kitty/xterm-ghostty, so
 	# entering the toolbox from either terminal errors with "terminfo entry
