@@ -22,9 +22,16 @@ symlink="$HOME/.config/theme/current-background-image"
 err() { printf 'theme-bg-set: %s\n' "$*" >&2; exit 1; }
 
 list_images() {
-	fd --base-directory "$backgrounds_dir" --type f --max-depth 1 \
-		-e jpg -e jpeg -e png -e gif -e bmp -e webp \
-		--format '{/}' | sort
+	# Bash glob, not fd — this script runs from a sway keybind on the
+	# Fedora host where fd lives in the toolbox and isn't on PATH.
+	# nocaseglob handles .JPG/.PNG; nullglob silently drops empty matches.
+	(
+		shopt -s nullglob nocaseglob
+		local f
+		for f in "$backgrounds_dir"/*.{jpg,jpeg,png,gif,bmp,webp}; do
+			printf '%s\n' "${f##*/}"
+		done
+	) | sort
 }
 
 pick_interactive() {
