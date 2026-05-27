@@ -43,14 +43,16 @@ pick_interactive() {
 	done < <(list_images)
 	[[ ${#images[@]} -eq 0 ]] && err "no images under $backgrounds_dir"
 	if command -v fzf >/dev/null; then
-		# chafa renders the focused candidate via the terminal graphics protocol
-		# (kitty graphics in ghostty / sixel elsewhere). $HOME expands in fzf's
-		# preview subshell, same as $FZF_PREVIEW_COLUMNS / $FZF_PREVIEW_LINES.
+		# fzf substitutes {} with the single-quoted form of the current line,
+		# so it must be passed unquoted — wrapping it in "..." would leave the
+		# single quotes as literal characters in the path. `--` guards against
+		# a filename that starts with `-`. Default geometry covers fzf <0.35
+		# where $FZF_PREVIEW_COLUMNS / $FZF_PREVIEW_LINES aren't exported.
 		printf '%s\n' "${images[@]}" | fzf \
 			--prompt='background> ' \
 			--height=80% \
 			--preview-window=right:60% \
-			--preview 'chafa -s "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" "$HOME/backgrounds/{}"' \
+			--preview 'chafa -s "${FZF_PREVIEW_COLUMNS:-80}x${FZF_PREVIEW_LINES:-24}" -- "$HOME/backgrounds"/{}' \
 			|| true
 		return
 	fi
