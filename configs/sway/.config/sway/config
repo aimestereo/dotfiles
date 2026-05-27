@@ -8,6 +8,8 @@
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
+# Hyper chord (keyd remaps CapsLock to this; DOT-59).
+set $hyper Mod1+Mod4+Ctrl+Shift
 # Home row direction keys, like vim
 set $left h
 set $down j
