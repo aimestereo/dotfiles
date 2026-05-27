@@ -19,7 +19,12 @@ if [[ $# -eq 0 ]]; then
 fi
 
 if [[ ! -f /run/.toolboxenv ]] && command -v toolbox >/dev/null; then
-	exec toolbox run --container tools "$@"
+	# `toolbox run` invokes podman exec non-interactively — no login profile,
+	# no .bashrc, no xonsh, so ~/.local/bin isn't on PATH inside the container.
+	# Prepend it explicitly so the wrapped script sees the toolbox→host wrapper
+	# trio (devpod / xdg-open / swaymsg) and the personal-stack tools.
+	exec toolbox run --container tools \
+		env "PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin" "$@"
 fi
 
 exec "$@"
