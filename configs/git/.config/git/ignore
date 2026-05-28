@@ -2,3 +2,5 @@ Session.vim
 .conform.json
 
 .DS_Store
+
+.claude
