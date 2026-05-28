@@ -4,12 +4,23 @@ set -euo pipefail
 
 flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+# Chromium is not a second daily browser: it backs the Yandex Music web-app
+# (Hyper+m). Firefox-based Zen can't set a per-site app_id on Wayland, so a
+# Chromium `--app` window is the only way to give the web-app its own
+# workspace-bindable identity (see configs/sway/.config/sway/config.d/70-hyper-apps.conf).
+# Geary + GNOME Calendar are the mail/calendar defaults; Evolution and
+# Thunderbird are installed alongside for trialling MS-365 connectivity.
 flatpak install -y --user flathub \
 	app.zen_browser.zen \
+	org.chromium.Chromium \
 	com.slack.Slack \
 	org.telegram.desktop \
 	us.zoom.Zoom \
 	org.localsend.localsend_app \
+	org.gnome.Geary \
+	org.gnome.Evolution \
+	org.mozilla.Thunderbird \
+	org.gnome.Calendar \
 	md.obsidian.Obsidian \
 	com.transmissionbt.Transmission \
 	com.calibre_ebook.calibre \

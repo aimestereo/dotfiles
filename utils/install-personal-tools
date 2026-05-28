@@ -63,6 +63,7 @@ sudo dnf install -y --skip-unavailable \
 	fd-find \
 	bat \
 	eza \
+	yazi \
 	zoxide \
 	tree \
 	jq \

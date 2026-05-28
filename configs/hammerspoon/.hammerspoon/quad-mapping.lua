@@ -18,6 +18,7 @@ hs.hotkey.bind(HYPER, "b", switchApp("com.google.Chrome"))
 hs.hotkey.bind(HYPER, "c", switchApp("com.apple.iCal"))
 hs.hotkey.bind(HYPER, "d", switchApp("net.kovidgoyal.kitty"))
 hs.hotkey.bind(HYPER, "e", switchApp("com.apple.finder"))
+hs.hotkey.bind(HYPER, "i", switchApp("com.apple.mail"))
 hs.hotkey.bind(HYPER, "m", switchApp("ru.yandex.desktop.music"))
 hs.hotkey.bind(HYPER, "o", switchApp("md.obsidian"))
 hs.hotkey.bind(HYPER, "p", switchApp("com.postmanlabs.mac"))
@@ -76,7 +77,7 @@ end)
 
 -- Draw on screen (toggle: start fresh or stop)
 local drawActive = false
-hs.hotkey.bind(HYPER, "i", function()
+hs.hotkey.bind(HYPER, "g", function()
   if drawActive then
     drawonscreen.stopAnnotating()
     drawonscreen.hide()
