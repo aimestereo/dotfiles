@@ -202,14 +202,14 @@ Multiple projects each spin up their own Postgres on 5432, their own dev server 
 
 ### Mechanism
 
-1. `utils/devpod-allocate-loopback-ip <project>` reads `/etc/hosts`, returns the already-registered IP for `<project>` if present, otherwise sudo-appends a new entry on the first free `127.0.0.X`:
+1. `devpod-allocate-loopback-ip <project>` reads `/etc/hosts`, returns the already-registered IP for `<project>` if present, otherwise sudo-appends a new entry on the first free `127.0.0.X`:
 
    ```
    # devpod-loopback: fenix=127.0.0.2
    127.0.0.2	fenix
    ```
 
-2. `utils/devpod-up` is a thin wrapper that derives the project name from `$(basename $PWD)`, runs the allocator, exports `LOOPBACK_IP=…`, and execs `devpod up`. Alias it as `dpup` (or symlink into `~/.local/bin`) and use it instead of bare `devpod up`.
+2. `devpod-up` is the bring-up command — use it instead of bare `devpod up`. It derives the project name from `$(basename $PWD)`, allocates the loopback IP, exports `LOOPBACK_IP=…`, and execs `devpod up`. It's a stowed toolbox wrapper (`configs/toolbox/.local/bin/devpod-up`), so `make symlinks-fedora` puts it on PATH at `~/.local/bin/devpod-up` — no alias step. Crucially it is **Pattern-B aware**: run from the toolbox it re-execs itself on the host via `flatpak-spawn --host`, so allocation edits the *host* `/etc/hosts` and `LOOPBACK_IP` is set in the host-side devpod process (a plain `export` + toolbox `devpod up` would not work — `flatpak-spawn --host` drops env vars, so the host devpod would never see the IP).
 
 3. The project's `.devcontainer.json` publishes ports on the env-substituted IP:
 
@@ -242,7 +242,7 @@ No collisions, no project-aware port numbering, and browser/Postman/curl targets
 ### Trade-offs
 
 - VS Code / DevPod auto-list of forwarded ports goes away (those read `forwardPorts`, not `runArgs`). Neovim users don't care; VS Code users keep `forwardPorts` and pay the collision cost, or live without the list.
-- `${localEnv:LOOPBACK_IP}` is unset if the user runs `devpod up` directly (bypassing the wrapper). DevPod will then publish to an empty-string IP and docker errors out — preferable to silently binding to `0.0.0.0`. Treat the wrapper as mandatory.
+- `${localEnv:LOOPBACK_IP}` is unset if the user runs `devpod up` directly (bypassing `devpod-up`). DevPod will then publish to an empty-string IP and docker errors out — preferable to silently binding to `0.0.0.0`. The stowed `devpod` wrapper prints a one-line tip pointing at `devpod-up` whenever it sees a bare `up` subcommand, but treat `devpod-up` as the mandatory entry point.
 
 ## Pre-commit inside the container
 
@@ -261,7 +261,8 @@ The container config's first hook refuses commits made from outside the containe
 | `git push` prompts for password | DevPod SSH agent not forwarded (only relevant if you set a passphrase) | Passphrase-less key (default here) reads directly — re-check the key exists at `~/.ssh/id_ed25519`. If you set a passphrase: verify `eval $(ssh-agent)` + `ssh-add` on host, check DevPod ssh-config |
 | Files owned by wrong UID/GID inside container | Host UID ≠ container user UID | Set `remoteUser` in `.devcontainer.json` to match the host user; verify with `id` inside the container. |
 | `mise install` finds no tools | Project lacks `.mise.toml`; global config is empty by design | Add `.mise.toml` to project root with the tool versions you need |
-| `docker: Error response from daemon: invalid containerPort: :3000` on `devpod up` | `LOOPBACK_IP` unset — `devpod up` was called directly, bypassing the `devpod-up` wrapper | Use `devpod-up` (or set `LOOPBACK_IP` manually) so `${localEnv:LOOPBACK_IP}` resolves |
+| `fatal prepare workspace client: no default provider found` on `devpod up` | DevPod has no provider configured (binary installed, but `provider add`/`use` never ran) | Run `make fedora` on host — `utils/install-devpod` adds the `podman` provider idempotently. Manual: `devpod provider add docker --name podman -o DOCKER_PATH=podman --use` |
+| `docker: Error response from daemon: invalid containerPort: :3000` on `devpod up` | `LOOPBACK_IP` unset — bare `devpod up` was used instead of `devpod-up` | Use `devpod-up` (now on PATH via the stowed `toolbox` package) so `${localEnv:LOOPBACK_IP}` resolves |
 | `pre-commit` hook fails with "commit from inside the dev container only" | You ran `git commit` from the host on a project whose container config installed the container-only guard | Commit from inside the container, or `git commit --no-verify` to bypass (use sparingly) |
 | `mise: installing mise... 0.1%` (or other curl-fetched installer) hangs early during `make fedora` | Cloudflare-fronted upstream (mise.jdx.dev, claude.ai, GitHub release CDN, etc.) geo-blocks your IP | Connect VPN before re-running `make fedora`; IPv4/IPv6 precedence tweaks don't help — it's an IP-level block, not a routing issue |
 

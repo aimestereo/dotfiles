@@ -26,7 +26,7 @@ dotfiles/
 │   ├── starship/      # Starship cross-shell prompt config
 │   ├── theme/         # Vendored omarchy theme sources + templates; `theme-render` / `theme-set` / `theme-update` scripts
 │   ├── tmux/          # Tmux
-│   ├── toolbox/       # Stowed host↔toolbox wrappers: toolbox-run, devpod, xdg-open, swaymsg. Fedora-only (excluded from Mac stow).
+│   ├── toolbox/       # Stowed host↔toolbox wrappers: toolbox-run, devpod, devpod-up, devpod-allocate-loopback-ip, xdg-open, swaymsg. Fedora-only (excluded from Mac stow).
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
 ├── nix/                    # Nix configuration (separate Makefile)
 ├── utils/                  # Installation scripts

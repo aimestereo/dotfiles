@@ -45,6 +45,7 @@ xonsh -i                          # interactive xonsh works
 tmux new -d                       # tmux session works
 # AmneziaVPN: run ~/.local/opt/amnezia/*Installer*.bin once, then launch from app menu
 devpod --version                  # DevPod on PATH
+devpod provider list              # 'podman' provider present, default=true
 toolbox run -c tools pass --help  # pass works inside Toolbox
 systemctl status keyd             # keyd active
 tailscale status                  # Tailscale ready
