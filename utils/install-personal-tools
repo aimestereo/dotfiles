@@ -28,6 +28,13 @@ XONSH_VERSION="${XONSH_VERSION:-0.23.7}"
 # sd pin tracks chmln/sd's current stable; bump after smoke-testing locally.
 SD_VERSION="${SD_VERSION:-1.1.0}"
 
+# claude pinned to dodge the interleaved-thinking resume corruption in 2.1.15x
+# (thinking blocks recorded between a tool_use and its tool_result; resume then
+# fails with "thinking blocks in the latest assistant message cannot be
+# modified"). Autoupdate is already off (~/.claude.json autoUpdates:false,
+# native install), so this pin sticks. Bump after the bug is confirmed fixed.
+CLAUDE_VERSION="${CLAUDE_VERSION:-2.1.140}"
+
 # ---------------------------------------------------------------------------
 # devpod-only: bind-mount sanity check
 #
@@ -116,8 +123,11 @@ command -v mise >/dev/null || curl -fsSL https://mise.run | sh
 # starship: upstream install script
 command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
 
-# claude: Anthropic-recommended install
-command -v claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash
+# claude: Anthropic-recommended install, pinned to $CLAUDE_VERSION. The guard is
+# version-aware (not just `command -v`) so a stale install gets re-pinned — the
+# installer's VERSION arg also downgrades. install.sh accepts [stable|latest|VERSION].
+claude_have="$(command -v claude >/dev/null 2>&1 && claude --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
+[[ "$claude_have" == "$CLAUDE_VERSION" ]] || curl -fsSL https://claude.ai/install.sh | bash -s -- "$CLAUDE_VERSION"
 
 # sd: GitHub release binary (chmln/sd is not packaged in Fedora).
 if ! command -v sd >/dev/null; then
