@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+# Repair a Claude Code session transcript that fails to resume with:
+#   API Error: 400 ... `thinking` or `redacted_thinking` blocks in the latest
+#   assistant message cannot be modified ...
+#
+# Interleaved-thinking turns (thinking blocks between sequential tool calls,
+# often after an interrupt) get recorded in an order the API rejects on resume.
+# This strips every thinking/redacted_thinking block from the transcript (they
+# are not needed to resume), drops assistant entries left empty, and re-threads
+# parentUuid so the chain stays intact. tool_use/tool_result blocks are never
+# touched, so pairing is preserved. A timestamped .bak is written first.
+#
+# Usage: fix-claude-session <session-id|path-to.jsonl>
+
+set -euo pipefail
+
+arg="${1:-}"
+if [[ -z "$arg" ]]; then
+  echo "usage: fix-claude-session <session-id|path-to.jsonl>" >&2
+  exit 2
+fi
+
+projects_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects"
+
+if [[ -f "$arg" ]]; then
+  file="$arg"
+else
+  id="${arg%.jsonl}"
+  mapfile -t matches < <(find "$projects_dir" -type f -name "$id.jsonl" 2>/dev/null)
+  if [[ "${#matches[@]}" -eq 0 ]]; then
+    echo "no session file found for '$id' under $projects_dir" >&2
+    exit 1
+  elif [[ "${#matches[@]}" -gt 1 ]]; then
+    echo "ambiguous: multiple session files match '$id':" >&2
+    printf '  %s\n' "${matches[@]}" >&2
+    echo "pass the full path instead" >&2
+    exit 1
+  fi
+  file="${matches[0]}"
+fi
+
+backup="$file.$(date +%Y%m%d-%H%M%S).bak"
+cp "$file" "$backup"
+
+FIX_FILE="$file" python3 <<'PY'
+import json, os, sys
+
+path = os.environ["FIX_FILE"]
+raw = open(path).read().splitlines()
+out, remap = [], {}
+THINK = {"thinking", "redacted_thinking"}
+
+def resolve(p):
+    seen = set()
+    while p in remap and p not in seen:
+        seen.add(p)
+        p = remap[p]
+    return p
+
+stripped = dropped = 0
+for line in raw:
+    if not line.strip():
+        continue
+    d = json.loads(line)
+    if d.get("parentUuid"):
+        d["parentUuid"] = resolve(d["parentUuid"])
+    if d.get("type") == "assistant":
+        msg = d.get("message", {})
+        content = msg.get("content")
+        if isinstance(content, list):
+            kept = [b for b in content if b.get("type") not in THINK]
+            stripped += len(content) - len(kept)
+            if not kept:
+                remap[d.get("uuid")] = d.get("parentUuid")
+                dropped += 1
+                continue
+            msg["content"] = kept
+    out.append(json.dumps(d, ensure_ascii=False))
+
+# validate before writing
+uuids = set()
+for line in out:
+    u = json.loads(line).get("uuid")
+    if u:
+        uuids.add(u)
+
+think = empty = dangling = 0
+use_ids, res_ids = set(), set()
+for line in out:
+    d = json.loads(line)
+    t = d.get("type")
+    if t == "assistant":
+        c = d.get("message", {}).get("content")
+        if isinstance(c, list):
+            if any(b.get("type") in THINK for b in c):
+                think += 1
+            if not c:
+                empty += 1
+            for b in c:
+                if b.get("type") == "tool_use":
+                    use_ids.add(b.get("id"))
+    if t == "user":
+        c = d.get("message", {}).get("content")
+        if isinstance(c, list):
+            for b in c:
+                if b.get("type") == "tool_result":
+                    res_ids.add(b.get("tool_use_id"))
+    p = d.get("parentUuid")
+    if p and p not in uuids:
+        dangling += 1
+
+problems = []
+if think:
+    problems.append(f"{think} thinking blocks remain")
+if empty:
+    problems.append(f"{empty} empty assistant messages")
+if use_ids - res_ids:
+    problems.append(f"{len(use_ids - res_ids)} unpaired tool_use")
+if res_ids - use_ids:
+    problems.append(f"{len(res_ids - use_ids)} unpaired tool_result")
+if dangling:
+    problems.append(f"{dangling} dangling parentUuid")
+
+if problems:
+    print("validation failed, NOT writing: " + "; ".join(problems), file=sys.stderr)
+    sys.exit(1)
+
+open(path, "w").write("\n".join(out) + "\n")
+print(f"stripped {stripped} thinking blocks, dropped {dropped} empty entries, "
+      f"{len(raw)} -> {len(out)} lines")
+PY
+
+echo "repaired: $file"
+echo "backup:   $backup"
