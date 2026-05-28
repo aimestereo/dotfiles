@@ -73,7 +73,7 @@ make nix-linux             # Home Manager only (Linux/Fedora)
 
 ## Fedora Workstation
 
-The end-to-end spec for the Fedora Atomic Sway workstation — USB Tier-1 bootstrap, host package layer, terminals + theme, keyd Hyper-key remap, Pattern B toolbox-as-outer topology, xonsh interactive ergonomics (Mac zsh parity), per-project devpod containers, direnv/mise/devenv translation, Tailscale + AmneziaVPN networking, Flatpak GUI apps — lives in **[workstation-bootstrap/PRD-fedora-workstation.md](workstation-bootstrap/PRD-fedora-workstation.md)**. Read it before making non-trivial Fedora-side changes. Mac, Nix, devenv, and zsh are referenced only as baseline sources for replicated configs; they are not modified by the PRD.
+The end-to-end spec for the Fedora Atomic Sway workstation — USB Tier-1 bootstrap, host package layer, terminals + theme, keyd Hyper-key remap, Pattern B toolbox-as-outer topology, xonsh interactive ergonomics (Mac zsh parity), per-project devpod containers, direnv/mise/devenv translation, Tailscale + AmneziaVPN networking, Flatpak GUI apps — lives in **[workstation-bootstrap/prd-fedora-workstation.md](workstation-bootstrap/prd-fedora-workstation.md)**. Read it before making non-trivial Fedora-side changes. Mac, Nix, devenv, and zsh are referenced only as baseline sources for replicated configs; they are not modified by the PRD.
 
 ## Shells
 
