@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Hyper+<key> companion: switch to a named workspace and summon the app if
+# the workspace is empty of matching windows, or `workspace back_and_forth`
+# when the workspace is already focused and the app is on it. Pairs with the
+# for_window rules in configs/sway/.config/sway/config.d/70-hyper-apps.conf.
+#
+# Usage: hyper-app-toggle <workspace> <jq-regex> <launch-cmd> [args...]
+
+set -euo pipefail
+
+ws="$1"
+pattern="$2"
+shift 2
+
+current_ws=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused).name')
+
+app_on_ws=$(swaymsg -t get_tree | jq --arg ws "$ws" --arg pat "$pattern" '
+  [.. | objects | select(.type? == "workspace" and .name == $ws)
+   | .. | objects
+   | select(
+       (.app_id? // "" | test($pat)) or
+       (.window_properties.class? // "" | test($pat))
+     )]
+  | length > 0
+')
+
+if [[ "$current_ws" == "$ws" && "$app_on_ws" == "true" ]]; then
+  exec swaymsg workspace back_and_forth
+fi
+
+swaymsg workspace "$ws"
+
+if [[ "$app_on_ws" == "false" ]]; then
+  "$@" >/dev/null 2>&1 &
+fi
