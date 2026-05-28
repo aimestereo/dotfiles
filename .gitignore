@@ -17,3 +17,6 @@ devenv.local.nix
 
 # pre-commit
 .pre-commit-config.yaml
+
+# atuin installer receipt (machine-local install state)
+atuin-receipt.json
