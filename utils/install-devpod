@@ -15,3 +15,15 @@ curl -fsSL -o "$workdir/devpod" \
 sudo install -c -m 0755 "$workdir/devpod" /usr/local/bin/
 
 echo "DevPod ${DEVPOD_VERSION} installed at /usr/local/bin/devpod."
+
+# Provider: Pattern B runs containers on host podman, so point DevPod's docker
+# provider at the podman binary (DOCKER_PATH). Idempotent — only add when the
+# 'podman' provider is absent; otherwise just (re)assert it as the default so a
+# re-run can't leave the workspace client without one.
+if ! /usr/local/bin/devpod provider list --output json 2>/dev/null | grep -q '"podman"'; then
+	/usr/local/bin/devpod provider add docker --name podman --option DOCKER_PATH=podman --use
+	echo "DevPod provider 'podman' added and set as default."
+else
+	/usr/local/bin/devpod provider use podman
+	echo "DevPod provider 'podman' already present; set as default."
+fi

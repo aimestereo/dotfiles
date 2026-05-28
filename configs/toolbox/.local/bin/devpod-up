@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# devpod-up — bring up the current project's DevPod container with a
+# per-project loopback IP. Works from host OR the `tools` toolbox (Pattern B).
+#
+# Why this isn't a plain `devpod up`: .devcontainer.json publishes ports via
+# `${localEnv:LOOPBACK_IP}`, which the real DevPod binary (on host) substitutes
+# at `up` time. Two boundary problems this wrapper solves:
+#   1. The loopback IP is registered in /etc/hosts, which must be the HOST's
+#      file (host podman publishes there; the browser resolves there) — not the
+#      toolbox's. So allocation runs host-side.
+#   2. The toolbox→host hop is `flatpak-spawn --host`, which DROPS environment
+#      variables. So we can't just export LOOPBACK_IP and `exec devpod` — the
+#      host process wouldn't see it. Instead we re-exec self on host (where the
+#      shared $HOME makes the same path valid) and export LOOPBACK_IP there.
+#
+# Usage:  cd <project-repo> && devpod-up [extra `devpod up` args...]
+
+set -euo pipefail
+
+if [[ -f /run/.toolboxenv ]]; then
+	# Toolbox → host. Pass project name + absolute workspace path explicitly
+	# rather than relying on flatpak-spawn --directory / env forwarding; $PWD
+	# is valid host-side because $HOME is shared.
+	exec flatpak-spawn --host "$HOME/.local/bin/devpod-up" \
+		--_host "$(basename "$PWD")" "$PWD" "$@"
+fi
+
+# --- host side ---
+if [[ "${1:-}" == "--_host" ]]; then
+	project="$2"
+	workspace="$3"
+	shift 3
+else
+	project="$(basename "$PWD")"
+	workspace="$PWD"
+fi
+
+ip="$("$HOME/.local/bin/devpod-allocate-loopback-ip" "$project")"
+export LOOPBACK_IP="$ip"
+echo "devpod-up: project=$project ip=$ip" >&2
+exec /usr/local/bin/devpod up "$workspace" "$@"

@@ -8,6 +8,14 @@
 
 set -euo pipefail
 
+# Breadcrumb: a bare `devpod up` can't set LOOPBACK_IP, so projects whose
+# .devcontainer.json publishes ports via ${localEnv:LOOPBACK_IP} fail deep in
+# podman with a cryptic "invalid containerPort". Point at `devpod-up` instead.
+# Non-fatal + still passes through, so loopback-free projects keep working.
+if [[ "${1:-}" == "up" ]]; then
+	echo "devpod: tip — use 'devpod-up' (sets per-project LOOPBACK_IP) instead of bare 'devpod up'." >&2
+fi
+
 if [[ -f /run/.toolboxenv ]]; then
 	exec flatpak-spawn --host /usr/local/bin/devpod "$@"
 fi
