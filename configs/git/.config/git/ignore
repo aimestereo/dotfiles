@@ -20,3 +20,5 @@ devenv.local.yaml
 # direnv
 .direnv
 
+# PKA project
+.pka
