@@ -138,6 +138,8 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
 
 - **Brightness** — `configs/brightness/.local/bin/brightness-control` (ddcutil DDC/CI, ACTION-format validation regex `^[+-][0-9]+$`).
 
+- **Window opacity** — `configs/sway/.config/sway/config.d/51-opacity.conf`: `$mod+F6` / `$mod+F7` step the focused window's transparency down/up by 0.05 (mirroring the brightness F4/F5 ordering). Bound directly to sway's built-in `opacity minus|plus` command — no script, no `exec`/`swaymsg` roundtrip, since opacity is a per-container sway command (Sway has no global opacity knob). Relative-only by design: sway's `get_tree` exposes no `opacity` field, so a brightness-style absolute read-back / `%` notification / minimum-clamp isn't available without per-window state, which was deliberately declined as over-engineering. The window can be driven to fully transparent; recover by pressing `$mod+F7` to raise it back.
+
 - **Networking** — Tailscale (host rpm-ostree layer from Tailscale's RPM repo); AmneziaVPN (`utils/install-amneziavpn` — Qt-installer tarball extracted to `~/.local/opt/amnezia/` with `.desktop` shortcut).
 
 - **Flatpak GUI apps** — `utils/install-flatpaks` (Tier-2): Zen (default web browser, bound via `xdg-settings`), Chromium (Yandex Music web-app backend only), Slack, Telegram, Zoom, LocalSend, Geary + GNOME Calendar (default mail + calendar), Evolution + Thunderbird (alternate mail clients for MS-365 trialling), Obsidian, Transmission, Calibre, mpv.
