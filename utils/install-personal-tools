@@ -76,6 +76,7 @@ sudo dnf install -y --skip-unavailable \
 	yazi \
 	zoxide \
 	tree \
+	btop \
 	jq \
 	gh \
 	awscli2 \
