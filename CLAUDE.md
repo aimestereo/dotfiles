@@ -105,7 +105,7 @@ Stow uses `--no-folding` for the `theme/` package so `~/.config/theme/` stays a 
 
 ## Key Utilities
 
-- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme` package with `--no-folding`. Used by `make symlinks-mac` (excludes `shell-fedora|toolbox`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
+- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme` and `agents` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
 - `utils/theme-bootstrap` - Renders all themes (`theme-render`) and seeds `~/.config/theme/current → rendered/catppuccin` if missing. Invoked by both `make symlinks-*` targets.
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration
