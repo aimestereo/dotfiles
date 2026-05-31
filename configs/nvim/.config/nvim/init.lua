@@ -4,6 +4,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Transparent background by default (theme integration honours this flag).
+vim.g.theme_transparent = true
+
 require("utils")
 
 -- Install package manager
@@ -22,22 +25,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- OS-specific plugins under plugins.linux/macos load after LazyVim base specs
-vim.g.lazyvim_check_order = false
-
--- Check OS, for macos import plugins.macos, for linux import plugins.linux
-local os_name = vim.loop.os_uname().sysname
-local os_plugins = {}
-if os_name == "Darwin" then
-  os_plugins = { import = "plugins.macos" }
-elseif os_name == "Linux" then
-  os_plugins = { import = "plugins.linux" }
-end
-
 require("lazy").setup({
   spec = {
     { import = "plugins" },
-    os_plugins,
   },
   checker = {
     enabled = true,

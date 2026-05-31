@@ -20,7 +20,7 @@ dotfiles/
 │   ├── mise/          # mise tool versions (host + bind-mounted into DevPod containers)
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
-│   ├── nvim/          # Neovim
+│   ├── nvim/          # Neovim (theme-aware: `lua/plugins/colorscheme.lua` eager-installs all theme colorscheme plugins and tracks `theme-set` live via an fs_event watcher on `~/.config/theme/current`)
 │   ├── shell/         # Cross-platform shell configs (zsh, atuin, generic rc)
 │   ├── shell-fedora/  # Fedora-only `.bashrc` (kept separate from Mac for divergence)
 │   ├── shell-mac/     # macOS-only `.bashrc`
