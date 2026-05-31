@@ -57,6 +57,9 @@ fi
 # Personal preference stack; non-project-specific. Note tmux is intentionally
 # NOT here — see the toolbox-only block below. `sd` is intentionally NOT here
 # either — not packaged in Fedora repos; installed from upstream binary below.
+# pass (password store), rsync (used by theme-update + general sync), and
+# bind-utils (dig / nslookup / host for DNS diagnostics) are shared so they
+# land in every DevPod container too, not just the toolbox.
 #
 # --skip-unavailable lets a re-run survive any single package going missing
 # (rename, repo metadata stale) without rolling back the whole transaction.
@@ -78,7 +81,10 @@ sudo dnf install -y --skip-unavailable \
 	awscli2 \
 	direnv \
 	xonsh \
-	python3-pip
+	python3-pip \
+	pass \
+	rsync \
+	bind-utils
 
 # ---------------------------------------------------------------------------
 # Toolbox-only: outer-layer-only packages
@@ -86,20 +92,16 @@ sudo dnf install -y --skip-unavailable \
 # tmux belongs in the outer layer (sessions span multiple devpod ssh attaches
 # into per-project containers; no tmux inside containers). flatpak-xdg-utils
 # provides flatpak-spawn — runtime dep for the stowed toolbox→host wrappers
-# (devpod, xdg-open, swaymsg under configs/toolbox/.local/bin/). pass is the
-# password store CLI.
+# (devpod, xdg-open, swaymsg under configs/toolbox/.local/bin/).
 # stow is needed inside the toolbox because commander runs `make symlinks-fedora`
 # from there; devpod containers receive stowed configs via bind mount and don't
-# invoke stow themselves. rsync is needed by `theme-update`, which refreshes
-# the in-repo omarchy theme catalog from the toolbox shell.
+# invoke stow themselves.
 # ---------------------------------------------------------------------------
 if [[ "$MODE" == "toolbox" ]]; then
 	sudo dnf install -y --skip-unavailable \
 		tmux \
-		pass \
 		flatpak-xdg-utils \
 		stow \
-		rsync \
 		chafa
 fi
 
