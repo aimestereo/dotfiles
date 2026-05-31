@@ -1,0 +1,140 @@
+/*
+ * waybar style.css — styles the Fedora-default waybar WITHOUT overriding it.
+ *
+ * There is intentionally NO `config`/`config.jsonc` in this package: waybar
+ * resolves its config and stylesheet from independent search paths, so shipping
+ * only this file keeps the system module layout (/etc/xdg/waybar/config.jsonc)
+ * and just swaps the styling.
+ *
+ * Colors come from the theme pipeline: `theme-set` retargets
+ * ~/.config/theme/current, and the import below pulls that theme's
+ * @foreground/@background. `theme-set` sends SIGUSR2 to live-reload waybar.
+ *
+ * Only @foreground/@background are reliably defined across all themes, so this
+ * sheet is deliberately two-tone: shades and the focus accent are derived with
+ * alpha()/color inversion rather than a fixed palette.
+ */
+
+@import "../theme/current/waybar.css";
+
+* {
+    font-family: 'Noto Sans Mono', 'Font Awesome 6 Free', 'Font Awesome 6 Brands', monospace;
+    font-size: 13px;
+    min-height: 0;          /* override the default's implicit min-height */
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background-color: alpha(@background, 0.92);
+    color: @foreground;
+    border-bottom: 2px solid alpha(@foreground, 0.12);
+    transition-property: background-color;
+    transition-duration: .3s;
+}
+
+window#waybar.hidden { opacity: 0.2; }
+
+tooltip {
+    background-color: @background;
+    border: 1px solid alpha(@foreground, 0.25);
+    border-radius: 8px;
+}
+tooltip label { color: @foreground; }
+
+/* ── module spacing ────────────────────────────────────────── */
+#mode,
+#scratchpad,
+#idle_inhibitor,
+#pulseaudio,
+#network,
+#power-profiles-daemon,
+#cpu,
+#memory,
+#temperature,
+#backlight,
+#language,
+#battery,
+#clock,
+#tray {
+    padding: 0 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    color: @foreground;
+    background-color: alpha(@foreground, 0.08);
+}
+
+#window { color: alpha(@foreground, 0.75); }
+
+/* ── workspaces ────────────────────────────────────────────── */
+#workspaces { padding: 0; }
+
+#workspaces button {
+    padding: 0 8px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    color: alpha(@foreground, 0.55);
+    background-color: alpha(@foreground, 0.06);
+}
+#workspaces button:hover {
+    background-color: alpha(@foreground, 0.16);
+    box-shadow: none;       /* kill the default white underline-on-hover */
+    text-shadow: none;
+}
+#workspaces button.focused,
+#workspaces button.active {
+    color: @background;
+    background-color: @foreground;
+}
+#workspaces button.urgent {
+    color: @background;
+    background-color: @foreground;
+    animation: blink 0.7s steps(1) infinite alternate;
+}
+
+#mode {
+    color: @background;
+    background-color: @foreground;
+    font-style: italic;
+}
+
+/* ── stateful accents (two-tone: invert to signal) ─────────── */
+#clock {
+    color: @background;
+    background-color: @foreground;
+}
+
+#idle_inhibitor.activated,
+#pulseaudio.muted,
+#network.disconnected,
+#power-profiles-daemon.performance {
+    color: @background;
+    background-color: @foreground;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: @background;
+    background-color: @foreground;
+}
+
+#battery.critical:not(.charging),
+#temperature.critical {
+    color: @background;
+    background-color: @foreground;
+    animation: blink 0.7s steps(1) infinite alternate;
+}
+
+@keyframes blink {
+    to {
+        color: @foreground;
+        background-color: alpha(@foreground, 0.08);
+    }
+}
+
+#tray > .passive { -gtk-icon-effect: dim; }
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    color: @background;
+    background-color: @foreground;
+}

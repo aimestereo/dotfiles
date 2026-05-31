@@ -87,3 +87,7 @@ fi
 if [[ $procs == *ghostty* ]]; then
 	killall -SIGUSR2 ghostty >/dev/null
 fi
+# waybar reloads its stylesheet on SIGUSR2 (SIGUSR1 = visibility toggle).
+if [[ $procs == *waybar* ]]; then
+	killall -SIGUSR2 waybar >/dev/null
+fi
