@@ -68,6 +68,7 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 	pinentry \
 	stow \
 	wl-clipboard \
+	swayosd \
 	qt5-qtwayland \
 	libnotify \
 	ddcutil \

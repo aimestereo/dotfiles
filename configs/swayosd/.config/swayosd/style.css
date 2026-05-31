@@ -1,0 +1,42 @@
+/*
+ * swayosd style.css — themes the volume/brightness OSD via the theme pipeline.
+ *
+ * swayosd-server reads ~/.config/swayosd/style.css by default (no config.toml
+ * needed — that only sets show_percentage/max_volume). Like waybar, this is a
+ * style-only package: the palette comes from the theme pipeline and the layout
+ * rules live here.
+ *
+ * The import pulls the active theme's @define-color set (background-color,
+ * border-color, label, image, progress). `theme-set` retargets
+ * ~/.config/theme/current and restarts swayosd-server so the new palette
+ * applies (swayosd reads its CSS at startup — there is no live-reload signal).
+ * Themes that ship a full swayosd.css override layer extra rules via the same
+ * @import; the generic rules below cover the palette-only themes.
+ */
+
+@import "../theme/current/swayosd.css";
+
+window {
+    border-radius: 0;
+    opacity: 0.97;
+    border: 2px solid @border-color;
+    background-color: @background-color;
+}
+
+label {
+    font-family: 'Noto Sans Mono', monospace;
+    font-size: 11pt;
+    color: @label;
+}
+
+image {
+    color: @image;
+}
+
+progressbar {
+    border-radius: 0;
+}
+
+progress {
+    background-color: @progress;
+}

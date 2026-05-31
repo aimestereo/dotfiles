@@ -95,3 +95,9 @@ fi
 if [[ $procs == *btop* ]]; then
 	killall -SIGUSR2 btop >/dev/null
 fi
+# swayosd reads its CSS only at startup (no reload signal), so restart the unit.
+# Gated on is-active = clean no-op when absent. `systemctl --user` may not reach
+# the per-user bus from a toolbox shell, so this reload is host-context.
+if systemctl --user is-active swayosd-server >/dev/null 2>&1; then
+	systemctl --user restart swayosd-server >/dev/null
+fi

@@ -14,7 +14,7 @@ mac-after-install: symlinks-mac
 
 .PHONY: symlinks-mac
 symlinks-mac:
-	utils/stow-packages '^(shell-fedora|toolbox|waybar)$$'
+	utils/stow-packages '^(shell-fedora|toolbox|waybar|swayosd)$$'
 	utils/theme-bootstrap
 
 .PHONY: symlinks-fedora
