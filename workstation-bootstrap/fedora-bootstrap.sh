@@ -73,6 +73,7 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 	ddcutil \
 	tailscale \
 	keyd \
+	btop \
 	1password \
 	1password-cli
 

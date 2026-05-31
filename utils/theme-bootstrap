@@ -23,6 +23,22 @@ if [[ ! -L $bg_symlink && ! -e $bg_symlink && -f $default_bg ]]; then
 	ln -sfn "$default_bg" "$bg_symlink"
 fi
 
+# Wire btop to the active theme. btop's `color_theme = "current"` (shipped in
+# configs/btop/.config/btop/btop.conf) makes it look up
+# ~/.config/btop/themes/current.theme; this symlink retargets that at the
+# theme pipeline's rendered btop.theme so `theme-set <name>` recolors btop
+# (SIGUSR2-reloaded by theme-set). Absolute target — relative symlinks baked
+# into the stow source would resolve relative to the repo, not $HOME.
+# Gated on ~/.config/btop/ existing — true on both Mac and Fedora after stow
+# (the btop package is in symlinks-mac AND symlinks-fedora) regardless of
+# whether the btop binary is installed yet. The gate short-circuits cleanly
+# on a host that hasn't stowed btop, e.g. mid-bootstrap before make symlinks-*.
+btop_themes_dir="$HOME/.config/btop/themes"
+if [[ -d $HOME/.config/btop ]]; then
+	mkdir -p "$btop_themes_dir"
+	ln -sfn "$HOME/.config/theme/current/btop.theme" "$btop_themes_dir/current.theme"
+fi
+
 # Tell a running sway to re-read its config so freshly-stowed sway changes
 # (output bg / config.d/ bindings / swayidle override) apply without a logout.
 # No-op on Mac or when sway isn't running. swayidle is wrapped by

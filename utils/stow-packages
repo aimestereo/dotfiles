@@ -3,13 +3,14 @@
 # Stow every package under configs/ to $HOME, except those matching the
 # extended-regex passed as $1 (matched against the package name; default:
 # never matches). Must be run from the repo root (Make targets are, and
-# direct invocations are expected to cd in first). The `theme` and `agents`
-# packages get --no-folding so their target dirs stay real directories:
-# theme-render writes runtime state into ~/.config/theme/, and Claude Code /
+# direct invocations are expected to cd in first). The `theme`, `agents`, and
+# `btop` packages get --no-folding so their target dirs stay real directories:
+# theme-render writes runtime state into ~/.config/theme/, Claude Code /
 # Cursor write into ~/.claude/ and ~/.cursor/ (and the separate pka-team stow
-# package also contributes into ~/.claude/). Folded stow would collapse those
-# into single symlinks and put the runtime writes inside the repo. Add
-# per-package flags to the case block as needed.
+# package also contributes into ~/.claude/), and theme-bootstrap drops a
+# `themes/current.theme` symlink into ~/.config/btop/. Folded stow would
+# collapse those into single symlinks and put the runtime writes inside the
+# repo. Add per-package flags to the case block as needed.
 
 set -euo pipefail
 
@@ -21,7 +22,7 @@ cd configs/
 stow_pkg() {
 	local pkg="$1" flags=("--restow" "-t" "$HOME" "-v")
 	case "$pkg" in
-	theme | agents) flags+=("--no-folding") ;;
+	theme | agents | btop) flags+=("--no-folding") ;;
 	esac
 	# grep -v over rg: this is bootstrap-tier code that runs before brew/dnf
 	# install rg, so rg is not guaranteed on PATH. Filtering a known stderr

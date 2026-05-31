@@ -10,6 +10,7 @@ dotfiles/
 │   ├── agents/        # AI agent commands (Claude, Cursor)
 │   ├── aws/           # AWS CLI helpers (stow package; currently a placeholder)
 │   ├── brightness/    # `brightness-control` (ddcutil-based DDC/CI control; Linux)
+│   ├── btop/          # btop process monitor (`color_theme = "current"`; theme palette via `theme-bootstrap` symlink).
 │   ├── direnv/        # Direnv global config (`direnv.toml` whitelist + settings)
 │   ├── ghostty/       # Ghostty terminal (includes ~/.config/theme/current/ghostty.conf)
 │   ├── git/           # Git configuration
@@ -94,11 +95,11 @@ Two modes available (set `HYPER_MODE` in `configs/hammerspoon/.hammerspoon/init.
 
 Kitty and Ghostty include their palette from `~/.config/theme/current/`, a symlink at one of the rendered themes under `~/.config/theme/rendered/`. The theme catalog is vendored in the repo — palettes (`colors.toml`) and upstream per-theme overrides under `configs/theme/.config/theme/themes/<name>/`, omarchy renderer templates under `configs/theme/.config/theme/themed/*.tpl`. Backgrounds are not vendored.
 
-Stow uses `--no-folding` for the `theme/` package so `~/.config/theme/` stays a real directory (`themes/` and `themed/` are per-file symlinks; `rendered/` and `current` are runtime-only and never touch the repo).
+Stow uses `--no-folding` for the `theme/` package (and `agents/`, `btop/` — see Key Utilities below) so `~/.config/theme/` stays a real directory (`themes/` and `themed/` are per-file symlinks; `rendered/` and `current` are runtime-only and never touch the repo).
 
 - `theme-render [<name>]` — renders runtime themes under `~/.config/theme/rendered/<name>/` (all themes by default) by copying sources from `~/.config/theme/themes/<name>/` then applying `theme-set-templates`. Per-theme upstream override files win over template renders (skip-if-exists guard).
 - `theme-set-templates [theme-dir]` — vendored from omarchy. Renders `~/.config/theme/themed/*.tpl` against the theme dir's `colors.toml` (palette via `{{ key }}` / `{{ key_strip }}` / `{{ key_rgb }}` placeholders).
-- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets `~/.config/theme/current → rendered/<name>` and live-reloads running terminals (`SIGUSR1` kitty, `SIGUSR2` ghostty) and waybar (`SIGUSR2`). Renders on demand if missing. Defaults to `catppuccin` on a host with no `current` symlink yet.
+- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets `~/.config/theme/current → rendered/<name>` and live-reloads running terminals (`SIGUSR1` kitty, `SIGUSR2` ghostty), waybar (`SIGUSR2`), and btop (`SIGUSR2`). Renders on demand if missing. Defaults to `catppuccin` on a host with no `current` symlink yet.
 - `theme-bg-set <name|path>` (or no arg for interactive picker with fzf + chafa image preview) — retargets the `~/.config/theme/current-background-image` symlink at an image under `~/backgrounds/` (or any absolute/relative path). Sway's `output * bg` and swaylock's `-i` flag both reference this symlink, so wallpaper rotation needs no config edit. Pushes `swaymsg "output * bg …"` when sway is running; swaylock picks up the change at the next lock. `theme-bootstrap` seeds the symlink to `car-with-full-moon-background.jpg` on first stow. The script is context-agnostic: the sway bindsym wraps the call in `toolbox-run` (see `configs/toolbox/.local/bin/toolbox-run`) so the picker has `fd` / `fzf` / `chafa` on PATH; sibling `~/.local/bin/swaymsg` toolbox-wrapper bridges the swaymsg push back to host sway via `flatpak-spawn`.
 - `theme-update` — refreshes the in-repo sources from `basecamp/omarchy@dev` (clones/pulls into `$OMARCHY_PATH`, default `~/.local/share/omarchy`), `rsync --delete`s upstream `themes/*/` (excluding `backgrounds/`) into the repo's `configs/theme/.config/theme/themes/`, copies `default/themed/*.tpl` into `configs/theme/.config/theme/themed/`, then re-runs `theme-render`. Review with `git status` / `git diff` and commit the refreshed sources.
 
@@ -106,7 +107,7 @@ Stow uses `--no-folding` for the `theme/` package so `~/.config/theme/` stays a 
 
 ## Key Utilities
 
-- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme` and `agents` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
-- `utils/theme-bootstrap` - Renders all themes (`theme-render`) and seeds `~/.config/theme/current → rendered/catppuccin` if missing. Invoked by both `make symlinks-*` targets.
+- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme`, `agents`, and `btop` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/`, `~/.config/btop/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox|waybar`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
+- `utils/theme-bootstrap` - Renders all themes (`theme-render`), seeds `~/.config/theme/current → rendered/catppuccin` if missing, seeds the wallpaper symlink, and (when `~/.config/btop/` exists) symlinks `~/.config/btop/themes/current.theme → ~/.config/theme/current/btop.theme`. Invoked by both `make symlinks-*` targets.
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration
