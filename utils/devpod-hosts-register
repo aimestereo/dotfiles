@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# devpod-hosts-register — register a per-project DevPod loopback mapping in
+# /etc/hosts. Runs as root via a scoped NOPASSWD sudoers rule
+# (/etc/sudoers.d/devpod-loopback), so devpod-allocate-loopback-ip can append
+# the mapping without a password — required because devpod-up re-execs onto the
+# host through `flatpak-spawn --host`, which has no controlling TTY (DOT-62).
+#
+# This helper is deliberately narrow: it accepts only a validated project name
+# and a 127.0.0.X loopback IP, and only ever appends the fixed paired marker
+# format below. It cannot write arbitrary lines to /etc/hosts, so the NOPASSWD
+# grant exposes no general /etc/hosts write primitive.
+#
+# Idempotent: if PROJECT is already registered (marker present), exits 0 without
+# touching the file.
+#
+# Marker format (must stay in sync with devpod-allocate-loopback-ip's lookup):
+#   # devpod-loopback: PROJECT=127.0.0.X
+#   127.0.0.X<TAB>PROJECT
+#
+# Usage:  devpod-hosts-register <project> <ip>
+# Installed to: /usr/local/sbin/devpod-hosts-register (by utils/fedora-after-install)
+
+set -euo pipefail
+
+project="${1:?usage: $0 <project> <ip>}"
+ip="${2:?usage: $0 <project> <ip>}"
+
+if ! [[ "$project" =~ ^[A-Za-z][A-Za-z0-9_-]*$ ]]; then
+  echo "devpod-hosts-register: invalid project name '$project'" >&2
+  exit 1
+fi
+
+# 127.0.0.X with X in 2..254 (1 = localhost, 255 = broadcast — both reserved).
+if ! [[ "$ip" =~ ^127\.0\.0\.([2-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-4])$ ]]; then
+  echo "devpod-hosts-register: invalid loopback IP '$ip' (expected 127.0.0.X, X in 2..254)" >&2
+  exit 1
+fi
+
+hosts_file=/etc/hosts
+marker_prefix='# devpod-loopback:'
+
+# Already registered → noop. awk exits 0 even with no match.
+if awk -v pat="^${marker_prefix} ${project}=" '$0 ~ pat { found=1 } END { exit !found }' "$hosts_file"; then
+  exit 0
+fi
+
+{
+  printf '\n'
+  printf '%s %s=%s\n' "$marker_prefix" "$project" "$ip"
+  printf '%s\t%s\n' "$ip" "$project"
+} >>"$hosts_file"

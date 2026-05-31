@@ -39,16 +39,25 @@ if [[ -n "$existing" ]]; then
   exit 0
 fi
 
+# Privileged append goes through a narrow, root-owned helper exposed via a
+# scoped NOPASSWD sudoers rule (/etc/sudoers.d/devpod-loopback). This is what
+# lets allocation work with no TTY — devpod-up re-execs onto the host through
+# `flatpak-spawn --host`, where plain `sudo` can't prompt for a password
+# (DOT-62). The helper validates its args and only ever writes the fixed marker
+# format, so the NOPASSWD grant is not a general /etc/hosts write primitive.
+register=/usr/local/sbin/devpod-hosts-register
+if [[ ! -x "$register" ]]; then
+  echo "ERROR: $register not found. Run \`make fedora\` on the host to install the" >&2
+  echo "       loopback-registration helper + sudoers rule, then retry." >&2
+  exit 1
+fi
+
 for i in $(seq 2 254); do
   ip="127.0.0.$i"
   # Escape dots so the regex matches an IP literal, not "127a0b0c$i".
   if ! grep -qE "^${ip//./\\.}([[:space:]]|$)" "$hosts_file"; then
-    echo "Registering $ip for project '$project' (sudo required to edit $hosts_file)" >&2
-    {
-      printf '\n'
-      printf '%s %s=%s\n' "$marker_prefix" "$project" "$ip"
-      printf '%s\t%s\n' "$ip" "$project"
-    } | sudo tee -a "$hosts_file" >/dev/null
+    echo "Registering $ip for project '$project' in $hosts_file" >&2
+    sudo "$register" "$project" "$ip"
     echo "$ip"
     exit 0
   fi

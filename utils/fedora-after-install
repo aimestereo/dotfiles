@@ -26,6 +26,20 @@ utils/install-devpod
 toolbox create -y tools || true
 toolbox run -c tools bash "$(pwd)/utils/install-personal-tools" toolbox
 
+# devpod loopback registration: a narrow root-owned helper plus a scoped
+# NOPASSWD sudoers rule. devpod-allocate-loopback-ip calls the helper to append
+# a per-project 127.0.0.X mapping to /etc/hosts. The NOPASSWD grant is required
+# because devpod-up re-execs onto the host via `flatpak-spawn --host`, which has
+# no controlling TTY for a password prompt (DOT-62). The helper validates its
+# args and only writes the fixed marker format, so the grant exposes no general
+# /etc/hosts write primitive.
+sudo install -m 0755 utils/devpod-hosts-register /usr/local/sbin/devpod-hosts-register
+sudoers_tmp="$(mktemp)"
+trap 'rm -f "$sudoers_tmp"' EXIT
+printf '%s ALL=(root) NOPASSWD: /usr/local/sbin/devpod-hosts-register\n' "$(id -un)" >"$sudoers_tmp"
+visudo -cf "$sudoers_tmp" >/dev/null
+sudo install -m 0440 -o root -g root "$sudoers_tmp" /etc/sudoers.d/devpod-loopback
+
 # keyd: copy the user-managed config into /etc and (re)start the service.
 # Requires the 'keyd' package from the USB Tier-1 rpm-ostree step.
 sudo mkdir -p /etc/keyd
