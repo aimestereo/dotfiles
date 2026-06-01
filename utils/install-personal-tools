@@ -117,20 +117,59 @@ fi
 
 export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$HOME/.atuin/bin:$PATH"
 
-# mise: upstream-recommended install (drops binary into ~/.local/bin)
-command -v mise >/dev/null || curl -fsSL https://mise.run | sh
+# retry <attempts> <cmd…> — re-run a flaky network step on failure with linear
+# backoff. The release CDNs these installers hit (mise.run, setup.atuin.sh,
+# GitHub releases, PyPI, …) intermittently throw transient TLS/handshake errors
+# ("packet length too long", "received corrupt message", unauthenticated GitHub
+# API rate-limit) that clear on a retry; without this a single blip aborts the
+# whole bringup under `set -euo pipefail`. Returns the last failure's status if
+# every attempt fails — so a genuinely-broken critical step still propagates.
+retry() {
+	local -r max="$1"; shift
+	local n=1
+	until "$@"; do
+		local rc=$?
+		if (( n >= max )); then
+			echo "install-personal-tools: '$1' failed after $max attempts (rc=$rc)" >&2
+			return "$rc"
+		fi
+		echo "install-personal-tools: '$1' attempt $n/$max failed (rc=$rc); retrying in $((n * 5))s…" >&2
+		sleep "$((n * 5))"
+		n=$((n + 1))
+	done
+}
+
+# optional <cmd…> — retry, but on persistent failure warn and continue instead
+# of aborting. For personal-preference tools (atuin, starship, claude, sd,
+# xonsh) whose absence degrades comfort but does not break the container; mise
+# and `mise install` stay fatal (the project toolchain depends on them).
+optional() {
+	retry 3 "$@" || echo "install-personal-tools: optional '$1' failed after retries; continuing without it" >&2
+}
+
+# Each network installer is a function so `retry`/`optional` can re-run the
+# whole pipeline (curl | sh) as one unit — pipefail fails the pipe on a curl
+# error, which retry then catches.
+install_mise()     { curl -fsSL https://mise.run | sh; }
+install_atuin()    { curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh; }
+install_starship() { curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"; }
+
+# mise: upstream-recommended install (drops binary into ~/.local/bin). Critical
+# — everything below resolves through mise — so a persistent failure aborts.
+command -v mise >/dev/null || retry 3 install_mise
 
 # atuin: upstream install script (drops binary into ~/.atuin/bin, not ~/.local/bin)
-[[ -x "$HOME/.atuin/bin/atuin" ]] || curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+[[ -x "$HOME/.atuin/bin/atuin" ]] || optional install_atuin
 
 # starship: upstream install script
-command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
+command -v starship >/dev/null || optional install_starship
 
 # claude: Anthropic-recommended install, pinned to $CLAUDE_VERSION. The guard is
 # version-aware (not just `command -v`) so a stale install gets re-pinned — the
 # installer's VERSION arg also downgrades. install.sh accepts [stable|latest|VERSION].
 claude_have="$(command -v claude >/dev/null 2>&1 && claude --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
-[[ "$claude_have" == "$CLAUDE_VERSION" ]] || curl -fsSL https://claude.ai/install.sh | bash -s -- "$CLAUDE_VERSION"
+install_claude() { curl -fsSL https://claude.ai/install.sh | bash -s -- "$CLAUDE_VERSION"; }
+[[ "$claude_have" == "$CLAUDE_VERSION" ]] || optional install_claude
 
 # sd: GitHub release binary (chmln/sd is not packaged in Fedora).
 if ! command -v sd >/dev/null; then
@@ -140,9 +179,13 @@ if ! command -v sd >/dev/null; then
 		*)       echo "install-personal-tools: no sd release for arch '$(uname -m)'" >&2; exit 1 ;;
 	esac
 	sd_tmp="$(mktemp -d)"
-	curl -fsSL "https://github.com/chmln/sd/releases/download/v${SD_VERSION}/sd-v${SD_VERSION}-${sd_target}.tar.gz" \
-		| tar -xz -C "$sd_tmp" --strip-components=1
-	install -Dm 0755 "$sd_tmp/sd" "$HOME/.local/bin/sd"
+	install_sd() {
+		curl -fsSL "https://github.com/chmln/sd/releases/download/v${SD_VERSION}/sd-v${SD_VERSION}-${sd_target}.tar.gz" \
+			| tar -xz -C "$sd_tmp" --strip-components=1
+	}
+	if optional install_sd && [[ -f "$sd_tmp/sd" ]]; then
+		install -Dm 0755 "$sd_tmp/sd" "$HOME/.local/bin/sd"
+	fi
 	rm -rf "$sd_tmp"
 fi
 
@@ -160,10 +203,10 @@ fi
 # toolbox#908). chsh inside the toolbox is therefore useless — the actual
 # bash → xonsh hook lives in configs/shell-fedora/.bashrc, gated on the
 # container marker. Hence: no chsh here. Just install xonsh + xontribs.
-pip install --user "xonsh[ptk]==${XONSH_VERSION}"
+optional pip install --user "xonsh[ptk]==${XONSH_VERSION}"
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
-xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
+optional xonsh -c "xpip install --requirement '${script_dir}/xontrib-requirements.txt'"
 
 # ---------------------------------------------------------------------------
 # Toolbox-only: host terminfo mirror
@@ -191,5 +234,8 @@ fi
 # devpod-only: realise project mise config inside the container
 # ---------------------------------------------------------------------------
 if [[ "$MODE" == "devpod" ]]; then
-	mise install
+	# Critical: installs the project toolchain. Retry transient download/TLS
+	# blips (mise has its own per-tool retry, but a hard CDN/SLSA-fetch error
+	# still surfaces here); a persistent failure aborts the bringup.
+	retry 3 mise install
 fi
