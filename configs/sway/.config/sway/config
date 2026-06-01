@@ -20,7 +20,7 @@ set $term ghostty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-# Recommends: rofi-wayland
+# Requires: rofi (Fedora `rofi` 2.x is Wayland-native; themed via ~/.config/rofi/config.rasi)
 set $rofi_cmd rofi \
         -terminal '$term'
 # Shows a combined list of the applications with desktop files and

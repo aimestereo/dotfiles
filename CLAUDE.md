@@ -23,6 +23,7 @@ dotfiles/
 │   ├── nix/           # Nix/Home Manager
 │   ├── nushell/       # Nushell shell
 │   ├── nvim/          # Neovim (theme-aware: `lua/plugins/colorscheme.lua` eager-installs all theme colorscheme plugins and tracks `theme-set` live via an fs_event watcher on `~/.config/theme/current`)
+│   ├── rofi/          # Rofi launcher ($mod+d). Theme-only `config.rasi` that `@import`s the rendered `~/.config/theme/current/rofi.rasi` (emitted by `theme-render`, not a `themed/*.tpl`). No reload — launched per-keypress. Fedora-only (Wayland launcher; Mac uses Hammerspoon/Spotlight).
 │   ├── shell/         # Cross-platform shell configs (zsh, atuin, generic rc)
 │   ├── shell-fedora/  # Fedora-only `.bashrc` (kept separate from Mac for divergence)
 │   ├── shell-mac/     # macOS-only `.bashrc`
@@ -47,7 +48,7 @@ configs/git/.config/git/config  →  ~/.config/git/config
 configs/git/.local/bin/gclean   →  ~/.local/bin/gclean
 ```
 
-Run `make symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` for Fedora). Both targets are two-line recipes that invoke `utils/stow-packages` (with the per-platform exclude regex) followed by `utils/theme-bootstrap`. The Mac exclude drops Fedora/Wayland-only packages (`shell-fedora`, `toolbox`, `waybar`, `swayosd`, `mako`).
+Run `make symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` for Fedora). Both targets are two-line recipes that invoke `utils/stow-packages` (with the per-platform exclude regex) followed by `utils/theme-bootstrap`. The Mac exclude drops Fedora/Wayland-only packages (`shell-fedora`, `toolbox`, `waybar`, `swayosd`, `mako`, `rofi`).
 
 ## Agent Commands & Skills
 
@@ -68,7 +69,7 @@ make mac                   # Full macOS setup
 make fedora-bootstrap      # Host shell only. Sync host (rpm-ostree layer + repos + Flathub remote); idempotent, requires reboot
 make fedora                # Host shell only. Full Fedora post-install (Pattern B: toolbox-as-outer — see workstation-bootstrap/dev-containers.md)
 make fedora-recreate-tools # Host shell only. Stop + remove + re-provision the `tools` toolbox from scratch (then re-runs `make fedora`).
-make symlinks-mac          # Just symlink configs (Mac; skips shell-fedora, toolbox, waybar, swayosd, mako)
+make symlinks-mac          # Just symlink configs (Mac; skips shell-fedora, toolbox, waybar, swayosd, mako, rofi)
 make symlinks-fedora       # Symlink configs (Fedora; skips hammerspoon, nix, shell-mac). Runs from host OR toolbox — $HOME is shared.
 make nix-mac               # Nix/Home Manager (macOS)
 make nix-linux             # Home Manager only (Linux/Fedora)
@@ -100,7 +101,7 @@ Kitty and Ghostty include their palette from `~/.config/theme/current/`, a symli
 
 Stow uses `--no-folding` for the `theme/` package (and `agents/`, `btop/` — see Key Utilities below) so `~/.config/theme/` stays a real directory (`themes/` and `themed/` are per-file symlinks; `rendered/` and `current` are runtime-only and never touch the repo).
 
-- `theme-render [<name>]` — renders runtime themes under `~/.config/theme/rendered/<name>/` (all themes by default) by copying sources from `~/.config/theme/themes/<name>/` then applying `theme-set-templates`. Per-theme upstream override files win over template renders (skip-if-exists guard).
+- `theme-render [<name>]` — renders runtime themes under `~/.config/theme/rendered/<name>/` (all themes by default) by copying sources from `~/.config/theme/themes/<name>/` then applying `theme-set-templates`. Per-theme upstream override files win over template renders (skip-if-exists guard). Also emits `rofi.rasi` (palette `* { bg/fg/accent/selbg/selfg }` from `colors.toml`) via an inline `render_rofi` heredoc — rofi's template can't live under `themed/` (rsync-mirror of omarchy, which ships no rofi template); the `rofi` stow package's `config.rasi` `@import`s it. No `theme-set` reload (rofi is launched per-keypress).
 - `theme-set-templates [theme-dir]` — vendored from omarchy. Renders `~/.config/theme/themed/*.tpl` against the theme dir's `colors.toml` (palette via `{{ key }}` / `{{ key_strip }}` / `{{ key_rgb }}` placeholders).
 - `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets `~/.config/theme/current → rendered/<name>` and live-reloads running terminals (`SIGUSR1` kitty, `SIGUSR2` ghostty), waybar (`SIGUSR2`), and btop (`SIGUSR2`), re-sources tmux (`tmux source-file`; its status bar uses native ANSI names that ride the terminal palette), restarts the swayosd-server user service when active (swayosd reads its CSS only at startup; the restart is a no-op when the service isn't running), and `makoctl reload`s mako when running (mako's config includes the color-only rendered `mako.ini`). Renders on demand if missing. Defaults to `catppuccin` on a host with no `current` symlink yet.
 - `theme-bg-set <name|path>` (or no arg for interactive picker with fzf + chafa image preview) — retargets the `~/.config/theme/current-background-image` symlink at an image under `~/backgrounds/` (or any absolute/relative path). Sway's `output * bg` and swaylock's `-i` flag both reference this symlink, so wallpaper rotation needs no config edit. Pushes `swaymsg "output * bg …"` when sway is running; swaylock picks up the change at the next lock. `theme-bootstrap` seeds the symlink to `car-with-full-moon-background.jpg` on first stow. The script is context-agnostic: the sway bindsym wraps the call in `toolbox-run` (see `configs/toolbox/.local/bin/toolbox-run`) so the picker has `fd` / `fzf` / `chafa` on PATH; sibling `~/.local/bin/swaymsg` toolbox-wrapper bridges the swaymsg push back to host sway via `flatpak-spawn`.
@@ -110,7 +111,7 @@ Stow uses `--no-folding` for the `theme/` package (and `agents/`, `btop/` — se
 
 ## Key Utilities
 
-- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme`, `agents`, and `btop` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/`, `~/.config/btop/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox|waybar|swayosd|mako`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
+- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme`, `agents`, and `btop` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/`, `~/.config/btop/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox|waybar|swayosd|mako|rofi`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
 - `utils/theme-bootstrap` - Renders all themes (`theme-render`), seeds `~/.config/theme/current → rendered/catppuccin` if missing, seeds the wallpaper symlink, and (when `~/.config/btop/` exists) symlinks `~/.config/btop/themes/current.theme → ~/.config/theme/current/btop.theme`. Invoked by both `make symlinks-*` targets.
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration

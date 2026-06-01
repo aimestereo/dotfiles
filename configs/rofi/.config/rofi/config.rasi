@@ -1,0 +1,76 @@
+/*
+ * rofi theme — palette follows the active dotfiles theme.
+ *
+ * ~/.config/theme/current/rofi.rasi is rendered per-theme by `theme-render`
+ * (see configs/theme/.local/bin/theme-render). It defines the palette vars
+ * (@bg/@fg/@accent/@selbg/@selfg) in a global `*` block. rofi is launched
+ * per-keypress ($mod+d in sway), so it re-reads this file — and the `current`
+ * symlink it imports — on every launch: switching themes needs no reload.
+ *
+ * The colour template can't live under ~/.config/theme/themed/ (that dir is an
+ * rsync --delete mirror of upstream omarchy, which ships no rofi template), so
+ * theme-render emits rofi.rasi from a heredoc instead.
+ */
+@import "~/.config/theme/current/rofi.rasi"
+
+* {
+    background-color: transparent;
+    text-color:       @fg;
+    spacing:          0;
+}
+
+window {
+    background-color: @bg;
+    border:           2px;
+    border-color:     @accent;
+    border-radius:    8px;
+    width:            640px;
+    padding:          8px;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    padding:  8px;
+    spacing:  8px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    text-color: @accent;
+}
+
+entry {
+    placeholder:       "Search…";
+    placeholder-color: @fg;
+}
+
+listview {
+    lines:     10;
+    scrollbar: false;
+    padding:   8px 0px 0px 0px;
+}
+
+element {
+    padding:       6px 8px;
+    border-radius: 6px;
+    spacing:       8px;
+}
+
+element selected {
+    background-color: @selbg;
+    text-color:       @selfg;
+}
+
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
+
+element-icon {
+    size:             1.1em;
+    background-color: inherit;
+}

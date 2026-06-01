@@ -26,6 +26,31 @@ rendered_dst="$HOME/.config/theme/rendered"
 
 err() { printf 'theme-render: %s\n' "$*" >&2; exit 1; }
 
+# render_rofi <theme-dir> — emit <dir>/rofi.rasi from <dir>/colors.toml.
+#
+# rofi needs a .rasi palette, but its template can't live under themed/ (that
+# dir is an rsync --delete mirror of upstream omarchy, which ships no rofi
+# template — theme-update would wipe a net-new file there). So the template is
+# this heredoc instead. configs/rofi/.config/rofi/config.rasi @imports the
+# result via the `current` symlink. Skip-if-exists mirrors theme-set-templates:
+# a per-theme rofi.rasi override (shipped under themes/<name>/) wins.
+render_rofi() {
+	local dir="$1" colors="$1/colors.toml"
+	[[ -f $colors && ! -f $dir/rofi.rasi ]] || return 0
+	# Extract a quoted value for a colors.toml key, ignoring inline comments —
+	# same quote/whitespace handling as the vendored theme-set-templates parse.
+	val() { sed -n "s/^[[:space:]\"']*$1[\"']*[[:space:]]*=[[:space:]]*[\"']\([^\"']*\)[\"'].*/\1/p" "$colors" | head -1; }
+	cat >"$dir/rofi.rasi" <<EOF
+* {
+    bg:     $(val background);
+    fg:     $(val foreground);
+    accent: $(val accent);
+    selbg:  $(val selection_background);
+    selfg:  $(val selection_foreground);
+}
+EOF
+}
+
 [[ -d $themes_src ]] || err "no theme sources at $themes_src (run 'make symlinks-*' first)"
 
 script_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
@@ -45,6 +70,7 @@ render_one() {
 	# -L: dereference stow symlinks so renders sit alongside real copies.
 	cp -RL "$src"/. "$staging"/
 	"$templates_script" "$staging" >/dev/null
+	render_rofi "$staging"
 	rm -rf "$out"
 	mv "$staging" "$out"
 	printf '  %s: ok\n' "$name"
