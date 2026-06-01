@@ -157,7 +157,7 @@ Reproducible from a fresh `make fedora-recreate-tools` on the host, and from a f
   - `--idempotent` — re-runnability without errors (DOT-20).
   - `--skip-unavailable` on dnf installs inside toolbox — Fedora-version drift (`git-delta` binary subpackage only ships from F42+; older Fedora has only the source `rust-git-delta` package).
 - **COPR registrations** (must come before package installs): `alternateved/keyd` (DOT-18), `scottames/ghostty`.
-- **Tier-1 rpm-ostree list** (host-only): `kitty ghostty git stow gnupg pinentry wl-clipboard qt5-qtwayland libnotify ddcutil tailscale keyd 1password 1password-cli` (no `xonsh`, `tmux`, `gcc` — those live in the toolbox).
+- **Tier-1 rpm-ostree list** (host-only): `kitty ghostty git stow gnupg pinentry wl-clipboard swayosd mako qt5-qtwayland libnotify ddcutil tailscale keyd 1password 1password-cli` (no `xonsh`, `tmux`, `gcc` — those live in the toolbox).
 - **`stow` in Tier-1** (DOT-19) — needed before `make symlinks-fedora` can run on the host.
 - **`qt5-qtwayland`** (DOT-22) — Qt apps render natively on Wayland (AmneziaVPN, etc.).
 
@@ -315,7 +315,7 @@ For non-trivial code we'd test functions with actual logic. For dotfiles, the on
 Sub-tasks expected to live as siblings of the DOT-38 tracking task. (Completed items have moved into the relevant "Implementation Decisions" section; their commit / DOT references are listed there.)
 
 - **xonsh sanity script** — load rc files in headless mode and assert binding presence (`Keys.ControlR`, `Keys.ControlP`, `$VI_MODE` true, eager Up). Catches binding-pipeline regressions without manual keystroke testing. Deferred — manual checklist sufficient until rc files grow.
-- **Sway WM bringup + theming** — base config + brightness keybindings + wallpaper + 15-min lock screen (swaylock + swayidle override via `current-background-image` symlink) are shipped (DOT-47). Still TBD: waybar (or alternative), application launcher (walker / rofi / fuzzel), notification daemon.
+- **Sway WM bringup + theming** — base config + brightness keybindings + wallpaper + 15-min lock screen (swaylock + swayidle override via `current-background-image` symlink) are shipped (DOT-47); waybar (DOT-68), swayosd (DOT-71), and the notification daemon (mako, theme-aware + do-not-disturb on Hyper+n, replaces dunst — DOT-71) are shipped and wired to the theme pipeline. Still TBD: application launcher (walker / rofi / fuzzel).
 - **Tailscale-to-Headscale** — if/when self-hosted Headscale becomes desirable, switch from public Tailscale coordination to private.
 - **pinentry flavor** — GTK vs Qt vs curses for GPG inside toolbox; currently using base-image default.
 - **DemoStand `.devcontainer.json` export** — DOT-24 leftover; deferred until needed.
