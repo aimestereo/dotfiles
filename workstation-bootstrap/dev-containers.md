@@ -183,7 +183,7 @@ The reference snippet in `utils/devcontainer-mounts.json` uses leading-comma aut
 
 Either way, merge in the dotfiles bits from `utils/devcontainer-mounts.json`:
 
-- `mounts` block (12 bind mounts + any per-project named volumes)
+- `mounts` block (18 bind mounts + any per-project named volumes)
 - `postCreateCommand: /dotfiles-utils/install-personal-tools devpod`
 
 Project-specific fields the snippet does not provide:
