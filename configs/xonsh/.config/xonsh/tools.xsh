@@ -2,10 +2,21 @@ import shutil
 
 from xonsh.xontribs import find_xontrib
 
+# `os` is supplied by rc.xsh (shared namespace via `source`) — do not import
+# or del here. env.xsh uses `import os as _os` as the defensive pattern when
+# a private alias is needed; for a single `os.path.exists` call we just
+# reference the rc.xsh-provided binding.
+
 if shutil.which('zoxide'):
     execx($(zoxide init xonsh))
 
-if shutil.which('mise'):
+# Pattern B: mise stays inactive in the `tools` toolbox. The global mise
+# config is intentionally empty (project tools live in the per-project devpod
+# container, not the toolbox), so the per-prompt hook-env has nothing to load
+# globally and would loudly error on every untrusted project .mise.toml. Host
+# (no mise installed) is a no-op via shutil.which; devpod containers (no
+# /run/.toolboxenv) still activate normally.
+if shutil.which('mise') and not os.path.exists('/run/.toolboxenv'):
     execx($(mise activate xonsh))
 
 if shutil.which('carapace'):
