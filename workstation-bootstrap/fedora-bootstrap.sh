@@ -68,7 +68,6 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 	pinentry \
 	stow \
 	wl-clipboard \
-	swayosd \
 	mako \
 	rofi \
 	qt5-qtwayland \
