@@ -69,6 +69,7 @@ sudo rpm-ostree install -y --idempotent --allow-inactive \
 	stow \
 	wl-clipboard \
 	swayosd \
+	mako \
 	qt5-qtwayland \
 	libnotify \
 	ddcutil \

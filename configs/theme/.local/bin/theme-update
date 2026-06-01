@@ -73,6 +73,14 @@ rsync -a --delete --exclude='backgrounds/' "$themes_src/" "$themes_dst/"
 echo "Refreshing templates under $themed_dst..."
 rsync -a --delete "$templates_src/" "$themed_dst/"
 
+# Sanitize mako.ini.tpl: upstream bakes in two `include=` lines pointing at
+# omarchy runtime paths absent here, and a missing include is fatal to mako.
+# Strip them so the rendered mako.ini is color-only (configs/mako/config
+# includes it directly). Idempotent: re-applied on every refresh.
+if [[ -f $themed_dst/mako.ini.tpl ]]; then
+	sed -i '/^include=/d' "$themed_dst/mako.ini.tpl"
+fi
+
 echo
 echo "Re-rendering runtime themes..."
 "$render_script"

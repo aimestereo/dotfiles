@@ -46,3 +46,10 @@ sudo mkdir -p /etc/keyd
 sudo install -m 0644 "$HOME/.local/share/keyd/default.conf" /etc/keyd/default.conf
 sudo systemctl enable keyd
 sudo systemctl restart keyd
+
+# Notifications: mako replaces the base image's dunst. dunst ships as a static,
+# D-Bus-activated user unit (org.freedesktop.Notifications) — mask it so it can
+# never be activated, leaving mako (exec'd from sway config.d/25-notifications)
+# to own the notification bus. mako is layered by fedora-bootstrap.sh; sway
+# autostarts it. Takes effect on the next graphical login.
+systemctl --user mask dunst.service

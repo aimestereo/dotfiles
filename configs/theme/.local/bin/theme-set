@@ -106,3 +106,8 @@ fi
 if systemctl --user is-active swayosd-server >/dev/null 2>&1; then
 	systemctl --user restart swayosd-server >/dev/null
 fi
+# mako re-reads config (+ its include of the rendered mako.ini) on reload;
+# cross-toolbox via the shared PID namespace.
+if [[ $procs == *mako* ]]; then
+	makoctl reload >/dev/null
+fi

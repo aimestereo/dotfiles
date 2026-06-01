@@ -1,0 +1,28 @@
+# mako — Wayland notification daemon, themed via the theme pipeline.
+#
+# Style-only package, same shape as swayosd: our own minimal settings live
+# here, and the active palette is pulled in from the theme pipeline. The
+# `include` below points at the rendered ~/.config/theme/current/mako.ini,
+# which is color-only (text/border/background) — theme-update strips omarchy's
+# two `include=` lines from mako.ini.tpl when refreshing sources (a missing
+# include is fatal to mako, and those omarchy paths don't exist here). On theme
+# switch, theme-set runs `makoctl reload` so the new palette applies.
+#
+# do-not-disturb: toggle with Hyper+n (sway config.d/25-notifications.conf →
+# `makoctl mode -t do-not-disturb`). The rules at the bottom hide notifications
+# while DND is active, but still let manual `notify-send` alerts through.
+
+font=Noto Sans Mono 11
+border-size=2
+border-radius=0
+default-timeout=5000
+padding=10,15
+width=420
+
+include=~/.config/theme/current/mako.ini
+
+[mode=do-not-disturb]
+invisible=true
+
+[mode=do-not-disturb app-name=notify-send]
+invisible=false
