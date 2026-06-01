@@ -9,11 +9,12 @@ dotfiles/
 ├── configs/           # Stow packages (each subdirectory is a package)
 │   ├── agents/        # AI agent commands (Claude, Cursor)
 │   ├── aws/           # AWS CLI helpers (stow package; currently a placeholder)
+│   ├── bat/           # bat pager (`--theme="base16"`; follows the active theme via the terminal ANSI palette, no per-theme file)
 │   ├── brightness/    # `brightness-control` (ddcutil-based DDC/CI control; Linux)
 │   ├── btop/          # btop process monitor (`color_theme = "current"`; theme palette via `theme-bootstrap` symlink).
 │   ├── direnv/        # Direnv global config (`direnv.toml` whitelist + settings)
 │   ├── ghostty/       # Ghostty terminal (includes ~/.config/theme/current/ghostty.conf)
-│   ├── git/           # Git configuration
+│   ├── git/           # Git configuration (incl. delta `syntax-theme = base16` → follows the active theme via the terminal ANSI palette)
 │   ├── hammerspoon/   # macOS automation (Hyper key, window mgmt, draw on screen)
 │   ├── keyd/          # CapsLock → Hyper remap (Fedora; sudo-installed to /etc/keyd)
 │   ├── kitty/         # Kitty terminal (includes ~/.config/theme/current/kitty.conf)
@@ -27,7 +28,7 @@ dotfiles/
 │   ├── starship/      # Starship cross-shell prompt config
 │   ├── swayosd/       # SwayOSD volume/brightness OSD (style.css only; imports theme palette + restart-reloaded by theme-set). Fedora-only (excluded from Mac stow).
 │   ├── theme/         # Vendored omarchy theme sources + templates; `theme-render` / `theme-set` / `theme-update` scripts
-│   ├── tmux/          # Tmux
+│   ├── tmux/          # Tmux (status bar themed with native ANSI names → follows the active theme via the terminal palette; `theme-set` re-sources it)
 │   ├── toolbox/       # Stowed host↔toolbox wrappers: toolbox-run, devpod, devpod-up, devpod-allocate-loopback-ip, xdg-open, swaymsg. Fedora-only (excluded from Mac stow).
 │   ├── waybar/        # Waybar styling (style.css only; imports theme palette). Fedora-only (excluded from Mac stow).
 │   └── xonsh/         # Xonsh shell — opt-in on Mac (`xonsh -i`), planned default on Fedora
@@ -100,7 +101,7 @@ Stow uses `--no-folding` for the `theme/` package (and `agents/`, `btop/` — se
 
 - `theme-render [<name>]` — renders runtime themes under `~/.config/theme/rendered/<name>/` (all themes by default) by copying sources from `~/.config/theme/themes/<name>/` then applying `theme-set-templates`. Per-theme upstream override files win over template renders (skip-if-exists guard).
 - `theme-set-templates [theme-dir]` — vendored from omarchy. Renders `~/.config/theme/themed/*.tpl` against the theme dir's `colors.toml` (palette via `{{ key }}` / `{{ key_strip }}` / `{{ key_rgb }}` placeholders).
-- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets `~/.config/theme/current → rendered/<name>` and live-reloads running terminals (`SIGUSR1` kitty, `SIGUSR2` ghostty), waybar (`SIGUSR2`), and btop (`SIGUSR2`), and restarts the swayosd-server user service when active (swayosd reads its CSS only at startup; the restart is a no-op when the service isn't running). Renders on demand if missing. Defaults to `catppuccin` on a host with no `current` symlink yet.
+- `theme-set <name>` (or no arg for interactive picker via fzf / numbered menu) — retargets `~/.config/theme/current → rendered/<name>` and live-reloads running terminals (`SIGUSR1` kitty, `SIGUSR2` ghostty), waybar (`SIGUSR2`), and btop (`SIGUSR2`), re-sources tmux (`tmux source-file`; its status bar uses native ANSI names that ride the terminal palette), and restarts the swayosd-server user service when active (swayosd reads its CSS only at startup; the restart is a no-op when the service isn't running). Renders on demand if missing. Defaults to `catppuccin` on a host with no `current` symlink yet.
 - `theme-bg-set <name|path>` (or no arg for interactive picker with fzf + chafa image preview) — retargets the `~/.config/theme/current-background-image` symlink at an image under `~/backgrounds/` (or any absolute/relative path). Sway's `output * bg` and swaylock's `-i` flag both reference this symlink, so wallpaper rotation needs no config edit. Pushes `swaymsg "output * bg …"` when sway is running; swaylock picks up the change at the next lock. `theme-bootstrap` seeds the symlink to `car-with-full-moon-background.jpg` on first stow. The script is context-agnostic: the sway bindsym wraps the call in `toolbox-run` (see `configs/toolbox/.local/bin/toolbox-run`) so the picker has `fd` / `fzf` / `chafa` on PATH; sibling `~/.local/bin/swaymsg` toolbox-wrapper bridges the swaymsg push back to host sway via `flatpak-spawn`.
 - `theme-update` — refreshes the in-repo sources from `basecamp/omarchy@dev` (clones/pulls into `$OMARCHY_PATH`, default `~/.local/share/omarchy`), `rsync --delete`s upstream `themes/*/` (excluding `backgrounds/`) into the repo's `configs/theme/.config/theme/themes/`, copies `default/themed/*.tpl` into `configs/theme/.config/theme/themed/`, then re-runs `theme-render`. Review with `git status` / `git diff` and commit the refreshed sources.
 

@@ -1,0 +1,5 @@
+# bat follows the active terminal theme via the 16-colour ANSI palette.
+# `base16` renders syntax highlighting against the terminal's palette (which
+# `theme-set` retints), so bat themes for free with no per-theme file and no
+# `bat cache --build`. Swap to "ansi" for a sparser 8-colour look.
+--theme="base16"
