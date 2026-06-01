@@ -38,5 +38,16 @@ fi
 
 ip="$("$HOME/.local/bin/devpod-allocate-loopback-ip" "$project")"
 export LOOPBACK_IP="$ip"
-echo "devpod-up: project=$project ip=$ip" >&2
-exec /usr/local/bin/devpod up "$workspace" "$@"
+
+# Default to no IDE: Pattern B attaches via `devpod ssh` + the toolbox's
+# tmux/neovim, so the browser openvscode-server DevPod installs by default is
+# dead weight. A user-supplied --ide (any value) overrides this default.
+ide_default=(--ide none)
+for arg in "$@"; do
+	case "$arg" in
+		--ide | --ide=*) ide_default=() ; break ;;
+	esac
+done
+
+echo "devpod-up: project=$project ip=$ip${ide_default[0]:+ ide=none}" >&2
+exec /usr/local/bin/devpod up "$workspace" "${ide_default[@]}" "$@"
