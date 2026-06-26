@@ -8,10 +8,8 @@ opt.incsearch = true
 opt.number = true
 opt.relativenumber = true
 
--- Enable mouse mode
--- opt.mouse = "a"
--- Disable mouse mode
-opt.mouse = ""
+-- Enable mouse mode (scroll, click to focus splits)
+opt.mouse = "a"
 
 -- Scroll padding (lines from cursor to top/bottom)
 opt.scrolloff = 8
