@@ -77,7 +77,7 @@
 	rawlog = -c core.pager=less -c pager.diff=less log
 	raw = -c core.pager=less -c pager.diff=less
 	l = log --oneline
-	lg = log --oneline --graph --decorate
+	lg = log --oneline --graph --decorate --decorate-refs-exclude=refs/tags
 	scd = log --left-right --graph --cherry-pick --oneline
 	#############
 	ls = ls-files
