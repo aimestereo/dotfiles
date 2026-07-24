@@ -1,6 +1,6 @@
 ---
 name: jira-b2b
-description: Generic Jira MCP workflow — self-assign at creation, In-Progress transition when work starts, and Story→Sub-task hierarchy when a feature is split into multiple issues. Project-specific constants (cloudId, project key, custom fields, issue-type table) live in the PKA wiki page `jira-b2b-constants`.
+description: Generic Jira MCP workflow — self-assign at creation, In-Progress transition when work starts, Testing transition when work is merged, and Story→Sub-task hierarchy when a feature is split into multiple issues. Project-specific constants (cloudId, project key, custom fields, issue-type table, post-merge transition) live in the PKA wiki page `jira-b2b-constants`.
 triggers:
   - jira
   - mcp__jira
@@ -63,6 +63,14 @@ Protocol:
 5. **Never create sibling Tasks for a split feature.** The hierarchy is the whole point — Story parents Sub-tasks. Only use standalone Task when the work has no siblings and no natural Story home.
 
 Skip this rule when: the work is one issue with multiple PRs (that's a single Task or Story, no split); or the commander explicitly says "just create N Tasks, no parent" (rare — confirm).
+
+## Rule 4 — Transition to Testing (not Done) when work is merged
+
+- **When the PR merges upstream (or the direct-to-main commit lands),** transition the issue to the workflow's "under verification" state — Testing / QA / Verify. Never jump straight to Done from In Progress. The verification stage exists so QA / manual smoke-tests can catch regressions CI missed, and its absence in the audit trail is visible to teammates.
+- The specific transition ID and target status name are project-specific. Look them up in the constants page's "Post-merge workflow" section (or equivalent) and pass that transition ID to `mcp__jira__transitionJiraIssue`.
+- **If the constants page names no post-merge state**, ask the commander which transition to use before falling back to Done. Do not silently skip the verification stage.
+- **Downstream transitions** (Testing → Ready to Deploy → Deployed → Done, or whatever the project uses) are typically driven by QA, deploy pipelines, or manual verification. The Jira MCP caller does NOT auto-advance beyond the post-merge state unless the constants page explicitly authorises it.
+- Applies per-issue. On a Story with Sub-tasks: transition each Sub-task as its PR merges. The parent Story advances when its last Sub-task lands.
 
 ## Common gotchas
 
@@ -133,7 +141,8 @@ for issue_key in [sub_be.key, story.key]:
 
 ## Cheat sheet
 
-- Before any Jira MCP call in a session → fetch `jira-b2b-constants` via `mcp__pka__wiki_page_get` and keep `cloudId`, `projectKey`, mandatory-fields JSON in in-context memory.
+- Before any Jira MCP call in a session → fetch `jira-b2b-constants` via `mcp__pka__wiki_page_get` and keep `cloudId`, `projectKey`, mandatory-fields JSON, and the post-merge transition in in-context memory.
 - Creating an issue? → `assignee_account_id = commander` + all mandatory fields from the constants page. Always.
 - Starting to code on an issue? → `getTransitionsForJiraIssue` + `transitionJiraIssue` to In Progress. Always.
+- Merging the PR / commit? → `transitionJiraIssue` to Testing (per the constants page). Never straight to Done from In Progress.
 - Splitting into 2+ Jira issues? → always Story + Sub-tasks, never sibling Tasks. See Rule 3 for the full propose → approval → search → create flow.
