@@ -26,12 +26,10 @@
 
     taps = [
       "beeftornado/rmtree"
-      "felixkratz/formulae" # For borders (jankyborders alternative)
     ];
 
     brews = [
       "ical-buddy" # for tmux calendar plugin
-      "borders" # Window borders for macOS (replaces jankyborders)
       "mactop" # top-like activity monitor for macOS
 
       "worktrunk" # CLI for Worktrunk, a tool for managing workspaces and projects
@@ -53,7 +51,6 @@
 
     casks = [
       "hammerspoon"
-      "force-paste"
       "alfred"
       "1password"
       "karabiner-elements"

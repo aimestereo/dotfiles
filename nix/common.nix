@@ -23,7 +23,6 @@
     atuin # Command history manager with sync
     carapace # Multi-shell completion framework
     nushell
-    nushellPlugins.polars
 
     # Core CLI Utilities
     bat # cat with syntax highlighting and git integration
@@ -82,7 +81,7 @@
     # Development - Editor & LSP Support
     neovim # Modern vim-based text editor
     universal-ctags # Code indexing tool (used by neovim plugins)
-    silver-searcher # Fast code search (ag command, used by neovim plugins)
+    silver-searcher-ng # Fast code search (ag command, used by neovim plugins)
     tree-sitter
     git-spice # Manage stacked Git branches
 
