@@ -9,5 +9,6 @@ path=(
   $HOME/.local/bin
   $HOME/.cargo/bin
   $HOME/.cache/npm/global/bin
+  ${GOBIN:-${GOPATH:-$HOME/go}/bin}
   $path
 )
