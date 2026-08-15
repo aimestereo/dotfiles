@@ -69,8 +69,9 @@
       "zed" # code editor
       "ghostty"
       "kitty" # GPU-accelerated terminal emulator
-      "claude"
-      "claude-code"
+
+      # ai
+      "cursor"
 
       # "aws-vpn-client" # AWS VPN client
       "tailscale-app" # Tailscale VPN client

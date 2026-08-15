@@ -42,9 +42,8 @@ Feature/fix work runs in an **isolated worktree**, not the shared checkout:
 1. Create or enter a dedicated worktree + feature branch for this handoff's task.
 2. Do all edits and local verification **inside that worktree** (absolute paths under the worktree root).
 3. Scope build/test commands to the worktree (`-C`, `--dir`, or equivalent).
-4. If you delegate to subagents, pass the **absolute worktree path** and forbid them from running git — you own git in the orchestrator session.
-
-Clean up session-created worktrees at close-out per project rules; never remove one with unpushed/unmerged work without commander sign-off.
+4. If you delegate to subagents, pass the **absolute worktree path** and forbid git — see `/git-workflow` § Worktrees.
+5. Clean up session-created worktrees at close-out per `/git-workflow` § Worktrees.
 
 ## 5. Confirm briefly, then work
 

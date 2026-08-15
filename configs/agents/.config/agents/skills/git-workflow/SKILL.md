@@ -7,6 +7,8 @@ triggers:
   - pull request
   - stacked PR
   - Jira linking
+  - worktree
+  - git worktree
 role: protocol
 scope: workflow
 output-format: instructions
@@ -102,3 +104,35 @@ Each PR goes through full review+CI loop before starting the next.
 2. **Direct parent merged**: the immediately preceding PR was merged into main — rebase onto updated main and verify the PR base was retargeted to `main` (GitHub usually does this automatically)
 
 If an early PR gets fixes, do NOT force-update or rebase the following PRs. They will naturally pick up the changes when their direct parent merges. This minimizes unnecessary rebases and avoids overburdening CI with redundant runs across the stack.
+
+## Worktrees
+
+Feature/fix work runs in an **isolated git worktree** — a separate checkout directory with its own branch — not the shared main checkout. Applies to orchestrated sessions (Sky, `/from-handoff`, multi-agent workflows) and solo work when parallel sessions are possible.
+
+### Why
+
+Subagents and shell tools often **default cwd to the main repo**, not the worktree. Relative paths and bare `git` commands then hit the wrong checkout. A subagent that silently fails to switch branch can commit onto another session's branch while the intended worktree stays empty.
+
+### Discipline
+
+**Orchestrator owns all git.** Subagents run **zero** git commands — no `checkout`, `add`, `commit`, `branch`, `stash`. The orchestrator (session cwd in the worktree) creates branches, stages, commits, and pushes.
+
+**Subagents use absolute worktree paths only.** Hand every implementer/reviewer the full path under the worktree root. Never a relative path that resolves against the main checkout.
+
+**Scope build/test to the worktree.** Pass an explicit directory flag, e.g. `go -C <worktree>/... test ./...`, `pnpm -C <worktree>/... test`.
+
+**Verify topology before review.** After implementation returns, confirm `git -C <worktree> log --oneline <base>..HEAD` shows the expected commit(s) on the expected branch before dispatching review.
+
+**Never reset another checkout.** If a commit lands on the wrong branch, cherry-pick into the correct worktree branch (additive) and leave the stray commit for the owning session to drop — do not `reset` without commander sign-off.
+
+### Dispatch boilerplate (subagents)
+
+> Your shell cwd may be the main repo. Operate ONLY on the worktree at `<abs path>`: edit via absolute worktree paths, scope build/test to that tree (`-C` / `--dir`), run NO git commands — the orchestrator owns git.
+
+### Cleanup at close-out
+
+Whoever created the worktree removes it — **do not ask** "should I remove it?".
+
+- **Squash-merge artifact ≠ unsaved work.** After squash-merge, the local feature branch may still show commits "not in main" (pre-squash SHAs differ). Verify the PR merged (`gh pr view <n> --json state,mergeCommit` → `MERGED`) and content is on `main`, then remove the worktree with discard — no prompt needed.
+- **Block only on real unsaved work:** unpushed commits that were never merged anywhere. Merged-then-squashed branches are safe to discard.
+- **Push before remove.** Remote holds the work; confirm merged, then drop the local worktree freely.
