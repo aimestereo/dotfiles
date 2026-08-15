@@ -13,8 +13,9 @@ end
 hs.hotkey.bind(HYPER, "r", hs.reload)
 
 -- Apps
-hs.hotkey.bind(HYPER, "a", switchApp("company.thebrowser.Browser"))
-hs.hotkey.bind(HYPER, "b", switchApp("com.google.Chrome"))
+hs.hotkey.bind(HYPER, "a", switchApp("com.brave.Browser"))
+-- hs.hotkey.bind(HYPER, "a", switchApp("company.thebrowser.Browser"))
+-- hs.hotkey.bind(HYPER, "b", switchApp("com.google.Chrome"))
 hs.hotkey.bind(HYPER, "c", switchApp("com.apple.iCal"))
 hs.hotkey.bind(HYPER, "d", switchApp("net.kovidgoyal.kitty"))
 hs.hotkey.bind(HYPER, "e", switchApp("com.apple.finder"))
@@ -88,4 +89,11 @@ hs.hotkey.bind(HYPER, "g", function()
     drawonscreen.startAnnotating()
     drawActive = true
   end
+end)
+
+
+hs.hotkey.bind(HYPER, "b", function()
+  local bundleId = hs.window.focusedWindow():application():bundleID()
+  hs.alert.show(bundleId)
+  hs.pasteboard.setContents(bundleId)
 end)
