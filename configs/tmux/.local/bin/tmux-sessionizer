@@ -22,13 +22,8 @@ debug() {
 
 setup_new_session() {
     debug "setting up new session windows"
-    tmux new-window -t "$selected_name" -c "$selected_path" -n claude
-
-    sleep 3
-
     tmux send-keys -t "$selected_name:1" 'v -S' Enter
-    tmux send-keys -t "$selected_name:claude" 'claude --dangerously-skip-permissions' Enter
-
+    tmux new-window -t "$selected_name" -c "$selected_path"
     tmux select-window -t "$selected_name:1"
 }
 
