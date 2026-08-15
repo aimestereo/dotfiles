@@ -54,10 +54,12 @@ Run `make symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` f
 
 The `agents` package contains AI agent commands and reusable skills for Claude Code and Cursor. See `configs/agents/.config/agents/README.md` for full setup details.
 
+**Canonical source:** all skills live in `configs/agents/.config/agents/skills/`. Client dirs (`.claude/skills/`, `.cursor/skills/`) are symlink indexes — **every skill gets symlinks in both**. Edit skills in `.config/agents/`, not in the client dirs.
+
 ```
 configs/agents/.config/agents/
 ├── commands/       # User-invocable (/feat)
-└── skills/         # Shared protocols (git-workflow)
+└── skills/         # Canonical skill source (git-workflow, to-prd, grill-me, …)
 ```
 
 Commands and skills are symlinked to `.claude/` and `.cursor/` directories within the stow package. The `/feat` command leverages `feature-dev` and `pr-review-toolkit` plugins for implementation and PR review.
