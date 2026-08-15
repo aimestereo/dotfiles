@@ -55,12 +55,13 @@
       "1password"
       "karabiner-elements"
 
-      "arc" # arc-browser updates often, use brew version to avoid overrides
+      "brave-browser"
+      # "arc" # arc-browser updates often, use brew version to avoid overrides
       "yandex" # browser, nix version is x86 only
       "transmission" # torrent client
       "zoom"
 
-      "balenaetcher" # for creating bootable USB drives
+      # "balenaetcher" # for creating bootable USB drives
 
       "calibre" # ebook management
 
@@ -77,7 +78,7 @@
       # GUI apps moved from nix (previously required mac-app-util)
       "slack" # Team communication
       "postman" # API testing tool
-      "telegram" # Messaging app
+      # "telegram" # Messaging app
       "obsidian" # Note-taking app
       "iina" # Modern media player for macOS
 
