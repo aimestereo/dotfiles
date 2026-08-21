@@ -44,7 +44,7 @@ mcp__pka__wiki_page_get(slug: "jira-b2b-constants")
 
 ## Rule 3 — Story hierarchy when splitting work
 
-Trigger: you and the commander are deciding to break a feature into **2+ Jira issues**. Stacked PRs / a 300-LOC split are **not** this trigger — they stay on the existing issue. The moment a real Jira split is on the table, this rule fires.
+Trigger: you and the commander are deciding to break a feature into **2+ Jira issues** (not 2+ PRs — stacked PRs stay on one issue per the `git-workflow` skill). The moment a real Jira split is on the table, this rule fires.
 
 Protocol:
 
@@ -62,7 +62,7 @@ Protocol:
 4. **No match** → create the Story first (self-assigned, all mandatory fields set), then create the Sub-tasks with `parent: "<NEW-STORY-KEY>"`.
 5. **Never create sibling Tasks for a split feature.** The hierarchy is the whole point — Story parents Sub-tasks. Only use standalone Task when the work has no siblings and no natural Story home.
 
-Skip this rule when: the work is one issue with multiple PRs or a stacked-PR slice (that's a single Task or Story — never open a Sub-task per PR); or the commander explicitly says "just create N Tasks, no parent" (rare — confirm).
+Skip this rule when: the work is one issue with multiple PRs (see `git-workflow` stacked PRs); or the commander explicitly says "just create N Tasks, no parent" (rare — confirm).
 
 ## Rule 4 — Transition to Testing (not Done) when work is merged
 
@@ -145,4 +145,4 @@ for issue_key in [sub_be.key, story.key]:
 - Creating an issue? → `assignee_account_id = commander` + all mandatory fields from the constants page. Always.
 - Starting to code on an issue? → `getTransitionsForJiraIssue` + `transitionJiraIssue` to In Progress. Always.
 - Merging the PR / commit? → `transitionJiraIssue` to Testing (per the constants page). Never straight to Done from In Progress.
-- Splitting into 2+ Jira issues? → always Story + Sub-tasks, never sibling Tasks. See Rule 3. Stacked PRs on one feature stay on the same issue — do not create Sub-tasks for PR slices.
+- Splitting into 2+ Jira issues? → always Story + Sub-tasks, never sibling Tasks. See Rule 3. Multiple PRs on one issue → `git-workflow` skill, not this rule.
