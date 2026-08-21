@@ -151,7 +151,7 @@ feat/PROJ-123-add-ui        (PR3)
 
 Each PR title/commit uses the same `(PROJ-123)` scope. Comment every PR URL onto that one Jira issue.
 
-Each PR goes through full review+CI loop before starting the next.
+Create the full stack in one pass. Do not wait for CodeRabbit or remote CI on a parent before opening the next PR. Join the GitHub stack as each PR is created. Address CodeRabbit when it posts; that is not a gate on creating the rest of the stack.
 
 **Updating stacked PRs** — never cascade-update the whole stack. A PR is only updated in two cases:
 
