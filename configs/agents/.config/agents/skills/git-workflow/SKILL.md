@@ -16,6 +16,8 @@ output-format: instructions
 
 # Git Workflow
 
+Applies to projects with `git_strategy: git-workflow` (PR-based development). Projects that push to main (`git_strategy: direct-to-main`) are excluded.
+
 ## Branching
 
 Never commit to main. Always work on feature branches.
@@ -67,9 +69,15 @@ Omit the Jira line when no ticket is involved.
 PR: [#NUMBER TITLE](URL)
 ```
 
+## PR size
+
+Target at most 300 lines of hand-written feature code per PR. Exclude tests, docs, ordinary config, and generated files. Security-relevant config (auth, permissions, access-control flags) counts. Trivial fixes below the target need no split. Larger features split into stacked PRs below.
+
+Never split so part 1 alone is insecure or broken (for example part 1 removes an auth check that part 2 would restore). If a regen exposes a reachable surface, ship the auth check in the same PR or first.
+
 ## Stacked PRs
 
-When a plan decomposes into 2+ independently reviewable units, use stacked PRs.
+When a plan decomposes into 2+ independently reviewable units, use stacked PRs. All PRs in the stack share the **same Jira ticket** — do not create a Jira issue or Sub-task per PR.
 
 Single logical unit = one PR to main (no stacking). If units are independent (no dependency between them), prefer multiple independent PRs targeting `main` over stacking.
 
@@ -88,13 +96,60 @@ Single logical unit = one PR to main (no stacking). If units are independent (no
 - PR3 targets PR2's branch
 - Create with `gh pr create --base <parent-branch>`
 
-**Branch naming for stacked PRs with Jira**:
+`--base` only chains git. GitHub also has a separate **stack object** (the UI "Preview stack" / stack `#NNNN`). `gh pr create` does **not** join it. After every stacked `gh pr create`, join the stack via REST — do not wait for the commander to click **Add to stack**.
+
+**Join GitHub stack (mandatory after stacked `gh pr create`)**
+
+Need `Accept: application/vnd.github+json` and `X-GitHub-Api-Version: 2026-03-10`. Docs: [REST API — stacks](https://docs.github.com/en/rest/pulls/stacks).
+
+```bash
+OWNER_REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+NEW_PR=$(gh pr view --json number -q .number)
+PARENT_BRANCH=$(gh pr view --json baseRefName -q .baseRefName)
+
+# Skip GitHub stack for a PR that targets the default branch.
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+if [ "$PARENT_BRANCH" = "$DEFAULT_BRANCH" ]; then
+  echo "PR #${NEW_PR} targets ${DEFAULT_BRANCH}; GitHub stack starts when PR2 is created"
+  exit 0
+fi
+
+PARENT_PR=$(gh pr list --head "$PARENT_BRANCH" --state open --json number -q '.[0].number')
+if [ -z "$PARENT_PR" ]; then
+  echo "error: no open PR for base branch ${PARENT_BRANCH}" >&2
+  exit 1
+fi
+
+STACK=$(gh api "repos/${OWNER_REPO}/pulls/${PARENT_PR}" \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2026-03-10" \
+  --jq '.stack.number // empty')
+
+HDR=(-H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2026-03-10")
+if [ -n "$STACK" ]; then
+  # Append only the new PRs, current top of stack upward.
+  gh api --method POST "repos/${OWNER_REPO}/stacks/${STACK}/add" "${HDR[@]}" \
+    --input - <<< "{\"pull_requests\": [${NEW_PR}]}"
+else
+  # Parent not in a stack yet — create one, bottom (parent) to top (new).
+  gh api --method POST "repos/${OWNER_REPO}/stacks" "${HDR[@]}" \
+    --input - <<< "{\"pull_requests\": [${PARENT_PR}, ${NEW_PR}]}"
+fi
+```
+
+When creating several stacked PRs in one session, one `/add` with all new numbers in order is enough (e.g. `[3129, 3131, 3134]`). First new PR's base ref must equal the current stack top's head ref.
+
+Do not rely on `gh stack` unless `gh stack --help` works in this environment (extension, not core `gh`). Prefer the REST calls above.
+
+**Branch naming for stacked PRs with Jira** — one ticket, distinct kebab suffixes:
 
 ```
 feat/PROJ-123-add-schema    (PR1)
 feat/PROJ-123-add-api       (PR2)
 feat/PROJ-123-add-ui        (PR3)
 ```
+
+Each PR title/commit uses the same `(PROJ-123)` scope. Comment every PR URL onto that one Jira issue.
 
 Each PR goes through full review+CI loop before starting the next.
 
@@ -107,7 +162,7 @@ If an early PR gets fixes, do NOT force-update or rebase the following PRs. They
 
 ## Worktrees
 
-Feature/fix work runs in an **isolated git worktree** — a separate checkout directory with its own branch — not the shared main checkout. Applies to orchestrated sessions (Sky, `/from-handoff`, multi-agent workflows) and solo work when parallel sessions are possible.
+Feature/fix work on `git-workflow` projects runs in an **isolated git worktree** — a separate checkout directory with its own branch — not the shared main checkout. Applies to orchestrated sessions (Sky, `/from-handoff`, multi-agent workflows) and solo work when parallel sessions are possible. `direct-to-main` projects are excluded.
 
 ### Why
 
@@ -131,8 +186,10 @@ Subagents and shell tools often **default cwd to the main repo**, not the worktr
 
 ### Cleanup at close-out
 
-Whoever created the worktree removes it — **do not ask** "should I remove it?".
+Whoever created the worktree removes it — **do not ask** "should I remove it?". Remove only after the PR is `MERGED`.
 
-- **Squash-merge artifact ≠ unsaved work.** After squash-merge, the local feature branch may still show commits "not in main" (pre-squash SHAs differ). Verify the PR merged (`gh pr view <n> --json state,mergeCommit` → `MERGED`) and content is on `main`, then remove the worktree with discard — no prompt needed.
-- **Block only on real unsaved work:** unpushed commits that were never merged anywhere. Merged-then-squashed branches are safe to discard.
-- **Push before remove.** Remote holds the work; confirm merged, then drop the local worktree freely.
+- **Positive-attribution:** if you cannot confirm you created this worktree in the current session, skip it and note the path — do not guess.
+- **Wait for delegates:** only after every agent dispatched to that worktree has returned.
+- **Preserve while open:** uncommitted work, unpushed commits, or an open PR (pushed but not merged) — leave the worktree; do not ask. Set `blocked` only for real unsaved work that was never pushed.
+- **After `MERGED`:** switch cwd to the main checkout → `git worktree remove <path>` → verify absent from `git worktree list` → delete the local feature branch (`git branch -d`, or `-D` after squash). Squash-merge SHAs differing from main is not unsaved work.
+- **Surface failures:** if `git worktree remove` returns non-zero, log the error; do not silently swallow.
