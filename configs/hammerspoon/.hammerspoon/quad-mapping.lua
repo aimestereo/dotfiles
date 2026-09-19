@@ -14,7 +14,7 @@ hs.hotkey.bind(HYPER, "r", hs.reload)
 
 -- Apps
 hs.hotkey.bind(HYPER, "a", switchApp("com.brave.Browser"))
--- hs.hotkey.bind(HYPER, "a", switchApp("company.thebrowser.Browser"))
+hs.hotkey.bind(HYPER, "b", switchApp("company.thebrowser.Browser"))
 -- hs.hotkey.bind(HYPER, "b", switchApp("com.google.Chrome"))
 hs.hotkey.bind(HYPER, "y", switchApp("ru.yandex.desktop.yandex-browser"))
 
@@ -122,8 +122,8 @@ hs.hotkey.bind(HYPER, "g", function()
   end
 end)
 
-hs.hotkey.bind(HYPER, "b", function()
-  local bundleId = hs.window.focusedWindow():application():bundleID()
-  hs.alert.show(bundleId)
-  hs.pasteboard.setContents(bundleId)
-end)
+-- hs.hotkey.bind(HYPER, "b", function()
+--   local bundleId = hs.window.focusedWindow():application():bundleID()
+--   hs.alert.show(bundleId)
+--   hs.pasteboard.setContents(bundleId)
+-- end)
