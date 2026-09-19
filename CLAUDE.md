@@ -52,9 +52,9 @@ Run `make symlinks-mac` to apply all packages on macOS (`make symlinks-fedora` f
 
 ## Agent Commands & Skills
 
-The `agents` package contains AI agent commands and reusable skills for Claude Code, Cursor, and Codex. See `configs/agents/.config/agents/README.md` for full setup details.
+The `agents` package contains AI agent commands and reusable skills for Claude Code, Cursor, Codex, and Pi. See `configs/agents/.config/agents/README.md` for full setup details.
 
-**Canonical source:** all skills live in `configs/agents/.config/agents/skills/`. Client dirs (`.claude/skills/`, `.cursor/skills/`, `.codex/skills/`) are symlink indexes — **every skill gets symlinks in all three**. Edit skills in `.config/agents/`, not in the client dirs.
+**Canonical source:** all skills live in `configs/agents/.config/agents/skills/`. Client dirs (`.claude/skills/`, `.cursor/skills/`, `.codex/skills/`, `.pi/agent/skills/`) are symlink indexes — **every skill gets symlinks in all four**. Edit skills in `.config/agents/`, not in the client dirs.
 
 ```
 configs/agents/.config/agents/
@@ -62,7 +62,7 @@ configs/agents/.config/agents/
 └── skills/         # Canonical skill source (git-workflow, to-prd, grill-me, …)
 ```
 
-Commands are symlinked to `.claude/` and `.cursor/`; skills are symlinked to `.claude/`, `.cursor/`, and `.codex/` directories within the stow package. The `/feat` command leverages `feature-dev` and `pr-review-toolkit` plugins for implementation and PR review.
+Commands are symlinked to `.claude/` and `.cursor/`; skills are symlinked to `.claude/`, `.cursor/`, `.codex/`, and `.pi/agent/` directories within the stow package. The `/feat` command leverages `feature-dev` and `pr-review-toolkit` plugins for implementation and PR review.
 
 ## Installation
 
@@ -113,7 +113,7 @@ Stow uses `--no-folding` for the `theme/` package (and `agents/`, `btop/` — se
 
 ## Key Utilities
 
-- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme`, `agents`, and `btop` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/`, `~/.codex/`, `~/.config/btop/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox|waybar|swayosd|mako|rofi`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
+- `utils/stow-packages <exclude-regex>` - Stow all packages under `configs/` except those whose name matches the regex. Special-cases the `theme`, `agents`, and `btop` packages with `--no-folding` (their target dirs — `~/.config/theme/`, `~/.claude/`, `~/.cursor/`, `~/.codex/`, `~/.pi/agent/`, `~/.config/btop/` — receive runtime writes and/or contributions from another stow package, so they must stay real directories rather than folded symlinks into the repo). Used by `make symlinks-mac` (excludes `shell-fedora|toolbox|waybar|swayosd|mako|rofi`) and `make symlinks-fedora` (excludes `hammerspoon|nix|shell-mac`). Run from the repo root.
 - `utils/theme-bootstrap` - Renders all themes (`theme-render`), seeds `~/.config/theme/current → rendered/catppuccin` if missing, seeds the wallpaper symlink, and (when `~/.config/btop/` exists) symlinks `~/.config/btop/themes/current.theme → ~/.config/theme/current/btop.theme`. Invoked by both `make symlinks-*` targets.
 - `utils/mac-install` - Install Homebrew and packages
 - `utils/mac-after-install` - Post-install configuration

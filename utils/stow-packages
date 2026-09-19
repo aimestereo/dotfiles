@@ -6,11 +6,12 @@
 # direct invocations are expected to cd in first). The `theme`, `agents`, and
 # `btop` packages get --no-folding so their target dirs stay real directories:
 # theme-render writes runtime state into ~/.config/theme/, Claude Code /
-# Cursor write into ~/.claude/ and ~/.cursor/ (and the separate pka-team stow
-# package also contributes into ~/.claude/), and theme-bootstrap drops a
-# `themes/current.theme` symlink into ~/.config/btop/. Folded stow would
-# collapse those into single symlinks and put the runtime writes inside the
-# repo. Add per-package flags to the case block as needed.
+# Cursor / Codex / Pi write into ~/.claude/, ~/.cursor/, ~/.codex/, and
+# ~/.pi/agent/ (and the separate pka-team stow package also contributes into
+# ~/.claude/ and ~/.pi/agent/), and theme-bootstrap drops a `themes/current.theme`
+# symlink into ~/.config/btop/. Folded stow would collapse those into single
+# symlinks and put the runtime writes inside the repo. Add per-package flags to
+# the case block as needed.
 
 set -euo pipefail
 

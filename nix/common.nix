@@ -88,6 +88,9 @@
     # Development - Environment Management
     devenv # Fast, declarative development environments
 
+    # Development - AI
+    pi-coding-agent
+
     # DevOps & Cloud
     lazydocker # TUI for managing Docker containers
     k9s # TUI for managing Kubernetes clusters
