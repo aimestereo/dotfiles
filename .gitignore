@@ -1,5 +1,10 @@
 .env
 
+# Track the Codex skill index despite a global .codex ignore rule.
+!configs/agents/.codex/
+!configs/agents/.codex/skills/
+!configs/agents/.codex/skills/*
+
 tags
 test.sh
 .luarc.json

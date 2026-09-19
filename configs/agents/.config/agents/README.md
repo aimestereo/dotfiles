@@ -1,6 +1,6 @@
 # Agent Configuration
 
-AI agent commands and skills for Claude Code and Cursor, managed with GNU Stow.
+AI agent commands and skills for Claude Code, Cursor, and Codex, managed with GNU Stow.
 
 ## Structure
 
@@ -20,6 +20,7 @@ AI agent commands and skills for Claude Code and Cursor, managed with GNU Stow.
 
 .claude/skills/<name>    → ../../.config/agents/skills/<name>
 .cursor/skills/<name>    → ../../.config/agents/skills/<name>
+.codex/skills/<name>     → ../../.config/agents/skills/<name>
 ```
 
 ## How It Works
@@ -32,19 +33,19 @@ AI agent commands and skills for Claude Code and Cursor, managed with GNU Stow.
 
 **All skills live in `.config/agents/skills/`** — that is the only place to add or edit skill content.
 
-Client directories (`.claude/skills/`, `.cursor/skills/`) are **symlink indexes**, not second copies. Stow projects the canonical tree to `~/.config/agents/`; each client gets a symlink for every skill.
+Client directories (`.claude/skills/`, `.cursor/skills/`, `.codex/skills/`) are **symlink indexes**, not second copies. Stow projects the canonical tree to `~/.config/agents/`; each client gets a symlink for every skill.
 
-| Skill | `.claude/skills/` | `.cursor/skills/` |
-|-------|:-----------------:|:-----------------:|
-| `git-workflow` | ✓ | ✓ |
-| `grill-me` | ✓ | ✓ |
-| `grill-with-docs` | ✓ | ✓ |
-| `handoff` | ✓ | ✓ | Write handoff doc for next session |
-| `from-handoff` | ✓ | ✓ | Pick up handoff — full reads, init, worktree isolation |
-| `jira-b2b` | ✓ | ✓ |
-| `to-prd` | ✓ | ✓ |
+| Skill | `.claude/skills/` | `.cursor/skills/` | `.codex/skills/` |
+|-------|:-----------------:|:-----------------:|:----------------:|
+| `git-workflow` | ✓ | ✓ | ✓ |
+| `grill-me` | ✓ | ✓ | ✓ |
+| `grill-with-docs` | ✓ | ✓ | ✓ |
+| `handoff` | ✓ | ✓ | ✓ | Write handoff doc for next session |
+| `from-handoff` | ✓ | ✓ | ✓ | Pick up handoff — full reads, init, worktree isolation |
+| `jira-b2b` | ✓ | ✓ | ✓ |
+| `to-prd` | ✓ | ✓ | ✓ |
 
-**Rule:** create the skill under `.config/agents/skills/<name>/`, then add symlinks in **both** `.claude/skills/<name>` and `.cursor/skills/<name>` pointing to `../../.config/agents/skills/<name>`.
+**Rule:** create the skill under `.config/agents/skills/<name>/`, then add symlinks in `.claude/skills/<name>`, `.cursor/skills/<name>`, and `.codex/skills/<name>` pointing to `../../.config/agents/skills/<name>`.
 
 PKA team skills (`sky*`, `prd-write`, …) live in the **PKA repo stow** (`pka/stow/pka-team/`), not here. Exception: `/to-prd` is personal and lives in dotfiles; `/prd-write` is PKA MCP mechanism and stays in PKA stow.
 
@@ -57,6 +58,7 @@ Stow symlinks the whole `agents` package to `$HOME` with `--no-folding`. Relativ
 .claude/skills/<skill>      → ../../.config/agents/skills/<skill>
 .cursor/commands/<cmd>.md   → ../../.config/agents/commands/<cmd>.md
 .cursor/skills/<skill>      → ../../.config/agents/skills/<skill>
+.codex/skills/<skill>       → ../../.config/agents/skills/<skill>
 ```
 
 ## Adding a New Command
@@ -70,4 +72,5 @@ Stow symlinks the whole `agents` package to `$HOME` with `--no-folding`. Relativ
 1. Create `.config/agents/skills/<name>/SKILL.md` with YAML frontmatter
 2. Symlink in `.claude/skills/<name>` → `../../.config/agents/skills/<name>`
 3. Symlink in `.cursor/skills/<name>` → `../../.config/agents/skills/<name>`
-4. Re-stow the `agents` package
+4. Symlink in `.codex/skills/<name>` → `../../.config/agents/skills/<name>`
+5. Re-stow the `agents` package
