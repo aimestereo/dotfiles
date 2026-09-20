@@ -1,0 +1,14 @@
+{
+  "lastChangelogVersion": "0.85.1",
+  "theme": "dark",
+  "packages": [
+    "npm:pi-mcp-adapter@2.34.0",
+    {
+      "source": "npm:pi-subagents@0.70.0",
+      "extensions": []
+    },
+    "npm:@vanillagreen/pi-agents-tmux@3.0.1"
+  ],
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5"
+}
